@@ -19,7 +19,7 @@
 [![Status](https://img.shields.io/badge/status-documentation%20phase-6366f1?style=flat-square&labelColor=1e1e2e)](.)
 [![Version](https://img.shields.io/badge/docs-v1.1.0-10b981?style=flat-square&labelColor=1e1e2e)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-proprietary-64748b?style=flat-square&labelColor=1e1e2e)](.)
-[![ADRs](https://img.shields.io/badge/ADRs-4%20accepted-f59e0b?style=flat-square&labelColor=1e1e2e)](docs/02-architecture/ARCHITECTURE_DECISIONS.md)
+[![ADRs](https://img.shields.io/badge/ADRs-5%20accepted-f59e0b?style=flat-square&labelColor=1e1e2e)](docs/02-architecture/ARCHITECTURE_DECISIONS.md)
 [![Agents](https://img.shields.io/badge/agents-12%20defined-ec4899?style=flat-square&labelColor=1e1e2e)](docs/09-agents/)
 
 <br>
@@ -175,6 +175,7 @@ Floriven-Studio/
 | [ADR-0002](docs/02-architecture/ADR-0002.md) | DesignSpec kanonik ara model | ✅ Kabul edildi |
 | [ADR-0003](docs/02-architecture/ADR-0003.md) | AI orkestrasyonu için ayrı Python worker | ✅ Kabul edildi |
 | [ADR-0004](docs/02-architecture/ADR-0004.md) | Editörde DOM/SVG-first renderer | ✅ Kabul edildi |
+| [ADR-0005](docs/02-architecture/ADR-0005.md) | Monorepo yapısı (Turborepo) | ✅ Kabul edildi |
 
 Yeni kararlar [ADR şablonu](docs/10-templates/ADR_TEMPLATE.md) ile oluşturulur.
 

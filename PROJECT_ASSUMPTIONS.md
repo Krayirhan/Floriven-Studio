@@ -41,11 +41,23 @@ Başlangıç ekibi: 1 ürün sahibi, 1 ürün tasarımcısı, 2 frontend, 2 back
 ## Açık kararlar
 
 - Ticari domain, marka tescili ve sosyal hesap kullanılabilirliği.
-- Kimlik sağlayıcısı ve ödeme sağlayıcısı.
 - Figma entegrasyonunun plugin mi REST tabanlı ara servis mi olacağı.
 - Kod dışa aktarımında ilk hedefin React Native mi Flutter mı olacağı.
 - Verinin hangi bölgede saklanacağı ve hedef mevzuat kapsamı.
-- AI modeli sağlayıcıları ve veri saklama sözleşmeleri.
+
+## Ertelenmiş sağlayıcı kararları
+
+Aşağıdaki kararlar bilinçli olarak ertelenmiştir. İlgili backlog işleri bu kararlar netleşene kadar başlatılamaz. Her karar netleştiğinde bir ADR oluşturulmalı ve bu tablo güncellenmelidir.
+
+| No | Karar | Bağımlı işler | Durum |
+|---|---|---|---|
+| D-01 | **IDP sağlayıcısı** — Auth0, Keycloak, Supabase Auth veya başka bir OIDC uyumlu sağlayıcı | B-001 (kimlik), B-002 (workspace), B-003 (tenant testi) | ⏸ Ertelendi |
+| D-02 | **AI model sağlayıcısı** — Anthropic, OpenAI, Google veya çoklu sağlayıcı stratejisi | B-020 (ScreenGraph), B-021 (DesignSpec üretimi), B-022 (validasyon döngüsü) | ⏸ Ertelendi |
+| D-03 | **Object storage** — AWS S3, Supabase Storage, MinIO veya başka S3-uyumlu çözüm | B-013 (snapshot), B-050 (export), dosya yükleme akışları | ⏸ Ertelendi |
+| D-04 | **Deployment hedefi** — Docker Compose (lokal), Kubernetes, Railway, Render veya başka platform | CI/CD pipeline kurulumu, DevOps Agent görevleri | ⏸ Ertelendi |
+| D-05 | **Ödeme sağlayıcısı** — Stripe, Paddle veya alternatif | B-042 (kredi satın alma), abonelik yönetimi | ⏸ Ertelendi |
+
+> Bu kararlar netleşene kadar ilgili servisler için soyut interface ve stub implementasyon kullanılır; gerçek sağlayıcı adapter'ı karar sonrası eklenir.
 
 ## Varsayım değiştirme yöntemi
 

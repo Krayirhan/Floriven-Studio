@@ -31,6 +31,7 @@
 | ADR-0002 | DesignSpec kanonik ara model | Kabul edildi | 2026-08-05 | [ADR-0002.md](ADR-0002.md) |
 | ADR-0003 | AI orchestration için ayrı Python worker | Kabul edildi | 2026-08-05 | [ADR-0003.md](ADR-0003.md) |
 | ADR-0004 | Editörde DOM/SVG-first renderer | Kabul edildi | 2026-08-05 | [ADR-0004.md](ADR-0004.md) |
+| ADR-0005 | Monorepo yapısı (Turborepo) | Kabul edildi | 2026-08-05 | [ADR-0005.md](ADR-0005.md) |
 
 Yeni ADR'ler `docs/10-templates/ADR_TEMPLATE.md` ile oluşturulur ve bu indeks güncellenir.
 
@@ -42,3 +43,4 @@ Yeni ADR'ler `docs/10-templates/ADR_TEMPLATE.md` ile oluşturulur ve bu indeks g
 | ADR-0002 | [DESIGN_SPEC.md](DESIGN_SPEC.md), [AI_ARCHITECTURE.md](AI_ARCHITECTURE.md), [API_SPEC.md](../03-engineering/API_SPEC.md) |
 | ADR-0003 | [AI_ARCHITECTURE.md](AI_ARCHITECTURE.md), [PROMPT_ENGINEERING.md](../04-ai/PROMPT_ENGINEERING.md), [OBSERVABILITY.md](../06-operations/OBSERVABILITY.md) |
 | ADR-0004 | [EDITOR_ARCHITECTURE.md](EDITOR_ARCHITECTURE.md), [DESIGN_SPEC.md](DESIGN_SPEC.md), [ACCESSIBILITY.md](../03-engineering/ACCESSIBILITY.md) |
+| ADR-0005 | [SYSTEM_ARCHITECTURE.md](SYSTEM_ARCHITECTURE.md), [TECHNOLOGY_STACK.md](../03-engineering/TECHNOLOGY_STACK.md), [LOCAL_ENVIRONMENT.md](../03-engineering/LOCAL_ENVIRONMENT.md) |
