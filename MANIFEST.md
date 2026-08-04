@@ -20,8 +20,8 @@
 | `DOCUMENT_INDEX.md` | Doküman İndeksi | 497 | `feac3648bb78aa041b1aabd907c99c7f3c9b0e1cecfff86cdb60e44adaf4f8c5` |
 | `GLOSSARY.md` | Terimler Sözlüğü | 327 | `b84ebcd843c51f7d440631bd2f9b465914efb8d74af70c32daed262f1284c337` |
 | `MANIFEST.md` | Paket Manifestosu | 985 | `—` |
-| `PROJECT_ASSUMPTIONS.md` | Proje Varsayımları | 430 | `5107163dc92ea26fe8401fb7881a904651a1e3327b90c1234d931e8b8e281049` |
-| `README.md` | Dokümantasyon Paketi | 915 | `b4328e81d6e08489f0a6f21706e3a70056f67ddc4e8a9bc597b1dbf2a233cf8e` |
+| `PROJECT_ASSUMPTIONS.md` | Proje Varsayımları | 598 | `4fed0f2f9ae03b75fa874a315c594d058ce76eaf4b18753146cb81c3d251584e` |
+| `README.md` | Dokümantasyon Paketi | 926 | `c6a1e6f693584051ae961473225b0327a52eee8bfdcd3f5c18cb97110ede18a1` |
 | `SHA256SUMS.txt` | SHA-256 Bütünlük Doğrulama | 170 | `—` |
 | `docs/00-brand/FLORIVEN_STUDIO.md` | Floriven Studio — Ürün ve Marka Kimliği | 1673 | `e46ada7eb0910e58f91fbe711fd760ad7ae9dff1a3b1157a67b583c2f191e60a` |
 | `docs/01-product/BACKLOG_AND_PRIORITIZATION.md` | Backlog ve Önceliklendirme | 857 | `3f005a8aaff66cc974475587056dc6a377e47815ce44f92b472918cfed64d705` |
@@ -36,8 +36,9 @@
 | `docs/02-architecture/ADR-0002.md` | ADR-0002 — DesignSpec Kanonik Ara Model | 318 | `cb913f2bb2fa713c731798e3f35141a68db3d8f6005792a42aa361f1d458fb2b` |
 | `docs/02-architecture/ADR-0003.md` | ADR-0003 — AI Orkestrasyonu Python Worker | 378 | `6a179e94a6ae049532e01dd132c911d3d3066db9b27e8bfa1e65a1ebb5e3ae8f` |
 | `docs/02-architecture/ADR-0004.md` | ADR-0004 — Editörde DOM/SVG-First Renderer | 362 | `847524718ac1cae345bc5b8df7558798535ee6ac57fa46d54e941d00de1d4e4e` |
+| `docs/02-architecture/ADR-0005.md` | ADR-0005 — Monorepo Yapısı (Turborepo) | 481 | `2be017924c1aad2c20fa5469a1989186f2e3dd9c1ebdb56e90afca2ebbed33ed` |
 | `docs/02-architecture/AI_ARCHITECTURE.md` | AI Mimarisi | 431 | `85ae5fc58943d654fdd8c88ce06a169717317b06015ea4c0b7fd6c365eb1e049` |
-| `docs/02-architecture/ARCHITECTURE_DECISIONS.md` | Mimari Karar İndeksi | 247 | `3d580baca253c03f8ebc4fe9ad50561a983c12458f2aa02eb2527837cc27ae3e` |
+| `docs/02-architecture/ARCHITECTURE_DECISIONS.md` | Mimari Karar İndeksi | 268 | `790fda1cedbe9e5aff9e50dc60d39bc4d8c0507c7cf6731db25c0b0414af8fe9` |
 | `docs/02-architecture/DATA_MODEL.md` | Veri Modeli | 378 | `826b9215c6bf28218526a39c1c3301b5b98183526b04a2d892c55243b814a47e` |
 | `docs/02-architecture/DESIGN_SPEC.md` | DesignSpec v1 Sözleşmesi | 617 | `bc04634ed7ef7b325236672cae6e44c98acb2b1e87bf9341a2780f37df01655b` |
 | `docs/02-architecture/EDITOR_ARCHITECTURE.md` | Görsel Editör Mimarisi | 294 | `9cae863dd22ff1c53e595aebaeac87068d7267e6fc1c1a8453646eebefcf930f` |
