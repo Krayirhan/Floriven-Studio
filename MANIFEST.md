@@ -7,6 +7,7 @@
 | Doküman sahibi | Dokümantasyon Agent |
 | Son güncelleme | 2026-08-05 |
 | Gözden geçirme | Her sürüm |
+| Monorepo iskelet | 2026-08-05 — ADR-0005 uygulandı |
 
 > Projenin resmî ürün adı **Floriven Studio** olarak belirlenmiştir. Mimari kararlar uygulamaya geçmeden önce ilgili ADR ile onaylanır.
 
@@ -99,3 +100,36 @@
 | `docs/10-templates/RELEASE_CHECKLIST.md` | Release Kontrol Listesi | 191 | `ebbc476363cadd64de177799efbb723cd128c39140f52e72644a66d74a3c52a3` |
 | `docs/10-templates/SECURITY_REVIEW_TEMPLATE.md` | Güvenlik İnceleme Şablonu | 114 | `335ce328d3deff938ebefb54802d9f7e7f816612db5ed225efccd981e41e0ae4` |
 | `docs/10-templates/USER_STORY_TEMPLATE.md` | User Story Şablonu | 95 | `18c2ac7da6a9a1d483c338b2b0a63422ef02e544e6fc423794865c3112c8f3f0` |
+| **Monorepo — Kök** | | | |
+| `.gitignore` | Git Yoksayma Kuralları | 58 | `37cd327fa7a096d3c2ded87e7663337855374896f062fee6db9a1fac7200531b` |
+| `docker-compose.yml` | Lokal Altyapı (PostgreSQL, Redis, RabbitMQ) | 75 | `11a3ea0a41c488d1bb7d1a87de537833c7c44c096abd1321f64dd63293589e35` |
+| `package.json` | Turborepo Kök Paket | 51 | `9117983b2f2670dc6eb13f35735516b77e5429e6eeb1cf237c2acc441d1d08db` |
+| `pnpm-workspace.yaml` | pnpm Workspace Tanımı | 5 | `08d75840c97ab0e72d1d9b5b84a17e47a2e06cb159a5fbec5ee0a6a56682dad7` |
+| `tsconfig.json` | TypeScript Kök Ayarı | 32 | `cb59ac5162251af59fb4cff7cf5e7c23d1dd68518a583d25e057c04bbd739492` |
+| `turbo.json` | Turborepo Görev Grafı | 42 | `1a42f0b6b33d3f166481a9125e0aae1ccaac463631c029826055ae380be5cba1` |
+| **apps/web** | | | |
+| `apps/web/index.html` | Web Giriş HTML | 24 | `c33e433d575fbe5ebc3a28866924788abe02b9b8b33cf94fddd59cec534f07cd` |
+| `apps/web/package.json` | Web Paket Tanımı | 57 | `c9f0cb6e0743c2d1f4f92c084273878202d6019b64e484b052d9ac3e747a5e22` |
+| `apps/web/tsconfig.json` | Web TypeScript Ayarı | 42 | `45ac78bbc7363483299a2f6d49b8f013ba23267634a8ebeaaaaf65197bb2f623` |
+| `apps/web/vite.config.ts` | Vite Yapılandırması | 31 | `efb73165b1cbb60c8c819dfd77ce701bc1dda471a82d3a554a62bf8b27cbdf05` |
+| `apps/web/src/App.tsx` | React Kök Bileşen (stub) | 14 | `d2a30b7d0e1f4280548a4a3fd100565ad39ce3dcfd3bee824278282401bd7d1a` |
+| `apps/web/src/main.tsx` | React Başlatıcı | 22 | `cd7ea6a4a57c2dab52ed10099977533613771fc16b4e964cbbedf342e29a083f` |
+| **apps/api** | | | |
+| `apps/api/pom.xml` | Maven POM (Spring Boot 3.3 / Java 21) | 98 | `f7b090a115abc2bd6d3ace8b2681f427cf799ac8b8b622bb98d503c6d69a88e4` |
+| `apps/api/src/main/resources/application.yml` | Spring Boot Yapılandırması | 59 | `6e27f900f83fa6f98c3a54e9562d71b1a69943836127ce27e79d95bf3a750b42` |
+| `apps/api/src/main/java/studio/floriven/api/FloриvenApiApplication.java` | Spring Boot Giriş Noktası | — | `668c7a7ae8f6b7aa78e3cc74acfb05f4e7c6dbd860616f28a89c7e34a92d9a1f` |
+| **packages/design-spec** | | | |
+| `packages/design-spec/package.json` | design-spec Paket Tanımı | 42 | `e0be359829b904f0a0b4be0056039f89b291903bb2cb04508bfce0dd3aea4c2d` |
+| `packages/design-spec/tsconfig.json` | design-spec TypeScript Ayarı | 29 | `8f6e0d4698747c153d07474870e01bc0f1eb7f851598c0e544e748e5b1b79e25` |
+| `packages/design-spec/src/index.ts` | design-spec Genel API | 10 | `d97db93946e1d607115a624ea64f187eaeaecf9e40fc62ce108f96a5be8b525e` |
+| `packages/design-spec/src/types.ts` | DesignSpec v1 TypeScript Tipleri | 218 | `62e578b7c4f6047432e89ba94aa6cbfd4daf222973b200f2bad39a50be1366eb` |
+| `packages/design-spec/src/version.ts` | Schema Versiyon Sabiti | 7 | `0c1d1e8a145c1c3aca7b005ac991f74ce7156c281c4c5d9095f0b1368a82a669` |
+| **packages/api-types** | | | |
+| `packages/api-types/package.json` | api-types Paket Tanımı | 32 | `7345527d8f0254f58183864969d972786a9a6c13b1f8e2f9a663913f4d6a8155` |
+| `packages/api-types/src/index.ts` | API Tip Stub (OpenAPI üretim bekliyor) | 31 | `f56fe993bf9863682723acc941f0fdc98549217cd837ce051766701f3c984e19` |
+| **services/ai-worker** | | | |
+| `services/ai-worker/pyproject.toml` | Python Paket Tanımı (FastAPI + Pydantic v2) | 84 | `84612d3d8d6d6ad96069a9fe5a73747e1cf538f08b060330090328d74091cf95` |
+| `services/ai-worker/src/config.py` | Worker Ayarları (D-02 stub) | 49 | `ad4a88f88134265264fdd02ec4618eeb920858fc774390fdb40e40913654f4ce` |
+| `services/ai-worker/src/main.py` | FastAPI Giriş Noktası | 26 | `620395fde32984146f9646b0f31434e64321205ded96966f326a399bf0d62022` |
+| `services/ai-worker/src/models/__init__.py` | Models Paket Init | 0 | `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` |
+| `services/ai-worker/src/models/design_spec.py` | DesignSpec Pydantic v2 Modelleri | 308 | `ce201533cfdb22a58d7c247a1b37fde28f1595b03611e93061df6f42ab83ef98` |
