@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "references": [
+    { "path": "./packages/design-spec" },
+    { "path": "./packages/api-types" },
+    { "path": "./apps/web" }
+  ],
+  "exclude": ["node_modules"]
+}

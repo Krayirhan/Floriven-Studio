@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: floriven-api
+
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/floriven}
+    username: ${DATABASE_USER:floriven}
+    password: ${DATABASE_PASSWORD:floriven}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+  data:
+    redis:
+      url: ${REDIS_URL:redis://localhost:6379}
+
+  rabbitmq:
+    addresses: ${RABBITMQ_URL:amqp://guest:guest@localhost:5672}
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${OIDC_ISSUER_URI:}  # D-01: IDP sağlayıcısı ertelendi
+
+server:
+  port: 8080
+  shutdown: graceful
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      show-details: when_authorized
+
+logging:
+  level:
+    studio.floriven: INFO

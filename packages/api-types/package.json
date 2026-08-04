@@ -1,0 +1,16 @@
+{
+  "name": "@floriven/api-types",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "type-check": "tsc --noEmit",
+    "generate": "openapi-typescript ../../apps/api/openapi.yaml -o src/generated.ts"
+  },
+  "devDependencies": {
+    "openapi-typescript": "^7.0.0",
+    "typescript": "^5.5.0"
+  }
+}
