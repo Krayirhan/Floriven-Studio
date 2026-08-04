@@ -21,7 +21,7 @@
 | `GLOSSARY.md` | Terimler Sözlüğü | 327 | `b84ebcd843c51f7d440631bd2f9b465914efb8d74af70c32daed262f1284c337` |
 | `MANIFEST.md` | Paket Manifestosu | 985 | `—` |
 | `PROJECT_ASSUMPTIONS.md` | Proje Varsayımları | 430 | `5107163dc92ea26fe8401fb7881a904651a1e3327b90c1234d931e8b8e281049` |
-| `README.md` | Dokümantasyon Paketi | 513 | `4ffaabde68eb9b77a6518b294c21ff7b636b1bf6b2dc04983b2324666f73371d` |
+| `README.md` | Dokümantasyon Paketi | 915 | `b4328e81d6e08489f0a6f21706e3a70056f67ddc4e8a9bc597b1dbf2a233cf8e` |
 | `SHA256SUMS.txt` | SHA-256 Bütünlük Doğrulama | 170 | `—` |
 | `docs/00-brand/FLORIVEN_STUDIO.md` | Floriven Studio — Ürün ve Marka Kimliği | 1673 | `e46ada7eb0910e58f91fbe711fd760ad7ae9dff1a3b1157a67b583c2f191e60a` |
 | `docs/01-product/BACKLOG_AND_PRIORITIZATION.md` | Backlog ve Önceliklendirme | 857 | `3f005a8aaff66cc974475587056dc6a377e47815ce44f92b472918cfed64d705` |
