@@ -1,8 +1,6 @@
+import { RouterProvider } from 'react-router-dom';
+import { router } from './router';
+
 export default function App() {
-  return (
-    <main>
-      <h1>Floriven Studio</h1>
-      <p>Yakında.</p>
-    </main>
-  );
+  return <RouterProvider router={router} />;
 }

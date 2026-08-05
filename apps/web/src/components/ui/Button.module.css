@@ -1,0 +1,35 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+}
+
+.accent {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+}
+.accent:hover { opacity: 0.87; }
+
+.ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--t2);
+}
+.ghost:hover { color: var(--text); border-color: var(--t2); }
+
+.white {
+  background: #fff;
+  color: var(--accent);
+  border: none;
+  font-weight: 600;
+}
+.white:hover { opacity: 0.9; }

@@ -1,0 +1,36 @@
+.band {
+  background: var(--accent);
+  border-radius: 18px;
+  padding: 60px 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  margin: 0 0 76px;
+  position: relative;
+  overflow: hidden;
+}
+
+.band::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 75% 50%, rgba(255,255,255,0.08) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.band h2 {
+  font-family: var(--serif);
+  font-size: clamp(22px, 2.6vw, 34px);
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  color: #fff;
+  text-wrap: balance;
+  max-width: 460px;
+  position: relative;
+}
+.band h2 em { font-style: italic; }
+
+@media (max-width: 720px) {
+  .band { flex-direction: column; padding: 40px 26px; }
+}
