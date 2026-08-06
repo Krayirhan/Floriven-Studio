@@ -5,31 +5,32 @@
   font-family: inherit;
   font-size: 14px;
   font-weight: 500;
-  padding: 8px 18px;
-  border-radius: 8px;
+  padding: 9px 18px;
+  border-radius: 9px;
   cursor: pointer;
-  transition: opacity 0.15s;
+  transition: opacity 0.15s, transform 0.12s, background 0.15s;
   white-space: nowrap;
+  border: none;
 }
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
 
 .accent {
   background: var(--accent);
   color: #fff;
-  border: none;
 }
-.accent:hover { opacity: 0.87; }
+.accent:hover { opacity: 0.88; }
 
 .ghost {
   background: transparent;
   border: 1px solid var(--border);
   color: var(--t2);
 }
-.ghost:hover { color: var(--text); border-color: var(--t2); }
+.ghost:hover { color: var(--text); border-color: var(--b2); background: var(--s2); }
 
 .white {
   background: #fff;
-  color: var(--accent);
-  border: none;
+  color: var(--color-text);
   font-weight: 600;
 }
 .white:hover { opacity: 0.9; }
