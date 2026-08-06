@@ -1,59 +1,82 @@
 import styles from './HowItWorks.module.css';
 
-const STEPS = [
-  {
-    n: 1,
-    title: 'Brief yaz',
-    desc: 'Uygulamanı sade bir dille anlat. Detay seviyesi tamamen sana kalmış.',
-    code: (
-      <>
-        <span className={styles.k}>"</span>Kullanıcıların görev oluşturup ekip arkadaşlarına
-        atadığı bir proje yönetim uygulaması<span className={styles.k}>"</span>
-      </>
-    ),
-  },
-  {
-    n: 2,
-    title: 'AI ekranları üretir',
-    desc: 'ScreenGraph ve DesignSpec v1 ile ekranlar, akışlar ve tokenlar saniyeler içinde hazır.',
-    code: (
-      <>
-        <span className={styles.g}>→</span> Dashboard<br />
-        <span className={styles.g}>→</span> Görev listesi<br />
-        <span className={styles.g}>→</span> Yeni görev formu<br />
-        <span className={styles.g}>→</span> Profil
-      </>
-    ),
-  },
-  {
-    n: 3,
-    title: 'Düzenle & export et',
-    desc: 'Görsel editörde değiştir, Figma\'ya veya üretime hazır koda aktar.',
-    code: (
-      <>
-        <span className={styles.k}>↓</span> Figma plugin<br />
-        <span className={styles.k}>↓</span> React Native<br />
-        <span className={styles.k}>↓</span> SwiftUI<br />
-        <span className={styles.k}>↓</span> Jetpack Compose
-      </>
-    ),
-  },
-];
-
 export function HowItWorks() {
   return (
-    <section className={styles.section} id="nasil">
-      <div className={styles.label}>Nasıl çalışır</div>
-      <div className={styles.title}>Üç adımda ekranlarına kavuş</div>
+    <section className={styles.section} id="nasil" aria-labelledby="how-heading">
+      <div className={styles.head}>
+        <div className={styles.label}>NASIL ÇALIŞIR?</div>
+        <h2 id="how-heading">Üç adımda<br /><em>fikirden arayüze.</em></h2>
+      </div>
       <div className={styles.steps}>
-        {STEPS.map((step) => (
-          <div key={step.n} className={styles.step}>
-            <div className={styles.num}>{step.n}</div>
-            <h3>{step.title}</h3>
-            <p>{step.desc}</p>
-            <div className={styles.code}>{step.code}</div>
+
+        {/* Step 1 */}
+        <div className={styles.step}>
+          <div className={styles.connector} aria-hidden="true" />
+          <div className={styles.num} aria-hidden="true">01</div>
+          <h3>Tanımla veya yükle</h3>
+          <p>Fikrini yaz, ürün gereksinimlerini ekle veya mevcut uygulamanın ekran görüntülerini yükle.</p>
+          <div className={styles.visual}>
+            <div className={styles.briefBox}>
+              <div className={styles.briefLabel}>Ürün Brief'i</div>
+              <div className={styles.briefLines}>
+                {[90, 76, 83, 55].map((w, i) => (
+                  <div key={i} className={styles.briefLine} style={{ width: `${w}%` }} />
+                ))}
+              </div>
+            </div>
+            <div className={styles.orDivider}>— veya —</div>
+            <div className={styles.uploadBtn}>
+              <span aria-hidden="true">📎</span>
+              Ekran görüntüsü yükle
+            </div>
           </div>
-        ))}
+        </div>
+
+        {/* Step 2 */}
+        <div className={styles.step}>
+          <div className={styles.connector} aria-hidden="true" />
+          <div className={styles.num} aria-hidden="true">02</div>
+          <h3>Tasarım yönünü seç</h3>
+          <p>Floriven Studio farklı görsel yönler, ekran akışları ve tasarım sistemleri oluşturur.</p>
+          <div className={styles.visual}>
+            {[
+              { name: 'Editorial Minimal', color: 'var(--color-primary)', active: false },
+              { name: 'Soft Futurizm', color: '#3ECFAA', active: true },
+              { name: 'Warm Premium', color: 'var(--color-warning)', active: false },
+            ].map(v => (
+              <div key={v.name}
+                className={`${styles.dirCard} ${v.active ? styles.dirActive : ''}`}
+                style={v.active ? { borderColor: v.color } : {}}>
+                <span className={styles.dirDot} style={{ background: v.color }} />
+                <span className={styles.dirName}>{v.name}</span>
+                {v.active && <span className={styles.dirCheck} style={{ color: v.color }}>✓</span>}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Step 3 */}
+        <div className={styles.step}>
+          <div className={styles.num} aria-hidden="true">03</div>
+          <h3>Düzenle ve dışa aktar</h3>
+          <p>Metinleri, renkleri, bileşenleri düzenle. Tasarımını Figma'ya veya desteklenen formatlara aktar.</p>
+          <div className={styles.visual}>
+            <div className={styles.exportGrid}>
+              {[
+                { short: 'Fg', label: 'Figma' },
+                { short: 'PNG', label: 'PNG' },
+                { short: '{}', label: 'Design Tokens' },
+                { short: '⚛', label: 'React' },
+              ].map(e => (
+                <div key={e.label} className={styles.exportItem}>
+                  <div className={styles.exportIcon}>{e.short}</div>
+                  <span>{e.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
   );

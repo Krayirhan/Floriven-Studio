@@ -1,0 +1,188 @@
+.section {
+  padding: 80px 0;
+  border-top: 1px solid var(--border);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: start;
+}
+
+.left {}
+
+.label {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--a-bg);
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.left h2 {
+  font-family: var(--sans);
+  font-size: clamp(26px, 3vw, 40px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+.left h2 em {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--t2);
+}
+
+.sub {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--t2);
+  margin-bottom: 32px;
+  max-width: 440px;
+}
+
+.tokenGroups {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tokenGroup {}
+
+.groupLabel {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--t3);
+  margin-bottom: 8px;
+}
+
+.groupItems {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.colorChip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--t2);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 10px 4px 5px;
+}
+.swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+
+.chip {
+  font-size: 12px;
+  color: var(--t2);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 3px 10px;
+}
+
+/* Right: phones */
+.right {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.previewLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--t3);
+  text-align: center;
+}
+
+.phones3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.previewPhone {
+  background: var(--color-surface-sunken);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.previewBar {
+  height: 22px;
+  background: var(--color-surface-sunken);
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.previewBody {
+  padding: 8px;
+  min-height: 180px;
+}
+
+.previewHeader {
+  margin-bottom: 8px;
+  padding: 8px;
+  background: rgba(124,111,247,0.08);
+  border-radius: 8px;
+}
+
+.previewLine {}
+
+.previewCard {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.previewName {
+  padding: 5px 8px;
+  font-size: 7.5px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.35);
+  text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  letter-spacing: 0.04em;
+}
+
+.consistency {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 12.5px;
+  color: var(--green);
+  font-weight: 500;
+}
+.consistencyDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; gap: 40px; }
+}

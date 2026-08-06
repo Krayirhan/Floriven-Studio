@@ -1,0 +1,185 @@
+.section {
+  padding: 80px 0;
+  border-top: 1px solid var(--border);
+}
+
+.head {
+  text-align: center;
+  margin-bottom: 56px;
+}
+
+.label {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--a-bg);
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.head h2 {
+  font-family: var(--sans);
+  font-size: clamp(28px, 3.5vw, 44px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+.head h2 em { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--t2); }
+
+.sub {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--t2);
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.cardHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cardCategory {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+
+.cardStyle {
+  font-size: 12.5px;
+  color: var(--t3);
+}
+
+.themeTag {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.cardPrompt {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--t2);
+  font-style: italic;
+}
+
+.screenRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+/* Mini phone */
+.miniPhone {
+  border: 1px solid;
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.miniBar {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 7px;
+  font-size: 6px;
+  font-weight: 600;
+}
+
+.miniBody {
+  flex: 1;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.miniHeader {
+  border: 1px solid;
+  border-radius: 7px;
+  padding: 7px;
+  margin-bottom: 2px;
+}
+
+.miniLine {}
+
+.miniCards {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.miniCard {
+  border: 1px solid;
+  border-radius: 6px;
+  padding: 5px;
+}
+
+.miniScreenLabel {
+  padding: 4px 6px;
+  font-size: 7px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 4px;
+}
+
+.screenCount {
+  font-size: 12px;
+  color: var(--t3);
+}
+
+.cardAction {
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  border: 1px solid;
+  border-radius: 6px;
+  padding: 5px 12px;
+  transition: opacity 0.15s;
+}
+.cardAction:hover { opacity: 0.75; }
+
+@media (max-width: 768px) {
+  .grid { grid-template-columns: 1fr; }
+}

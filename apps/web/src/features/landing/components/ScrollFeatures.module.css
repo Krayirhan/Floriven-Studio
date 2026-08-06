@@ -1,0 +1,333 @@
+.section { padding: 80px 0; border-top: 1px solid var(--border); }
+
+.head {
+  text-align: center;
+  margin-bottom: 56px;
+}
+.label {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+.head h2 {
+  font-family: var(--serif);
+  font-size: clamp(28px, 3.5vw, 46px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+.head h2 em { font-style: italic; color: var(--t2); }
+
+/* Layout */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: start;
+}
+
+/* Sticky left */
+.sticky {
+  position: sticky;
+  top: 88px;
+}
+
+.studioWrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.studioChrome {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 12px;
+  background: var(--s3);
+  border-bottom: 1px solid var(--border);
+}
+.dots {
+  display: flex;
+  gap: 5px;
+}
+.dots span {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.chromeLabel {
+  font-size: 11px;
+  color: var(--t3);
+  flex: 1;
+  text-align: center;
+}
+
+.studioScreen {
+  position: relative;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--s3);
+}
+
+.screenSlide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(16px) scale(0.97);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
+}
+.screenActive {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.dots3 {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+.dot3 {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background 0.3s, transform 0.3s;
+}
+.dot3Active {
+  background: var(--accent);
+  transform: scale(1.3);
+}
+
+/* Scroll right */
+.scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 32px 28px;
+  position: relative;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  min-height: 200px;
+}
+.blockActive {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--a-dim);
+}
+
+.blockTag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.block h3 {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+
+.block p {
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--t2);
+}
+
+.blockNum {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  font-family: var(--serif);
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--border);
+  letter-spacing: -0.04em;
+  transition: color 0.3s;
+}
+.blockActive .blockNum { color: var(--a-bg); }
+
+/* Mini phone */
+.miniPhone {
+  width: 180px;
+  background: var(--s2);
+  border: 1.5px solid var(--b2);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+
+.phoneSb {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 10px;
+  font-size: 7px;
+  font-weight: 600;
+  color: var(--t3);
+  background: var(--s3);
+  border-bottom: 1px solid var(--border);
+}
+
+.phoneBody {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-height: 260px;
+}
+
+.pRow {
+  height: 7px;
+  background: var(--border);
+  border-radius: 3px;
+}
+.pLabel {
+  height: 6px;
+  width: 40%;
+  background: var(--t3);
+  border-radius: 2px;
+  opacity: 0.5;
+  margin: 4px 0 2px;
+}
+.pGrid3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+  margin: 4px 0 10px;
+}
+.pStat {
+  height: 32px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.pTaskRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+}
+.pDot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  flex-shrink: 0;
+}
+.pNavRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.pAccentDot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.6;
+}
+.pSearch {
+  height: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  margin-bottom: 8px;
+}
+.pTaskItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border);
+}
+.pSmDot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.todo  { background: var(--border); }
+.doing { background: var(--accent); opacity: 0.6; }
+.done  { background: var(--green); }
+
+.pFieldLbl {
+  height: 5px;
+  width: 30%;
+  background: var(--t3);
+  border-radius: 2px;
+  opacity: 0.5;
+  margin-bottom: 4px;
+}
+.pInput {
+  height: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+.pInputTall {
+  height: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+.pRow2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  margin-bottom: 8px;
+}
+.pSelect {
+  height: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+.pSubmit {
+  height: 18px;
+  background: var(--accent);
+  border-radius: 6px;
+  margin-top: auto;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .sticky {
+    position: relative;
+    top: auto;
+  }
+  .studioScreen { height: 300px; }
+  .miniPhone { width: 150px; }
+}

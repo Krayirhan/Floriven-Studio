@@ -1,68 +1,79 @@
 import styles from './Features.module.css';
 
-const FEATURES = [
-  {
-    title: 'DesignSpec v1 sözleşmesi',
-    desc: 'AI ile editör arasında standart, denetlenebilir bir JSON formatı. Her node, layout ve etkileşim şeffaf — kara kutu yok.',
-    icon: (
-      <svg viewBox="0 0 36 36" fill="none" stroke="currentColor" strokeWidth="1.4">
-        <rect x="7" y="4" width="22" height="28" rx="3" />
-        <line x1="12" y1="13" x2="24" y2="13" />
-        <line x1="12" y1="18" x2="20" y2="18" />
-        <line x1="12" y1="23" x2="22" y2="23" />
-      </svg>
-    ),
-  },
-  {
-    title: 'Çok ekranlı akışlar',
-    desc: 'Tek ekran değil; navigasyon, modal\'lar ve koşullu geçişler dahil eksiksiz bir uygulama deneyimi üretir.',
-    icon: (
-      <svg viewBox="0 0 36 36" fill="none" stroke="currentColor" strokeWidth="1.4">
-        <rect x="4" y="7" width="12" height="20" rx="3" />
-        <rect x="20" y="7" width="12" height="20" rx="3" />
-        <path d="M16 17 L20 17" strokeDasharray="2 2" />
-      </svg>
-    ),
-  },
-  {
-    title: 'Token-driven tasarım',
-    desc: 'Renkler, tipografi ve boşluklar bir token sistemine bağlı. Tek yerden değiştir, tüm ekranlara yansısın.',
-    icon: (
-      <svg viewBox="0 0 36 36" fill="none" stroke="currentColor" strokeWidth="1.4">
-        <circle cx="18" cy="12" r="5" />
-        <circle cx="10" cy="25" r="4" />
-        <circle cx="26" cy="25" r="4" />
-        <line x1="18" y1="17" x2="10" y2="21" />
-        <line x1="18" y1="17" x2="26" y2="21" />
-      </svg>
-    ),
-  },
-  {
-    title: 'Figma & kod export',
-    desc: 'Figma plugin veya React Native, SwiftUI, Jetpack Compose çıktısı. Tasarım ile geliştirme arasındaki köprü.',
-    icon: (
-      <svg viewBox="0 0 36 36" fill="none" stroke="currentColor" strokeWidth="1.4">
-        <path d="M7 29 L18 7 L29 29" />
-        <line x1="11" y1="22" x2="25" y2="22" />
-        <circle cx="18" cy="7" r="2" fill="currentColor" stroke="none" />
-      </svg>
-    ),
-  },
-];
-
 export function Features() {
   return (
     <section className={styles.section} id="ozellikler">
-      <div className={styles.label}>Özellikler</div>
-      <div className={styles.title}>Sadece mockup değil, gerçek bir tasarım sistemi</div>
-      <div className={styles.grid}>
-        {FEATURES.map((f) => (
-          <div key={f.title} className={styles.feat}>
-            <span className={styles.icon}>{f.icon}</span>
-            <h3>{f.title}</h3>
-            <p>{f.desc}</p>
+      <div className={styles.head}>
+        <div className={styles.label}>Özellikler</div>
+        <h2>Sadece mockup değil,<br /><em>gerçek bir tasarım sistemi.</em></h2>
+      </div>
+      <div className={styles.bento}>
+        {/* Large tile: DesignSpec */}
+        <div className={`${styles.tile} ${styles.tileDesignSpec}`}>
+          <div className={styles.tileTag}>DesignSpec v1</div>
+          <h3>Kara kutu yok — her karar denetlenebilir</h3>
+          <p>AI ile editör arasında standart, açık bir JSON sözleşmesi. Her node şeffaf.</p>
+          <div className={styles.jsonPreview}>
+            <div className={styles.jLine}><span className={styles.jk}>"screen"</span><span className={styles.jc}>: </span><span className={styles.js}>"Dashboard"</span></div>
+            <div className={styles.jLine}><span className={styles.jk}>"tokens"</span><span className={styles.jc}>: </span><span className={styles.jc}>{"{ \"primary\": \"var(--color-primary)\" }"}</span></div>
           </div>
-        ))}
+        </div>
+
+        <div className={styles.card}>
+          <span className={styles.kicker}>02 — DESIGN SYSTEM</span>
+          <h3>Token tabanlı tasarım dili</h3>
+          <p>Renkler, tipografi, aralıklar ve durumlar DesignSpec token yapısında.</p>
+          <div className={styles.swatches}>
+            {['var(--color-primary)', 'var(--color-success)', 'var(--color-warning)', 'var(--color-danger)'].map(c => <div key={c} className={styles.tokenSwatch} style={{ background: c }} />)}
+          </div>
+        </div>
+
+        {/* Small tile: Multi-screen */}
+        <div className={`${styles.tile} ${styles.tileMulti}`}>
+          <div className={styles.tileTag}>Çok ekranlı</div>
+          <h3>Navigasyon, modal, geçiş — otomatik</h3>
+          <p>Tüm akış bir bütün olarak üretilir.</p>
+          <div className={styles.flowMini}>
+            {['Dashboard', 'Liste', 'Form'].map((s, i) => (
+              <div key={s} className={styles.flowItem}>
+                <div className={styles.flowBox} />
+                <span>{s}</span>
+                {i < 2 && <span className={styles.flowArr}>→</span>}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Small tile: Token */}
+        <div className={`${styles.tile} ${styles.tileToken}`}>
+          <div className={styles.tileTag}>Token sistemi</div>
+          <h3>Tek yerden değiştir, her yere yansısın</h3>
+          <p>Renk, tipografi, boşluk — hepsi bağlı.</p>
+          <div className={styles.tokenRow}>
+            {['var(--color-primary)', 'var(--color-success)', 'var(--color-warning)', 'var(--color-danger)'].map(c => (
+              <div key={c} className={styles.tokenSwatch} style={{ background: c }} />
+            ))}
+          </div>
+        </div>
+
+        {/* Large tile: Export */}
+        <div className={`${styles.tile} ${styles.tileExport}`}>
+          <div className={styles.tileTag}>Export</div>
+          <h3>Figma, React Native, SwiftUI — tek tık</h3>
+          <p>Üretime hazır kod çıktısı. Tasarım ile geliştirme arasındaki köprü.</p>
+          <div className={styles.exportGrid}>
+            {[
+              { icon: '🎨', label: 'Figma Plugin' },
+              { icon: '⚛️', label: 'React Native' },
+              { icon: '🍎', label: 'SwiftUI' },
+              { icon: '🤖', label: 'Jetpack Compose' },
+            ].map(({ icon, label }) => (
+              <div key={label} className={styles.exportItem}>
+                <span>{icon}</span><span>{label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

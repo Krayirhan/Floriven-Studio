@@ -1,21 +1,27 @@
-import { Hero } from './components/Hero';
-import { Ticker } from './components/Ticker';
-import { HowItWorks } from './components/HowItWorks';
-import { Features } from './components/Features';
-import { CtaBand } from './components/CtaBand';
+import { Hero } from "./components/Hero";
+import { TrustBar } from "./components/TrustBar";
+import { BeforeAfter } from "./components/BeforeAfter";
+import { ScrollFeatures } from "./components/ScrollFeatures";
+import { DesignSystem } from "./components/DesignSystem";
+import { Pricing } from "./components/Pricing";
+import { FAQ } from "./components/FAQ";
+import { CtaBand } from "./components/CtaBand";
 
 export function LandingPage() {
   return (
     <>
+      <Hero />
+      <TrustBar />
       <div className="wrap">
-        <Hero />
+        <BeforeAfter />
+        <ScrollFeatures />
+        <DesignSystem />
       </div>
-      <Ticker />
+      <Pricing />
       <div className="wrap">
-        <HowItWorks />
-        <Features />
-        <CtaBand />
+        <FAQ />
       </div>
+      <CtaBand />
     </>
   );
 }
