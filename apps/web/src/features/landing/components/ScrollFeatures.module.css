@@ -1,4 +1,4 @@
-.section { padding: 80px 0; border-top: 1px solid var(--border); }
+.section { padding: 100px 0; border-top: 1px solid var(--border); }
 
 .head {
   text-align: center;
@@ -6,11 +6,14 @@
 }
 .label {
   display: inline-block;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--accent);
+  background: var(--a-bg);
+  padding: 4px 10px;
+  border-radius: 4px;
   margin-bottom: 14px;
 }
 .head h2 {
@@ -328,7 +331,7 @@
 }
 .pMiniChart {
   height: 20px;
-  background: linear-gradient(180deg, rgba(124,111,247,0.2) 0%, transparent 100%);
+  background: linear-gradient(180deg, rgba(209,122,89,0.2) 0%, transparent 100%);
   border-radius: 3px;
   margin-top: 6px;
   position: relative;
@@ -339,7 +342,7 @@
   position: absolute;
   bottom: 0; left: 0; right: 0;
   height: 1.5px;
-  background: rgba(124,111,247,0.7);
+  background: rgba(209,122,89,0.7);
   clip-path: polygon(0% 80%, 15% 55%, 30% 65%, 50% 30%, 65% 45%, 80% 20%, 100% 10%, 100% 100%, 0% 100%);
 }
 .pSection {

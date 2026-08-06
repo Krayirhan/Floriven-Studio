@@ -34,7 +34,7 @@ export function Testimonials() {
       <div className={styles.grid}>
         {QUOTES.map((q) => (
           <div key={q.name} className={styles.card}>
-            <div className={styles.quoteIcon}>"</div>
+            <div className={styles.stars}>{'★★★★★'.split('').map((s, i) => <span key={i}>{s}</span>)}</div>
             <p className={styles.quote}>{q.quote}</p>
             <div className={styles.author}>
               <div className={styles.avatar} style={{ background: q.color }}>

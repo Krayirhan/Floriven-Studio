@@ -50,7 +50,7 @@ function PhoneFinance({ screen }: { screen: 0 | 1 | 2 }) {
             >
               <polyline
                 points="0,35 20,28 40,30 60,18 80,22 100,12 120,8"
-                stroke="rgba(124,111,247,0.8)"
+                stroke="rgba(209,122,89,0.8)"
                 strokeWidth="2"
                 fill="none"
                 strokeLinecap="round"
@@ -58,7 +58,7 @@ function PhoneFinance({ screen }: { screen: 0 | 1 | 2 }) {
               />
               <polyline
                 points="0,35 20,28 40,30 60,18 80,22 100,12 120,8 120,40 0,40"
-                fill="rgba(124,111,247,0.12)"
+                fill="rgba(209,122,89,0.12)"
                 stroke="none"
               />
             </svg>
@@ -196,9 +196,9 @@ export function Hero() {
   const [step, setStep] = useState(0);
   useEffect(() => {
     const timers = [
-      setTimeout(() => setStep(1), 1800),
-      setTimeout(() => setStep(2), 3000),
-      setTimeout(() => setStep(3), 4200),
+      setTimeout(() => setStep(1), 600),
+      setTimeout(() => setStep(2), 1200),
+      setTimeout(() => setStep(3), 1800),
     ];
     return () => timers.forEach(clearTimeout);
   }, []);
@@ -236,6 +236,28 @@ export function Hero() {
 
         {/* ── Right: product visualization ── */}
         <div className={styles.right} aria-label="Ürün önizlemesi">
+          {/* Phone screens — ilk sıraya alındı, hemen görünür */}
+          <div className={styles.phones} aria-label="Üretilen ekranlar">
+            {([0, 1, 2] as const).map((s, i) => (
+              <div
+                key={s}
+                className={`${styles.phoneWrap} ${styles.phoneVisible}`}
+                style={{ animationDelay: `${i * 0.12}s` }}
+              >
+                <div className={styles.phone}>
+                  <div className={styles.phoneBar}>
+                    <span>9:41</span>
+                    <span aria-hidden="true">●●● ▲</span>
+                  </div>
+                  <PhoneFinance screen={s} />
+                </div>
+                <div className={styles.phoneLabel}>
+                  {["Ana Sayfa", "İşlemler", "Bütçe"][s]}
+                </div>
+              </div>
+            ))}
+          </div>
+
           {/* Prompt input */}
           <div className={styles.promptCard}>
             <div className={styles.promptLabel}>Brief</div>
@@ -286,34 +308,12 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Phone screens */}
-          <div className={styles.phones} aria-label="Üretilen ekranlar">
-            {([0, 1, 2] as const).map((s, i) => (
-              <div
-                key={s}
-                className={`${styles.phoneWrap} ${step >= 3 ? styles.phoneVisible : ""}`}
-                style={{ animationDelay: `${i * 0.15}s` }}
-              >
-                <div className={styles.phone}>
-                  <div className={styles.phoneBar}>
-                    <span>9:41</span>
-                    <span aria-hidden="true">●●● ▲</span>
-                  </div>
-                  <PhoneFinance screen={s} />
-                </div>
-                <div className={styles.phoneLabel}>
-                  {["Ana Sayfa", "İşlemler", "Bütçe"][s]}
-                </div>
-              </div>
-            ))}
-          </div>
-
           {/* Token chips */}
           {step >= 3 && (
             <div className={styles.tokens} aria-label="Tasarım token'ları">
               {[
                 { name: "Primary", color: "var(--color-primary)" },
-                { name: "Surface", color: "#1C1A2E" },
+                { name: "Surface", color: "var(--color-surface)" },
                 { name: "Text", color: "var(--color-text)" },
                 { name: "Success", color: "var(--color-success)" },
               ].map((t) => (

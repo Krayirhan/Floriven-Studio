@@ -427,8 +427,8 @@
   width: 22px;
   height: 22px;
   border-radius: 8px;
-  background: rgba(124, 111, 247, 0.2);
-  border: 1px solid rgba(124, 111, 247, 0.3);
+  background: rgba(209, 122, 89, 0.2);
+  border: 1px solid rgba(209, 122, 89, 0.3);
 }
 
 .pTxRow {
@@ -443,8 +443,8 @@
   height: 20px;
   border-radius: 7px;
   flex-shrink: 0;
-  background: rgba(124, 111, 247, 0.15);
-  border: 1px solid rgba(124, 111, 247, 0.25);
+  background: rgba(209, 122, 89, 0.15);
+  border: 1px solid rgba(209, 122, 89, 0.25);
 }
 .pTxInfo {
   flex: 1;

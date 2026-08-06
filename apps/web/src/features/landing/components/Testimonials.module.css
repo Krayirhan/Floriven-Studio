@@ -1,4 +1,4 @@
-.section { padding: 80px 0; border-top: 1px solid var(--border); }
+.section { padding: 64px 0; border-top: 1px solid var(--border); }
 
 .head {
   text-align: center;
@@ -6,12 +6,23 @@
 }
 .label {
   display: inline-block;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--accent);
+  background: var(--a-bg);
+  padding: 4px 10px;
+  border-radius: 4px;
   margin-bottom: 12px;
+}
+
+.stars {
+  display: flex;
+  gap: 2px;
+  color: var(--color-warning);
+  font-size: 13px;
+  line-height: 1;
 }
 .head h2 {
   font-family: var(--serif);

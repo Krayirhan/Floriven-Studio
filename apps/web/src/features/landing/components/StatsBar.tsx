@@ -15,16 +15,16 @@ const STATS = [
     note: "navigasyon dahil",
   },
   {
-    value: 100,
-    suffix: "%",
-    label: "Token-driven tasarım",
-    note: "tutarlı sistem",
+    value: 1,
+    suffix: "",
+    label: "Brief → tasarım sistemi",
+    note: "renk · tipografi · bileşen",
   },
   {
-    value: 12,
-    suffix: "+",
-    label: "Export hedefi",
-    note: "Figma, RN, SwiftUI…",
+    value: 3,
+    suffix: "",
+    label: "Export formatı",
+    note: "PNG · Figma · Design Tokens",
   },
 ];
 

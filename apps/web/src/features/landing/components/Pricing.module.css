@@ -1,5 +1,5 @@
 .section {
-  padding: 80px 0;
+  padding: 100px 0;
   border-top: 1px solid var(--border);
   background: var(--s3);
 }
@@ -211,8 +211,8 @@
   font-size: 13px;
   font-weight: 500;
   color: var(--green);
-  background: rgba(62,207,170,0.08);
-  border: 1px solid rgba(62,207,170,0.2);
+  background: var(--color-success-subtle);
+  border: 1px solid var(--color-success);
   border-radius: 9px;
   padding: 10px 14px;
   margin-bottom: 24px;
