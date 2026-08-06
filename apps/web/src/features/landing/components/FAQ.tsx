@@ -55,7 +55,7 @@ export function FAQ() {
       </div>
       <div className={styles.list}>
         {ITEMS.map((item, i) => (
-          <div key={i} className={`${styles.item} ${open === i ? styles.itemOpen : ''}`}>
+          <div key={item.q} className={`${styles.item} ${open === i ? styles.itemOpen : ''}`}>
             <button
               className={styles.question}
               onClick={() => setOpen(open === i ? null : i)}

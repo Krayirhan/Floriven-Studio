@@ -16,7 +16,7 @@ const TOKENS = {
 
 export function DesignSystem() {
   return (
-    <section className={styles.section} id="urun" aria-labelledby="ds-heading">
+    <section className={styles.section} aria-labelledby="ds-heading">
       <div className={styles.layout}>
         {/* Left: copy */}
         <div className={styles.left}>

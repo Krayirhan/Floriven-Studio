@@ -3,25 +3,25 @@ import styles from "./ScrollFeatures.module.css";
 
 const FEATURES = [
   {
-    id: "dashboard",
+    id: "home",
     tag: "Ekran 1",
-    title: "Dashboard — her şey tek bakışta",
-    desc: "AI, brief'ten navigasyon yapısını çıkarır ve dashboard ekranını otomatik oluşturur. İstatistikler, son aktiviteler ve hızlı erişim — hepsi token sistemiyle tutarlı.",
-    screen: "dashboard",
+    title: "Ana Sayfa — bakiye tek bakışta",
+    desc: "AI, brief'ten navigasyon yapısını çıkarır ve ana ekranı otomatik oluşturur. Toplam bakiye, son harcamalar ve hızlı işlem kısayolları — hepsi token sistemiyle tutarlı.",
+    screen: "home",
   },
   {
-    id: "tasklist",
+    id: "transactions",
     tag: "Ekran 2",
-    title: "Görev Listesi — arama, filtre, sıralama",
-    desc: "Her liste ekranı için arama çubuğu, kategori filtreleri ve durum göstergeleri otomatik üretilir. DesignSpec v1 ile her eleman denetlenebilir ve düzenlenebilir.",
-    screen: "tasklist",
+    title: "İşlemler — arama, filtre, geçmiş",
+    desc: "Her işlem ekranı için arama çubuğu, tarih filtreleri ve kategori göstergeleri otomatik üretilir. DesignSpec v1 ile her eleman denetlenebilir ve düzenlenebilir.",
+    screen: "transactions",
   },
   {
-    id: "newTask",
+    id: "budget",
     tag: "Ekran 3",
-    title: "Yeni Görev Formu — tam input desteği",
-    desc: "Form ekranları text input, dropdown, tarih seçici ve submit butonuyla tam olarak çıkar. Validation kuralları ve hata mesajları DesignSpec içinde tanımlı.",
-    screen: "newTask",
+    title: "Bütçe — kategori bazlı takip",
+    desc: "Bütçe ekranları harcama kategorisi, doluluk göstergesi ve limit uyarılarıyla tam olarak çıkar. Renk kodlaması ve uyarı eşikleri DesignSpec içinde tanımlı.",
+    screen: "budget",
   },
 ];
 
@@ -33,81 +33,71 @@ function MiniPhone({ screen }: { screen: string }) {
         <span>●●● ▲</span>
       </div>
       <div className={styles.phoneBody}>
-        {screen === "dashboard" && (
+        {screen === "home" && (
           <>
-            <div
-              className={styles.pRow}
-              style={{ width: "60%", height: 8, marginBottom: 10 }}
-            />
-            <div
-              className={styles.pRow}
-              style={{ width: "40%", height: 6, marginBottom: 16 }}
-            />
-            <div className={styles.pGrid3}>
-              <div className={styles.pStat} />
-              <div className={styles.pStat} />
-              <div className={styles.pStat} />
+            <div className={styles.pBalCard}>
+              <div className={styles.pRow} style={{ width: "45%", height: 5 }} />
+              <div className={styles.pRow} style={{ width: "65%", height: 12, marginTop: 4 }} />
+              <div className={styles.pMiniChart} />
             </div>
-            <div className={styles.pLabel} />
-            {[80, 65, 90, 55].map((w, i) => (
-              <div key={i} className={styles.pTaskRow}>
-                <div className={styles.pDot} />
+            <div className={styles.pSection} />
+            <div className={styles.pQuickRow}>
+              {[0, 1, 2, 3].map((i) => <div key={i} className={styles.pQuick} />)}
+            </div>
+            <div className={styles.pSection} />
+            {[80, 65, 72].map((w, i) => (
+              <div key={i} className={styles.pTxRow}>
+                <div className={`${styles.pDot} ${i === 2 ? styles.pDotGreen : ""}`} />
                 <div className={styles.pRow} style={{ width: `${w}%` }} />
               </div>
             ))}
           </>
         )}
-        {screen === "tasklist" && (
+        {screen === "transactions" && (
           <>
             <div className={styles.pNavRow}>
-              <div
-                className={styles.pRow}
-                style={{ width: "30%", height: 7 }}
-              />
+              <div className={styles.pRow} style={{ width: "30%", height: 7 }} />
               <div className={styles.pAccentDot} />
             </div>
             <div className={styles.pSearch} />
-            {(
-              [
-                ["75%", "todo"],
-                ["60%", "doing"],
-                ["80%", "done"],
-                ["50%", "todo"],
-              ] as const
-            ).map(([w, s], i) => (
-              <div key={i} className={styles.pTaskItem}>
-                <div className={`${styles.pSmDot} ${styles[s]}`} />
-                <div>
-                  <div
-                    className={styles.pRow}
-                    style={{ width: w, marginBottom: 4 }}
-                  />
-                  <div
-                    className={styles.pRow}
-                    style={{ width: "45%", height: 5, opacity: 0.5 }}
-                  />
-                </div>
+            <div className={styles.pRow} style={{ width: "45%", height: 5, opacity: 0.4, marginBottom: 4 }} />
+            {([
+              { w: "75%", pos: false },
+              { w: "60%", pos: false },
+              { w: "70%", pos: true },
+              { w: "55%", pos: false },
+              { w: "65%", pos: false },
+            ] as const).map(({ w, pos }, i) => (
+              <div key={i} className={styles.pTxRow}>
+                <div className={`${styles.pDot} ${pos ? styles.pDotGreen : ""}`} />
+                <div className={styles.pRow} style={{ width: w }} />
               </div>
             ))}
           </>
         )}
-        {screen === "newTask" && (
+        {screen === "budget" && (
           <>
             <div className={styles.pNavRow}>
-              <div
-                className={styles.pRow}
-                style={{ width: "25%", height: 7 }}
-              />
+              <div className={styles.pRow} style={{ width: "25%", height: 7 }} />
             </div>
-            <div className={styles.pFieldLbl} />
-            <div className={styles.pInput} />
-            <div className={styles.pFieldLbl} />
-            <div className={styles.pInputTall} />
-            <div className={styles.pRow2}>
-              <div className={styles.pSelect} />
-              <div className={styles.pSelect} />
+            <div className={styles.pRow} style={{ width: "50%", height: 5, opacity: 0.4, marginBottom: 2 }} />
+            <div className={styles.pRow} style={{ width: "65%", height: 11, marginBottom: 5 }} />
+            <div className={styles.pProgressBar}>
+              <div className={styles.pProgressFill} style={{ width: "65%" }} />
             </div>
-            <div className={styles.pSubmit} />
+            {[
+              { w: "68%", over: false },
+              { w: "55%", over: false },
+              { w: "72%", over: false },
+              { w: "100%", over: true },
+            ].map(({ w, over }, i) => (
+              <div key={i} className={styles.pBudgetItem}>
+                <div className={styles.pRow} style={{ width: "45%", height: 4, opacity: 0.4, marginBottom: 3 }} />
+                <div className={styles.pBudgetBar}>
+                  <div className={over ? styles.pBudgetFillOver : styles.pBudgetFill} style={{ width: w }} />
+                </div>
+              </div>
+            ))}
           </>
         )}
       </div>
@@ -131,14 +121,14 @@ export function ScrollFeatures() {
           }
         });
       },
-      { threshold: 0.55 },
+      { threshold: 0.35 },
     );
     blockRefs.current.forEach((el) => el && observer.observe(el));
     return () => observer.disconnect();
   }, []);
 
   return (
-    <section className={styles.section}>
+    <section className={styles.section} id="urun">
       <div className={styles.head}>
         <div className={styles.label}>Ekran gezisi</div>
         <h2>

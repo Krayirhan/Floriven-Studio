@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import styles from './Pricing.module.css';
 
 const PLANS = [
@@ -56,6 +57,43 @@ const PLANS = [
   },
 ];
 
+function WaitlistForm({ planId }: { planId: string }) {
+  const [email, setEmail] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+
+  if (submitted) {
+    return (
+      <div className={styles.waitlistDone} role="status">
+        ✓ Listeye eklendin — launch'ta haber vereceğiz.
+      </div>
+    );
+  }
+
+  return (
+    <form
+      className={styles.waitlist}
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (email.trim()) setSubmitted(true);
+      }}
+      aria-label={`${planId} bekleme listesi`}
+    >
+      <input
+        className={styles.waitlistInput}
+        type="email"
+        placeholder="email@adresin.com"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+        aria-label="E-posta adresi"
+      />
+      <button type="submit" className={styles.waitlistBtn}>
+        Listeye eklen
+      </button>
+    </form>
+  );
+}
+
 export function Pricing() {
   return (
     <section className={styles.section} id="fiyat" aria-labelledby="pricing-heading">
@@ -81,9 +119,21 @@ export function Pricing() {
                 <div className={styles.price}>{plan.price}</div>
                 <div className={styles.priceSub}>{plan.priceSub}</div>
               </div>
-              <a href="#baslat" className={`${styles.cta} ${plan.featured ? styles.ctaFeatured : ''}`}>
-                {plan.cta}
-              </a>
+
+              {plan.id === 'explore' && (
+                <a href="/studio" className={styles.cta}>
+                  {plan.cta}
+                </a>
+              )}
+              {plan.id === 'creator' && (
+                <WaitlistForm planId="creator" />
+              )}
+              {plan.id === 'studio-plan' && (
+                <a href="mailto:hello@floriven.com" className={styles.cta}>
+                  {plan.cta}
+                </a>
+              )}
+
               <ul className={styles.features}>
                 {plan.features.map(f => (
                   <li key={f} className={styles.feature}>
