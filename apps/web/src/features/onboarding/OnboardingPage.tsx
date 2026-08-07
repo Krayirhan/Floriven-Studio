@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import styles from "./OnboardingPage.module.css";
 
 export function OnboardingPage() {
@@ -8,9 +9,9 @@ export function OnboardingPage() {
   return (
     <main className={styles.page}>
       <header className={styles.topBar}>
-        <a href="/" className={styles.logo}>
+        <Link to="/" className={styles.logo}>
           <img src="/logo/logo-white.png" alt="Floriven" className={styles.logoImage} /><small>Studio</small>
-        </a>
+        </Link>
         <span>Adım {step} / 3</span>
       </header>
       <div className={styles.progress}>
@@ -77,16 +78,16 @@ export function OnboardingPage() {
               projeyi inceleyebilirsin.
             </p>
             <div className={styles.startCards}>
-              <a href="/app/projeler/yeni">
+              <Link to="/app?focus=prompt">
                 <b>✦</b>
                 <strong>Brief yaz</strong>
                 <small>Ürün fikrini anlat ve ilk ekranlarını üret.</small>
-              </a>
-              <a href="/app">
+              </Link>
+              <Link to="/app">
                 <b>▦</b>
                 <strong>Dashboard’a git</strong>
                 <small>Projelerini ve örnek akışları incele.</small>
-              </a>
+              </Link>
             </div>
           </>
         )}

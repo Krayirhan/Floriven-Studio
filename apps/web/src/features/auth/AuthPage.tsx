@@ -1,16 +1,18 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./AuthPage.module.css";
 
 export function AuthPage({ mode }: { mode: "login" | "signup" }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
   const isSignup = mode === "signup";
   return (
     <main className={styles.page}>
       <div className={styles.visual}>
-        <a href="/" className={styles.logo}>
+        <Link to="/" className={styles.logo}>
           <img src="/logo/logo-white.png" alt="Floriven" className={styles.logoImage} /><small>Studio</small>
-        </a>
+        </Link>
         <div>
           <span className={styles.eyebrow}>FİKİRDEN ARAYÜZE</span>
           <h1>
@@ -29,9 +31,9 @@ export function AuthPage({ mode }: { mode: "login" | "signup" }) {
       </div>
       <section className={styles.formSide}>
         <div className={styles.formWrap}>
-          <a href="/" className={styles.mobileLogo}>
+          <Link to="/" className={styles.mobileLogo}>
             <img src="/logo/logo-color.png" alt="Floriven" className={styles.logoImage} /><small>Studio</small>
-          </a>
+          </Link>
           <span className={styles.kicker}>
             {isSignup ? "BAŞLANGIÇ" : "TEKRAR HOŞ GELDİN"}
           </span>
@@ -50,7 +52,7 @@ export function AuthPage({ mode }: { mode: "login" | "signup" }) {
           <form
             onSubmit={(event) => {
               event.preventDefault();
-              window.location.href = isSignup ? "/onboarding" : "/app";
+              navigate(isSignup ? "/onboarding" : "/app");
             }}
           >
             <label>
@@ -86,9 +88,9 @@ export function AuthPage({ mode }: { mode: "login" | "signup" }) {
           </form>
           <div className={styles.switch}>
             {isSignup ? "Zaten hesabın var mı?" : "Henüz hesabın yok mu?"}{" "}
-            <a href={isSignup ? "/giris" : "/kayit"}>
+            <Link to={isSignup ? "/giris" : "/kayit"}>
               {isSignup ? "Giriş yap" : "Hesap oluştur"}
-            </a>
+            </Link>
           </div>
         </div>
       </section>
