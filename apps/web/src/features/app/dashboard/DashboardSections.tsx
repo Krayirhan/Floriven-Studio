@@ -1,0 +1,11 @@
+import { Link } from "react-router-dom";
+import styles from "../DashboardPage.module.css";
+import { projectsList, templates } from "../dashboard.data";
+import { MultiScreenRenderer } from "../dashboard-preview";
+
+export function DashboardSections({ onSelectTemplate }: { onSelectTemplate: (prompt: string) => void }) {
+  return <>
+    <section className={styles.projectsSection}><div className={styles.sectionHeader}><div><span className={styles.subHeader}>PROJELERİM</span><h2>Diğer projelerin</h2></div><Link to="/app/projeler" className={styles.linkMore}>Tümünü gör →</Link></div><div className={styles.projectGrid}>{projectsList.map((project) => <Link key={project.id} to={`/app/projeler/${project.id}/studio`} className={styles.projectCard}><div className={styles.projectCardPreviewHeader}><div className={styles.cardPreviewGlow} /><MultiScreenRenderer direction={project.direction} /></div><div className={styles.projectCardBody}><div className={styles.cardDirectionPill}>{project.direction}</div><div className={styles.cardTitleRow}><h3>{project.name}</h3><span className={styles.screenCountBadge}>{project.screens} ekran</span></div><p>{project.description}</p><div className={styles.cardFooterMeta}><span>{project.lastUpdated}</span><span className={styles.cardArrow}>Düzenle →</span></div></div></Link>)}</div></section>
+    <section className={styles.inspirationSection}><div className={styles.sectionHeader}><div><span className={styles.subHeader}>İlham ve şablonlar</span><h2>Popüler tasarım stilleri</h2></div></div><div className={styles.templateGrid}>{templates.map((tpl) => <div key={tpl.id} className={styles.templateCard}><div className={styles.templatePreviewWindow} style={{ background: tpl.themeColor }}><div className={styles.templatePreviewGlow} /><MultiScreenRenderer direction={tpl.direction} /></div><div className={styles.templateMeta}><div className={styles.templateHeaderRow}><span className={styles.templateCategory}>{tpl.category}</span><span className={styles.templateDirectionTag}>{tpl.direction}</span></div><h3>{tpl.title}</h3><p>{tpl.description}</p><div className={styles.templateFooterRow}><span className={styles.templateScreenTag}>📱 {tpl.screenCount} ekranlık akış</span><button className={styles.useStyleBtn} onClick={() => onSelectTemplate(tpl.prompt)}>Bu stille başla</button></div></div></div>)}</div></section>
+  </>;
+}

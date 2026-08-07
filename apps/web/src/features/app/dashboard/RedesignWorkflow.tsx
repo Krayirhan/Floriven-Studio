@@ -1,0 +1,32 @@
+import styles from "../DashboardPage.module.css";
+import type { RedesignWorkflowState } from "./useRedesignWorkflow";
+
+export function RedesignWorkflow({ workflow }: { workflow: RedesignWorkflowState }) {
+  return <div className={styles.redesignWorkflowContainer}>
+    <div className={styles.redesignHeader}><h2>Mevcut ekranını yeniden tasarla</h2><p>Floriven mevcut içerikleri, kullanıcı eylemlerini ve bilgi hiyerarşisini analiz eder; işlevleri koruyarak yeni tasarım yönleri oluşturur.</p></div>
+    <div className={styles.redesignUploadSection}>
+      {!workflow.uploadedScreen ? <div className={`${styles.largeDropzone} ${workflow.isDraggingScreenshot ? styles.dropzoneDragging : ""}`} role="button" tabIndex={0} onClick={() => workflow.uploadInputRef.current?.click()} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); workflow.uploadInputRef.current?.click(); } }} onDragEnter={(event) => { event.preventDefault(); workflow.setIsDraggingScreenshot(true); }} onDragOver={(event) => event.preventDefault()} onDragLeave={() => workflow.setIsDraggingScreenshot(false)} onDrop={(event) => { event.preventDefault(); workflow.setIsDraggingScreenshot(false); workflow.selectScreenshot(event.dataTransfer.files[0]); }} aria-label="Ekran görüntüsü yükle">
+        <input ref={workflow.uploadInputRef} className={styles.fileInput} type="file" accept="image/png,image/jpeg,image/webp" onChange={(event) => workflow.selectScreenshot(event.target.files?.[0])} />
+        <div className={styles.dropzoneIcon}>📸</div><b>Ekran görüntüsünü buraya bırak veya dosya seç</b><span className={styles.formatTag}>PNG · JPG · WebP</span>
+        <button className={styles.secondaryUploadBtn} onClick={(event) => { event.stopPropagation(); workflow.uploadInputRef.current?.click(); }}>+ Birden fazla ekran yükle</button>
+      </div> : <div className={styles.uploadedPreviewBox}>
+        <div className={styles.previewThumbFrame}><div className={styles.notch} /><img src={workflow.uploadedScreen.previewUrl} alt="Yüklenen ekran görüntüsü önizlemesi" /></div>
+        <div className={styles.uploadedMeta}><div className={styles.fileTitleRow}><b>{workflow.uploadedScreen.name}</b><button className={styles.changeFileBtn} onClick={workflow.clearScreenshot}>Değiştir</button></div>
+          {workflow.redesignStage === "analyzing" && <p className={styles.analysisPending} role="status">Ekran analiz ediliyor…</p>}
+          <div className={styles.aiAnalysisBox} aria-live="polite"><span className={styles.analysisHeader}>Floriven şunları algıladı:</span><div className={styles.analysisBadgeGrid}><span className={styles.analysisBadgeOk}>✓ 4 ana aksiyon</span><span className={styles.analysisBadgeOk}>✓ 3 içerik bölümü</span><span className={styles.analysisBadgeOk}>✓ 1 alt navigasyon</span><span className={styles.analysisBadgeWarn}>⚠ 2 erişilebilirlik uyarısı</span></div></div>
+        </div>
+      </div>}
+      {workflow.uploadError && <p className={styles.uploadError} role="alert">{workflow.uploadError}</p>}
+    </div>
+    <div className={styles.redesignControlsGrid}>
+      <ControlGroup label="KORUMA AYARLARI"><div className={styles.pillsRow}>{["İçeriği koru", "Kullanıcı aksiyonlarını koru", "Navigasyonu koru", "Veri alanlarını koru"].map((rule) => { const checked = workflow.preservationRules.includes(rule); return <button key={rule} className={`${styles.togglePill} ${checked ? styles.pillChecked : ""}`} onClick={() => workflow.togglePreservationRule(rule)}>{checked ? "✓" : "+"} {rule}</button>; })}</div></ControlGroup>
+      <ControlGroup label="TASARIM YÖNÜ"><div className={styles.pillsRow}>{["Otomatik", "Editorial Minimal", "Soft Futurism", "Warm Organic", "Modern Native", "Experimental"].map((direction) => <button key={direction} className={`${styles.optionSelectPill} ${workflow.designDirection === direction ? styles.pillSelected : ""}`} onClick={() => workflow.setDesignDirection(direction)}>{direction}</button>)}</div></ControlGroup>
+      <ControlGroup label="VARYASYONLAR"><div className={styles.pillsRow}>{[1, 2, 3].map((count) => <button key={count} className={`${styles.optionSelectPill} ${workflow.variationCount === count ? styles.pillSelected : ""}`} onClick={() => workflow.setVariationCount(count)} aria-pressed={workflow.variationCount === count}>{count}</button>)}</div></ControlGroup>
+      <ControlGroup label="NEYİ DEĞİŞTİRMEK İSTİYORSUN?"><input type="text" className={styles.redesignInstructionInput} value={workflow.redesignInstruction} onChange={(event) => workflow.setRedesignInstruction(event.target.value)} placeholder="Örn: Kart kullanımını azalt, daha editoryal bir hiyerarşi kur ve premium bir finans ürünü hissi ver." /></ControlGroup>
+    </div>
+    <div className={styles.redesignFooter}><button className={styles.redesignPrimaryCta} onClick={workflow.startRedesign} disabled={workflow.generating || !workflow.uploadedScreen || workflow.redesignStage !== "ready"}>{workflow.generating ? <><span className={styles.spinner} /> Yeniden tasarlanıyor…</> : <>✦ Yeniden tasarla</>}</button>{workflow.generationError && <p className={styles.uploadError} role="alert">{workflow.generationError}</p>}</div>
+    {workflow.redesignStage === "generated" && workflow.uploadedScreen && <section className={styles.redesignResults} aria-labelledby="redesign-results-title"><div><span className={styles.subHeader}>YENİDEN TASARIM SONUÇLARI</span><h3 id="redesign-results-title">İşlevleri koruyan {workflow.variationCount} tasarım yönü hazır</h3></div><div className={styles.redesignComparisonGrid}><figure className={styles.comparisonCard}><img src={workflow.uploadedScreen.previewUrl} alt="Yeniden tasarım için yüklenen orijinal ekran" /><figcaption>Orijinal ekran</figcaption></figure>{Array.from({ length: workflow.variationCount }, (_, index) => <figure className={styles.comparisonCard} key={index}><div className={`${styles.generatedScreen} ${styles[`generatedScreen${index + 1}`]}`} aria-hidden="true"><span>{workflow.designDirection === "Otomatik" ? "Floriven" : workflow.designDirection}</span><b>{index + 1}. yön</b><i /><i /><i /></div><figcaption>{index + 1}. alternatif</figcaption></figure>)}</div></section>}
+  </div>;
+}
+
+function ControlGroup({ label, children }: { label: string; children: React.ReactNode }) { return <div className={styles.controlGroup}><label className={styles.controlLabel}>{label}</label>{children}</div>; }

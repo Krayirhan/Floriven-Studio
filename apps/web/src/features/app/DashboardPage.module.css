@@ -442,6 +442,13 @@
   box-shadow: none;
 }
 
+.generationError {
+  max-width: 260px;
+  color: var(--color-danger);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
 .spinner {
   width: 14px;
   height: 14px;
@@ -502,6 +509,66 @@
 
 .linkMore:hover {
   color: var(--color-primary-hover);
+}
+
+.libraryToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.librarySearch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: min(360px, 100%);
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 9px;
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+}
+
+.librarySearch input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  color: var(--color-text);
+  background: transparent;
+  font: inherit;
+  font-size: 13px;
+}
+
+.libraryFilters {
+  display: flex;
+  gap: 8px;
+}
+
+.libraryFilters button {
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  color: var(--color-text-secondary);
+  background: var(--color-surface);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+}
+
+.libraryFilters button:hover,
+.libraryFilterActive {
+  border-color: var(--color-primary) !important;
+  color: var(--color-primary) !important;
+  background: var(--color-primary-subtle) !important;
+}
+
+@media (max-width: 760px) {
+  .libraryToolbar { align-items: stretch; flex-direction: column; }
+  .librarySearch { width: 100%; }
+  .libraryFilters { overflow-x: auto; }
 }
 
 /* INSPIRATION SECTION */
