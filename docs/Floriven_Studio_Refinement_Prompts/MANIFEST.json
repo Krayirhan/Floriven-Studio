@@ -1,0 +1,87 @@
+[
+  {
+    "file": "01_DESKTOP_LAYOUT_WIDTH.md",
+    "bytes": 2290,
+    "sha256": "cba74dd0845321a87f77524bff841f9cc2a56f8fe20be3b63341df2172c8973c"
+  },
+  {
+    "file": "02_TYPOGRAPHY_SCALE.md",
+    "bytes": 1939,
+    "sha256": "ccc7d65b729ae3a23d05ca15df6f147f066f98a35c0598f0ee0a81b9aea58078"
+  },
+  {
+    "file": "03_CONTRAST_READABILITY.md",
+    "bytes": 1798,
+    "sha256": "d1271a5a7cfdcc30923626526457d2b384ab73e617dc1f1a64a087daac919cc2"
+  },
+  {
+    "file": "04_GLOBAL_TOPBAR.md",
+    "bytes": 1644,
+    "sha256": "b927d9a235e791149fa4bd2f9332bbfa4df3d06c9677539e50ceddb1af5d8c01"
+  },
+  {
+    "file": "05_LEFT_SIDEBAR.md",
+    "bytes": 1549,
+    "sha256": "dd267951e5a88515f5f5f3c0ba3da542f8c27de27d70bb99babe322a66500a24"
+  },
+  {
+    "file": "06_MAIN_AI_COMPOSER.md",
+    "bytes": 1910,
+    "sha256": "ac65b1c1ed78b74c607022a8bb7b0adb8fe66b8713731d31afeae224ee9d0685"
+  },
+  {
+    "file": "07_QUICK_STARTS.md",
+    "bytes": 1279,
+    "sha256": "629301403429c08f080b5e227bfbc9e42a2b56099e1b778b7593f82b602f6d50"
+  },
+  {
+    "file": "08_SCREENSHOT_REDESIGN_MODE.md",
+    "bytes": 1943,
+    "sha256": "dee766d9b4623311a0b79c548030a3f312c2f769dca6153855d6c555518f3a8f"
+  },
+  {
+    "file": "09_LATEST_PROJECT.md",
+    "bytes": 1438,
+    "sha256": "71963e0285996fbe6d12b3a9717fafe96f04ed17aaa9af4abf6b66a7d68c7f1f"
+  },
+  {
+    "file": "10_OTHER_PROJECTS.md",
+    "bytes": 1438,
+    "sha256": "d6e5b5922fb3347172e6d9baa9664255da26d2613237d0b2db0e1821f9da637f"
+  },
+  {
+    "file": "11_TEMPLATE_GALLERY.md",
+    "bytes": 1443,
+    "sha256": "b29453804dcad2b413d83e37c60586708ad04a737e7920fe9a5c50fac5aff63d"
+  },
+  {
+    "file": "12_COLOR_SYSTEM.md",
+    "bytes": 1559,
+    "sha256": "dac5a742fd9ef0a918b826238e4a011672625ff760dd304dfa7b31c1f26cf5e4"
+  },
+  {
+    "file": "13_TERRACOTTA_DISCIPLINE.md",
+    "bytes": 1282,
+    "sha256": "293084d8e27230a7ab00830dc075beb6127c90d15ca931d835ce2752e4ece3c2"
+  },
+  {
+    "file": "14_DENSITY_VERTICAL_RHYTHM.md",
+    "bytes": 1445,
+    "sha256": "2d510177b74d69cfd61c8feebbe73d54b91809d614db5343c4cda51b0001de5f"
+  },
+  {
+    "file": "15_INTERACTION_STATES.md",
+    "bytes": 1370,
+    "sha256": "c10b05a8f726ecc427bac1fabd1bbbd81664629ad7034eff7aed1657a7f7c308"
+  },
+  {
+    "file": "ALL_PROMPTS.md",
+    "bytes": 20087,
+    "sha256": "a4c63042f47e81a747bb8e9de678a4d47ea72864666a84b5602040381a1031c7"
+  },
+  {
+    "file": "README.md",
+    "bytes": 2013,
+    "sha256": "abdd5790ef8a85ff180e20871ce4a0bf12952d964eb1db5faa69aee9c3caa217"
+  }
+]
