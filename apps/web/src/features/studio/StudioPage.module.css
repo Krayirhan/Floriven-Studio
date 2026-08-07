@@ -83,6 +83,12 @@
   color: var(--fv-accent);
   font-size: 10px;
 }
+.tbLogoImg {
+  height: 22px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
 
 .tbDiv {
   width: 1px;
@@ -223,6 +229,9 @@
   background: var(--fv-accent-hover);
   color: #fff;
 }
+.tbModes { display:flex; gap:2px; padding:2px; border:1px solid var(--fv-border); border-radius:8px; }
+.tbModeActive { color:var(--fv-text); background:var(--fv-elevated); }
+.scrLabelVars select { border:1px solid var(--fv-border); border-radius:5px; background:var(--fv-surface); color:var(--fv-text-muted); font:inherit; font-size:10px; padding:2px 4px; }
 
 /* ═══════════════════════════════
    WORKSPACE
@@ -590,32 +599,24 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  background:
-    radial-gradient(
-      ellipse at 30% 40%,
-      rgba(255, 87, 34, 0.05) 0%,
-      transparent 55%
-    ),
-    radial-gradient(
-      ellipse at 70% 60%,
-      rgba(98, 214, 168, 0.03) 0%,
-      transparent 55%
-    );
+  /* Vignette: edges darken, center stays neutral */
+  background: radial-gradient(
+    ellipse 90% 80% at 50% 50%,
+    transparent 30%,
+    rgba(0, 0, 0, 0.42) 100%
+  );
   pointer-events: none;
 }
 .canvas::after {
   content: "";
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 600px;
-  height: 600px;
-  border-radius: 50%;
+  inset: 0;
+  z-index: 0;
+  /* Extremely faint warm center highlight — gives depth without looking like a glow */
   background: radial-gradient(
-    circle,
-    rgba(255, 87, 34, 0.03),
-    transparent 70%
+    ellipse 55% 45% at 50% 48%,
+    rgba(255, 255, 255, 0.018) 0%,
+    transparent 100%
   );
   pointer-events: none;
 }
@@ -623,11 +624,13 @@
 .canvasGrid {
   position: absolute;
   inset: 0;
-  background-image:
-    linear-gradient(var(--fv-border-soft) 1px, transparent 1px),
-    linear-gradient(90deg, var(--fv-border-soft) 1px, transparent 1px);
-  background-size: 32px 32px;
-  opacity: 0.2;
+  /* Dot grid — cleaner than lines, Figma/Framer style */
+  background-image: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.18) 1px,
+    transparent 1px
+  );
+  background-size: 22px 22px;
   pointer-events: none;
 }
 
@@ -686,34 +689,35 @@
   position: relative;
   width: 280px;
   height: 590px;
-  border: 5px solid #0d0d1a;
+  border: 5px solid #111118;
   border-radius: 34px;
   overflow: hidden;
   background: var(--fv-phone-bg);
   color: var(--fv-phone-text);
   box-shadow:
-    0 0 80px rgba(255, 87, 34, 0.06),
-    0 0 0 1px rgba(255, 255, 255, 0.06),
-    0 24px 55px rgba(0, 0, 0, 0.45),
-    0 8px 18px rgba(0, 0, 0, 0.25);
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    0 12px 28px rgba(0, 0, 0, 0.4),
+    0 32px 64px rgba(0, 0, 0, 0.3);
   transition:
-    box-shadow 0.3s ease,
-    transform 0.3s ease;
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
 }
 .phone:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
   box-shadow:
-    0 0 100px rgba(255, 87, 34, 0.1),
-    0 0 0 1px rgba(255, 87, 34, 0.12),
-    0 28px 60px rgba(0, 0, 0, 0.5),
-    0 10px 22px rgba(0, 0, 0, 0.3);
+    0 0 0 1px rgba(255, 255, 255, 0.07),
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    0 16px 36px rgba(0, 0, 0, 0.45),
+    0 40px 72px rgba(0, 0, 0, 0.35);
 }
 .phoneActive {
   box-shadow:
-    0 0 100px rgba(255, 87, 34, 0.14),
-    0 0 0 2px rgba(255, 87, 34, 0.35),
-    0 28px 60px rgba(0, 0, 0, 0.5),
-    0 10px 22px rgba(0, 0, 0, 0.3);
+    0 0 0 2px rgba(222, 123, 91, 0.4),
+    0 0 0 4px rgba(222, 123, 91, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    0 16px 36px rgba(0, 0, 0, 0.45),
+    0 40px 72px rgba(0, 0, 0, 0.35);
 }
 
 .phStatus {
@@ -1502,6 +1506,12 @@ select.inspFld {
 .aiDockBrand span {
   font-size: 14px;
 }
+.aiDockBrandIcon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
 
 .aiDockDiv {
   width: 1px;
@@ -1701,4 +1711,450 @@ select.inspFld {
   .tbGroup {
     display: none;
   }
+}
+
+/* Canvas-first shell: panels become contextual drawers while the canvas owns the space. */
+.workspace { grid-template-columns: 64px minmax(0, 1fr); }
+.toolRail { display:flex; flex-direction:column; align-items:center; gap:8px; padding:12px 8px; background:var(--fv-surface); border-right:1px solid var(--fv-border); z-index:20; }
+.railButton { width:48px; min-height:48px; border:0; border-radius:10px; background:transparent; color:var(--fv-text-muted); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; cursor:pointer; font-size:18px; }
+.railButton span { font-size:9px; }
+.railButton:hover, .railButton[aria-pressed="true"] { color:var(--fv-text); background:var(--fv-elevated); }
+.panelDrawer { position:absolute; left:64px; top:0; bottom:0; width:280px; transform:translateX(-105%); transition:transform .2s ease; z-index:15; box-shadow:12px 0 32px rgba(0,0,0,.24); }
+.panelDrawerOpen { transform:translateX(0); }
+.panelDrawer .leftSidebar { height:100%; }
+.inspectorDrawer { position:absolute; right:0; top:0; bottom:0; width:320px; transform:translateX(105%); transition:transform .2s ease; z-index:15; box-shadow:-12px 0 32px rgba(0,0,0,.24); }
+.inspectorDrawerOpen { transform:translateX(0); }
+.inspectorDrawer .rightSidebar { height:100%; }
+.inspectorClose { position:absolute; right:8px; top:7px; z-index:3; width:28px; height:28px; border:0; border-radius:6px; background:transparent; color:var(--fv-text-muted); font-size:20px; cursor:pointer; }
+.inspectorClose:hover { color:var(--fv-text); background:var(--fv-elevated); }
+.canvasControls { position:absolute; right:18px; bottom:18px; z-index:12; display:flex; align-items:center; gap:2px; padding:4px; border:1px solid var(--fv-border); border-radius:9px; background:var(--fv-surface); box-shadow:0 8px 24px rgba(0,0,0,.22); }
+.canvasControls button,.canvasControls span { min-width:30px; height:28px; border:0; background:transparent; color:var(--fv-text-secondary); display:grid; place-items:center; font:inherit; font-size:12px; cursor:pointer; border-radius:6px; }
+.canvasControls button:hover { color:var(--fv-text); background:var(--fv-elevated); }
+.canvasControls span { min-width:42px; font-size:11px; }
+.aiHistory { position:absolute; right:18px; bottom:100px; width:260px; max-height:220px; overflow:auto; z-index:21; padding:12px; display:flex; flex-direction:column; gap:7px; border:1px solid var(--fv-border); border-radius:10px; background:var(--fv-surface); box-shadow:0 12px 30px rgba(0,0,0,.28); }
+.aiHistory strong { font-size:12px; color:var(--fv-text); }
+.aiHistory button { border:0; border-radius:6px; padding:7px 8px; text-align:left; color:var(--fv-text-secondary); background:transparent; font:inherit; font-size:11px; cursor:pointer; }
+.aiHistory button:hover { background:var(--fv-elevated); color:var(--fv-text); }
+.modeBanner { position:absolute; top:16px; left:50%; transform:translateX(-50%); z-index:13; display:flex; align-items:center; gap:10px; padding:9px 12px; border:1px solid var(--fv-border); border-radius:9px; background:var(--fv-surface); box-shadow:0 8px 22px rgba(0,0,0,.2); font-size:11px; color:var(--fv-text-secondary); }
+.modeBanner strong { color:var(--fv-text); }
+.modeBanner button { border:1px solid var(--fv-border); border-radius:6px; background:transparent; color:var(--fv-text-secondary); padding:5px 8px; font:inherit; cursor:pointer; }
+.modeBanner button:hover { color:var(--fv-text); background:var(--fv-elevated); }
+.designBoard { position:absolute; top:16px; right:18px; width:280px; z-index:13; padding:14px; border:1px solid var(--fv-border); border-radius:12px; background:var(--fv-surface); box-shadow:0 12px 30px rgba(0,0,0,.28); }
+.designBoard header { display:flex; flex-direction:column; gap:3px; margin-bottom:12px; }
+.designBoard header strong { font-size:13px; color:var(--fv-text); }
+.designBoard header span { font-size:10px; color:var(--fv-text-muted); }
+.tokenGrid { display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-bottom:12px; }
+.tokenGrid div { display:flex; align-items:center; gap:6px; color:var(--fv-text-secondary); font-size:10px; }
+.tokenGrid i { width:18px; height:18px; border-radius:5px; border:1px solid var(--fv-border); }
+.boardRow { display:flex; justify-content:space-between; gap:10px; padding:8px 0; border-top:1px solid var(--fv-border-soft); color:var(--fv-text-muted); font-size:10px; }
+.boardRow b { color:var(--fv-text-secondary); font-weight:500; text-align:right; }
+/* ── AI Dock positioning + two-row redesign ── */
+.aiDock {
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  width: min(820px, calc(100% - 120px));
+  height: auto;
+  margin: 0;
+  z-index: 20;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+  align-items: stretch;
+}
+.aiDockMain {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  min-height: 56px;
+}
+.aiDockSecRow {
+  display: flex;
+  gap: 5px;
+  padding: 0 14px 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-top: 1px solid var(--fv-border-soft);
+  padding-top: 8px;
+  flex-wrap: nowrap;
+}
+.aiDockSecRow::-webkit-scrollbar { display: none; }
+.aiDockRight .aiDockBtn { display: none; }
+
+/* ── Canvas mini-toolbar ── */
+.canvasTool {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 12;
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  padding: 3px;
+  border: 1px solid var(--fv-border);
+  border-radius: 10px;
+  background: var(--fv-surface);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+}
+.canvasToolBtn {
+  width: 32px;
+  height: 30px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--fv-text-secondary);
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.canvasToolBtn:hover { color: var(--fv-text); background: var(--fv-elevated); }
+.canvasToolBtnActive { color: var(--fv-text) !important; background: var(--fv-elevated) !important; }
+.canvasToolDiv { width: 1px; height: 18px; background: var(--fv-border); margin: 0 3px; }
+.canvasZoomVal { min-width: 36px; text-align: center; font-size: 11px; color: var(--fv-text); font-weight: 500; cursor: default; }
+
+/* ── Screen header enhancements ── */
+.scrHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding-bottom: 10px;
+  position: relative;
+}
+.scrName { font-weight: 600; }
+.scrMeta2 {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9px;
+  color: var(--fv-text-muted);
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+.screenCol:hover .scrMeta2 { opacity: 1; }
+.scrMetaDot { opacity: 0.4; }
+.scrDims { font-variant-numeric: tabular-nums; }
+.scrDevice {}
+.scrLabelDotActive { background: var(--fv-accent) !important; }
+
+/* Hover actions — absolutely positioned, never shifts layout */
+.scrHeaderActions {
+  position: absolute;
+  top: calc(100% - 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 3px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.15s ease, visibility 0.15s ease;
+  white-space: nowrap;
+  background: var(--fv-surface);
+  border: 1px solid var(--fv-border);
+  border-radius: 8px;
+  padding: 4px 5px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+  z-index: 5;
+}
+.screenCol:hover .scrHeaderActions {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+.scrHeaderBtn {
+  padding: 3px 8px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--fv-text-muted);
+  font: inherit;
+  font-size: 9px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.12s;
+}
+.scrHeaderBtn:hover { color: var(--fv-text); background: var(--fv-elevated); }
+
+/* ── Drawer header (replaces duplicate tab nav) ── */
+.drawerHeader {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--fv-border);
+  flex-shrink: 0;
+}
+.drawerTitle {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--fv-text-secondary);
+  text-transform: uppercase;
+}
+
+/* ── Rail AI button ── */
+.railSpacer { flex: 1; }
+.railButtonAi { color: var(--fv-accent) !important; background: var(--fv-accent-subtle) !important; }
+
+/* ── AI Drawer wrapper ── */
+.aiDrawerWrap {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--fv-surface);
+  border-right: 1px solid var(--fv-border);
+  overflow: hidden;
+}
+
+/* ── AI Panel ── */
+.aiPanelWrap {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.aiPanelSection {
+  padding: 14px;
+  border-bottom: 1px solid var(--fv-border-soft);
+}
+.aiPanelSectionHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.aiPanelSectionTitle {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--fv-text-muted);
+}
+.aiPanelActionBtn {
+  border: 0;
+  background: transparent;
+  color: var(--fv-text-muted);
+  font: inherit;
+  font-size: 10px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all 0.12s;
+}
+.aiPanelActionBtn:hover { background: var(--fv-elevated); color: var(--fv-text); }
+.aiPanelBadge {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--fv-accent);
+  background: var(--fv-accent-subtle);
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+/* ── Brief ── */
+.briefContent {
+  font-size: 11px;
+  color: var(--fv-text-secondary);
+  line-height: 1.65;
+  margin: 0;
+}
+.briefEditArea { display: flex; flex-direction: column; gap: 6px; }
+.briefTextarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--fv-border);
+  border-radius: 7px;
+  background: var(--fv-elevated);
+  color: var(--fv-text);
+  font: inherit;
+  font-size: 11px;
+  line-height: 1.65;
+  outline: 0;
+  resize: vertical;
+  min-height: 80px;
+  box-sizing: border-box;
+}
+.briefTextarea:focus { border-color: var(--fv-accent); }
+.briefEditActions { display: flex; gap: 6px; }
+.briefSaveBtn {
+  flex: 1;
+  height: 30px;
+  border: 0;
+  border-radius: 7px;
+  background: var(--fv-accent);
+  color: #fff;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.briefSaveBtn:hover { background: var(--fv-accent-hover); }
+.briefCancelBtn {
+  height: 30px;
+  padding: 0 12px;
+  border: 1px solid var(--fv-border);
+  border-radius: 7px;
+  background: transparent;
+  color: var(--fv-text-muted);
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+.briefCancelBtn:hover { background: var(--fv-elevated); }
+
+/* ── Journal ── */
+.journalList { display: flex; flex-direction: column; gap: 2px; }
+.journalEntry {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 7px 6px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 0.12s;
+  position: relative;
+}
+.journalEntry:hover { background: var(--fv-elevated); }
+.journalDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+.journalContent { flex: 1; min-width: 0; }
+.journalMsg { font-size: 11px; color: var(--fv-text); font-weight: 500; line-height: 1.4; }
+.journalDetail { font-size: 10px; color: var(--fv-text-muted); margin-top: 1px; }
+.journalMeta { display: flex; align-items: center; gap: 6px; margin-top: 3px; }
+.journalTypeBadge { font-size: 9px; font-weight: 600; }
+.journalTime { font-size: 9px; color: var(--fv-text-muted); }
+.journalActions {
+  display: none;
+  gap: 3px;
+  flex-shrink: 0;
+}
+.journalEntry:hover .journalActions { display: flex; }
+.journalActionBtn {
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--fv-border);
+  border-radius: 5px;
+  background: var(--fv-surface);
+  color: var(--fv-text-muted);
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: all 0.12s;
+}
+.journalActionBtn:hover { color: var(--fv-text); background: var(--fv-elevated2); }
+
+/* ── New screen dropdown ── */
+.scNewWrap { position: relative; }
+.newScreenMenu {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: var(--fv-surface);
+  border: 1px solid var(--fv-border);
+  border-radius: 9px;
+  padding: 4px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+  z-index: 30;
+}
+.newScreenMenuItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--fv-text-secondary);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.1s;
+}
+.newScreenMenuItem:hover { background: var(--fv-elevated); color: var(--fv-text); }
+
+/* ── Inspector tab node chip ── */
+.rTabNode {
+  margin-left: auto;
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--fv-accent);
+  background: var(--fv-accent-subtle);
+  padding: 2px 7px;
+  border-radius: 5px;
+  align-self: center;
+}
+
+/* ── Phone: Budget trend + stats ── */
+.phTrendRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+.phTrendLabel {
+  font-size: 9px;
+  color: var(--fv-phone-sub);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.phTrendChart {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 24px;
+}
+.phTrendBar {
+  flex: 1;
+  border-radius: 2px 2px 0 0;
+  background: #ff5722;
+}
+.phBudgetStats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+.phBudgetStat { display: flex; flex-direction: column; gap: 1px; }
+.phBudgetStatLabel { font-size: 8px; color: var(--fv-phone-sub); font-weight: 500; }
+.phBudgetStatVal { font-size: 11px; font-weight: 700; color: var(--fv-phone-text); }
+
+/* ── Phone: Transactions summary bar ── */
+.phTxSummaryBar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+.phTxSumItem { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 1px; }
+.phTxSumDivider { width: 1px; height: 28px; background: rgba(0, 0, 0, 0.08); margin: 0 4px; }
+.phTxSumLabel { font-size: 9px; color: var(--fv-phone-sub); font-weight: 500; }
+.phTxSumVal { font-size: 13px; font-weight: 700; }
+
+@media (max-width: 900px) {
+  .panelDrawer { left: 64px; }
+  .aiDock { width: calc(100% - 88px); }
+  .canvasTool { display: none; }
 }

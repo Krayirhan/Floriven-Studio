@@ -9,7 +9,7 @@ export function AuthPage({ mode }: { mode: "login" | "signup" }) {
     <main className={styles.page}>
       <div className={styles.visual}>
         <a href="/" className={styles.logo}>
-          ◆ Floriven <small>Studio</small>
+          <img src="/logo/logo-white.png" alt="Floriven" className={styles.logoImage} /><small>Studio</small>
         </a>
         <div>
           <span className={styles.eyebrow}>FİKİRDEN ARAYÜZE</span>
@@ -30,7 +30,7 @@ export function AuthPage({ mode }: { mode: "login" | "signup" }) {
       <section className={styles.formSide}>
         <div className={styles.formWrap}>
           <a href="/" className={styles.mobileLogo}>
-            ◆ Floriven <small>Studio</small>
+            <img src="/logo/logo-color.png" alt="Floriven" className={styles.logoImage} /><small>Studio</small>
           </a>
           <span className={styles.kicker}>
             {isSignup ? "BAŞLANGIÇ" : "TEKRAR HOŞ GELDİN"}

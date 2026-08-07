@@ -43,6 +43,9 @@
 }
 .logo,
 .mobileLogo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   color: var(--color-text);
   font-size: 15px;
   font-weight: 700;
@@ -55,9 +58,13 @@
 .logo small,
 .mobileLogo small {
   color: var(--color-text-muted);
-  font-size: 12px;
-  font-weight: 400;
+  font-family: var(--sans), Inter, system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 500;
+  letter-spacing: -0.02em;
 }
+.logoImage { width: auto; height: 32px; display:block; object-fit:contain; }
 .visual > div {
   max-width: 420px;
 }

@@ -48,8 +48,8 @@ export function Footer() {
       <div className={styles.top}>
         <div className={styles.brand}>
           <div className={styles.logo}>
-            <span className={styles.diamond}>◆</span>
-            {' '}Floriven<span className={styles.studio}> Studio</span>
+            <img src="/logo/logo-white.png" alt="Floriven Studio" className={styles.logoImage} />
+            <span className={styles.studio}>Studio</span>
           </div>
           <p className={styles.brandDesc}>
             Brief'ten mobil arayüze.<br />

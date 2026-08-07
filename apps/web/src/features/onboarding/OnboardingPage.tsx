@@ -9,7 +9,7 @@ export function OnboardingPage() {
     <main className={styles.page}>
       <header className={styles.topBar}>
         <a href="/" className={styles.logo}>
-          ◆ Floriven <small>Studio</small>
+          <img src="/logo/logo-white.png" alt="Floriven" className={styles.logoImage} /><small>Studio</small>
         </a>
         <span>Adım {step} / 3</span>
       </header>

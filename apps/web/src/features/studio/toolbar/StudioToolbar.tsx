@@ -1,11 +1,24 @@
 import styles from "../StudioPage.module.css";
 
-export function StudioToolbar({ revision }: { revision: number }) {
+export function StudioToolbar({
+  mode,
+  onModeChange,
+  onUndo,
+  onRedo,
+  onComposerFocus,
+}: {
+  revision?: number;
+  mode?: "design" | "flow" | "compare";
+  onModeChange?: (mode: "design" | "flow" | "compare") => void;
+  onUndo?: () => void;
+  onRedo?: () => void;
+  onComposerFocus?: () => void;
+}) {
   return (
     <header className={styles.toolbar}>
       <div className={styles.tbLeft}>
-        <a href="/" className={styles.tbLogo}>
-          <span className={styles.tbLogoMark}>◆</span>Floriven
+        <a href="/" className={styles.tbLogo} aria-label="Floriven">
+          <img src="/logo/logo-white.png" alt="Floriven" className={styles.tbLogoImg} />
         </a>
         <span className={styles.tbDiv} />
         <div className={styles.tbCrumb}>
@@ -17,28 +30,38 @@ export function StudioToolbar({ revision }: { revision: number }) {
           Tüm değişiklikler kaydedildi
         </div>
       </div>
+
       <div className={styles.tbGroup}>
-        <button className={styles.tbBtn} aria-label="Geri al">
-          ↩
-        </button>
-        <button className={styles.tbBtn} aria-label="Yinele">
-          ↪
-        </button>
-        <span className={styles.tbDiv} />
-        <button className={styles.tbSelect}>iPhone 15 Pro ▾</button>
-        <div className={styles.tbZoom}>
-          <button aria-label="Uzaklaştır">−</button>
-          <span className={styles.tbZoomVal}>{revision ? "85%" : "100%"}</span>
-          <button aria-label="Yakınlaştır">+</button>
+        <div className={styles.tbModes} role="tablist" aria-label="Editör modu">
+          {([["design", "Tasarım"], ["flow", "Akış"], ["compare", "Karşılaştır"]] as const).map(
+            ([value, label]) => (
+              <button
+                key={value}
+                role="tab"
+                aria-selected={mode === value}
+                className={`${styles.tbLabel} ${mode === value ? styles.tbModeActive : ""}`}
+                onClick={() => onModeChange?.(value)}
+              >
+                {label}
+              </button>
+            )
+          )}
         </div>
+        <span className={styles.tbDiv} />
+        <button className={styles.tbBtn} aria-label="Geri al" onClick={onUndo} title="Geri al (Ctrl+Z)">↩</button>
+        <button className={styles.tbBtn} aria-label="Yinele" onClick={onRedo} title="Yinele (Ctrl+Y)">↪</button>
       </div>
+
       <div className={styles.tbGroup}>
-        <button className={styles.tbLabel}>Sürüm geçmişi</button>
         <button className={styles.tbLabel}>Önizle</button>
         <button className={styles.tbLabel}>Paylaş</button>
         <button className={styles.tbLabel}>Dışa aktar</button>
         <span className={styles.tbDiv} />
-        <button className={`${styles.tbLabel} ${styles.tbLabelPrimary}`}>
+        <button
+          className={`${styles.tbLabel} ${styles.tbLabelPrimary}`}
+          onClick={onComposerFocus}
+          title="AI Composer'a odaklan (Ctrl+K)"
+        >
           ✦ Üret
         </button>
       </div>

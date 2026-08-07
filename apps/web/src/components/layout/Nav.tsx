@@ -10,10 +10,7 @@ export function Nav() {
             className={styles.logo}
             aria-label="Floriven Studio anasayfa"
           >
-            <span className={styles.mark} aria-hidden="true">
-              ◆
-            </span>
-            <span>Floriven</span>
+            <img src="/logo/logo-color.png" alt="Floriven Studio" className={styles.logoImage} />
             <span className={styles.studio}>Studio</span>
           </a>
 

@@ -106,14 +106,17 @@ function ScreenContent({ category, idx, accent, surface, isDark }: {
             <div style={{ background: accent, borderRadius: '3px', height: '100%', width: '65%' }} />
           </div>
         </div>
-        {[[70, 0.8], [45, 0.6], [90, 1], [30, 0.4]].map(([w, op], i) => (
-          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <div style={{ background: muted, borderRadius: '1px', height: '3px', width: '24%', opacity: 0.5 }} />
-            <div style={{ flex: 1, background: `${accent}15`, borderRadius: '2px', height: '4px', overflow: 'hidden' }}>
-              <div style={{ background: op >= 0.9 ? '#ef4444' : accent, borderRadius: '2px', height: '100%', width: `${w}%`, opacity: Number(op) }} />
+        {[[70, 0.8], [45, 0.6], [90, 1.0], [30, 0.4]].map(([w, op], i) => {
+          const opacity = op ?? 0.5;
+          return (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <div style={{ background: muted, borderRadius: '1px', height: '3px', width: '24%', opacity: 0.5 }} />
+              <div style={{ flex: 1, background: `${accent}15`, borderRadius: '2px', height: '4px', overflow: 'hidden' }}>
+                <div style={{ background: opacity >= 0.9 ? '#ef4444' : accent, borderRadius: '2px', height: '100%', width: `${w}%`, opacity }} />
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     );
   }

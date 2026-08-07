@@ -17,6 +17,30 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Application Typography & Control Standards */
+:root {
+  --fs-page-title: 32px;
+  --fs-section-title: 21px;
+  --fs-project-title: 16.5px;
+  --fs-card-title: 15.5px;
+  --fs-body: 14.5px;
+  --fs-prompt: 15.5px;
+  --fs-sidebar: 13.5px;
+  --fs-toolbar: 12.5px;
+  --fs-metadata: 12.5px;
+  --fs-button: 13.5px;
+  --fs-badge: 11.5px;
+  --fs-eyebrow: 11px;
+}
+
+/* Global focus-visible indicator */
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-focus) 24%, transparent);
+  border-color: var(--color-focus) !important;
+}
+
 body::before {
   content: "";
   position: fixed;

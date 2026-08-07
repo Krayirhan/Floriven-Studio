@@ -6,7 +6,9 @@ import { ComponentsPanel } from "./ComponentsPanel";
 import { LayersPanel } from "./LayersPanel";
 import { ScreensPanel } from "./ScreensPanel";
 
-const labels: Record<LeftTab, string> = {
+type SidebarTab = Exclude<LeftTab, "ai">;
+
+const labels: Record<SidebarTab, string> = {
   screens: "Ekranlar",
   layers: "Katmanlar",
   components: "Bileşenler",
@@ -22,27 +24,19 @@ export function StudioSidebar({
   onSelectScreen,
   onSelectNode,
 }: {
-  tab: LeftTab;
+  tab: SidebarTab;
   screen: Screen;
   activeScreenId: string;
   selectedNodeId: string;
-  onTabChange: (tab: LeftTab) => void;
+  onTabChange: (tab: SidebarTab) => void;
   onSelectScreen: (id: string) => void;
   onSelectNode: (id: string) => void;
 }) {
   return (
     <aside className={styles.leftSidebar}>
-      <nav className={styles.leftTabs}>
-        {(Object.keys(labels) as LeftTab[]).map((item) => (
-          <button
-            key={item}
-            className={`${styles.lTab} ${tab === item ? styles.lTabActive : ""}`}
-            onClick={() => onTabChange(item)}
-          >
-            {labels[item]}
-          </button>
-        ))}
-      </nav>
+      <div className={styles.drawerHeader}>
+        <span className={styles.drawerTitle}>{labels[tab]}</span>
+      </div>
       <div className={styles.leftContent}>
         {tab === "screens" && (
           <ScreensPanel activeId={activeScreenId} onSelect={onSelectScreen} />
