@@ -1,15 +1,13 @@
 import { useState } from "react";
-import { AppShell } from "./AppShell";
 import { useCountUp } from "../../hooks/useCountUp";
-import styles from "./ProductPages.module.css";
+import styles from "./BillingPage.module.css";
 
 export function BillingPage() {
   const credits = useCountUp(82, 1200);
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
 
   return (
-    <AppShell>
-      <div className={styles.page}>
+    <div className={styles.page}>
         <header className={styles.header}>
           <div>
             <span className={styles.kicker}>FATURALANDIRMA & KREDİLER</span>
@@ -136,8 +134,6 @@ export function BillingPage() {
             ))}
           </div>
         </section>
-      </div>
-    </AppShell>
+    </div>
   );
 }
-

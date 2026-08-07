@@ -1,0 +1,242 @@
+.settingsGrid {
+  display: grid;
+  grid-template-columns: 210px 1fr;
+  gap: 24px;
+}
+
+.settingsNav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.settingsNav button {
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 7px;
+  text-align: left;
+  color: var(--color-text-muted);
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.settingsNav button:hover,
+.settingsActive {
+  color: #fff !important;
+  background: var(--color-border) !important;
+}
+
+.settingsCard {
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  background: var(--color-surface-sunken);
+}
+
+.settingsCard h2 {
+  margin: 0 0 4px;
+  font-size: 18px;
+}
+
+.settingsCard > p {
+  margin: 0 0 24px;
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.settingsCard label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 16px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
+.settingsCard input,
+.settingsCard select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  outline: 0;
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  font: inherit;
+}
+
+.settingsCard input:focus {
+  border-color: var(--color-primary);
+}
+
+.settingsCard ul {
+  padding-left: 18px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 2;
+}
+
+.cardHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.primaryBtn {
+  height: 38px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 4px 14px rgba(209, 122, 89, 0.3);
+}
+
+.secondaryBtn,
+.dangerBtn {
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.secondaryBtn {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--color-text-secondary);
+}
+
+.dangerBtn {
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  margin-top: 16px;
+}
+
+.membersTable {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.memberRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.memberAvatar {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.memberInfo {
+  flex: 1;
+}
+
+.memberInfo b {
+  display: block;
+  color: #fff;
+  font-size: 13px;
+}
+
+.memberInfo small {
+  color: var(--color-text-muted);
+  font-size: 11px;
+}
+
+.roleBadge {
+  padding: 3px 10px;
+  border-radius: 99px;
+  background: rgba(209, 122, 89, 0.12);
+  color: var(--color-primary-hover);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.toggleList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.toggleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  cursor: pointer;
+}
+
+.toggleRow b {
+  display: block;
+  color: #fff;
+  font-size: 13px;
+}
+
+.toggleRow small {
+  color: var(--color-text-muted);
+  font-size: 11px;
+}
+
+.apiKeyBox {
+  margin-top: 16px;
+}
+
+.keyInputRow {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.copyBtn {
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid rgba(209, 122, 89, 0.35);
+  border-radius: 8px;
+  background: rgba(209, 122, 89, 0.12);
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  .settingsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .settingsNav {
+    flex-direction: row;
+    overflow: auto;
+  }
+
+  .settingsNav button {
+    white-space: nowrap;
+  }
+}

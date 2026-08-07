@@ -1,0 +1,340 @@
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 56px 48px 80px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 44px;
+}
+
+.kicker {
+  color: var(--color-primary);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+
+.header h1 {
+  margin: 12px 0 6px;
+  font-size: 36px;
+  letter-spacing: -0.05em;
+}
+
+.header p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.primaryBtn {
+  height: 38px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 4px 14px rgba(209, 122, 89, 0.3);
+}
+
+.creditHero {
+  padding: 28px;
+  border: 1px solid rgba(255, 87, 34, 0.12);
+  border-radius: 16px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 87, 34, 0.08),
+    rgba(20, 20, 37, 0.5),
+    rgba(98, 214, 168, 0.03)
+  );
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.2),
+    0 0 60px rgba(255, 87, 34, 0.03);
+  margin-bottom: 24px;
+}
+
+.creditHero span,
+.creditHero small {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
+.creditHero b {
+  display: block;
+  margin: 8px 0 2px;
+  font-size: 46px;
+  letter-spacing: -0.06em;
+}
+
+.creditStatRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.topUpPills {
+  display: flex;
+  gap: 10px;
+}
+
+.pillBuy {
+  padding: 8px 14px;
+  border: 1px solid rgba(209, 122, 89, 0.35);
+  border-radius: 99px;
+  background: rgba(209, 122, 89, 0.12);
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.pillBuy:hover {
+  background: rgba(209, 122, 89, 0.22);
+  color: #fff;
+}
+
+.creditProgress {
+  height: 7px;
+  margin: 18px 0 10px;
+  border-radius: 7px;
+  background: var(--color-border);
+  overflow: hidden;
+}
+
+.creditProgress i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-primary);
+}
+
+.creditNote {
+  color: var(--color-text-muted);
+  font-size: 11px;
+}
+
+.tierSection {
+  margin-top: 48px;
+}
+
+.tierHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.cycleToggle {
+  display: flex;
+  padding: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 99px;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.cycleToggle button {
+  height: 32px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 99px;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cycleActive {
+  background: rgba(209, 122, 89, 0.15) !important;
+  color: #fff !important;
+}
+
+.saveBadge {
+  margin-left: 6px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--color-success);
+  font-size: 10px;
+}
+
+.tierGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.tierCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 28px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  background: rgba(18, 18, 30, 0.6);
+  backdrop-filter: blur(16px);
+}
+
+.tierPro {
+  border-color: rgba(209, 122, 89, 0.45) !important;
+  background: linear-gradient(135deg, rgba(24, 24, 44, 0.9), rgba(18, 18, 32, 0.8)) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), 0 0 32px rgba(209, 122, 89, 0.15);
+}
+
+.popularBadge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 3px 12px;
+  border-radius: 99px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.tierName {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.tierPrice {
+  margin: 12px 0 6px;
+  font-size: 34px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.tierPrice small {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.tierCard p {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  margin-bottom: 20px;
+}
+
+.tierCard ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
+.currentPlanBtn,
+.upgradeBtn,
+.tierOutlineBtn {
+  height: 42px;
+  margin-top: auto;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.currentPlanBtn {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--color-text-muted);
+}
+
+.upgradeBtn {
+  border: 0;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+  color: #fff;
+  box-shadow: 0 4px 18px rgba(209, 122, 89, 0.35);
+}
+
+.tierOutlineBtn {
+  border: 1px solid rgba(209, 122, 89, 0.35);
+  background: transparent;
+  color: var(--color-primary-hover);
+}
+
+.ledgerSection {
+  margin-top: 48px;
+}
+
+.ledgerTable {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.ledgerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  background: rgba(18, 18, 30, 0.5);
+}
+
+.ledgerRow b {
+  display: block;
+  color: #fff;
+  font-size: 13px;
+}
+
+.ledgerRow small {
+  color: var(--color-text-muted);
+  font-size: 11px;
+}
+
+.ledgerRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.statusGood {
+  color: var(--color-success);
+}
+
+.statusSpent {
+  color: var(--color-danger);
+  font-size: 13px;
+}
+
+.statusPill {
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--color-text-muted);
+  font-size: 10px;
+}
+
+@media (max-width: 900px) {
+  .page {
+    padding: 36px 24px;
+  }
+}
+
+@media (max-width: 600px) {
+  .header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
