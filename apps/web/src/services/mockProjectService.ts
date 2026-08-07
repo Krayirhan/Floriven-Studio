@@ -1,14 +1,4 @@
-export type ProjectStatus = "draft" | "generated" | "shared";
-
-export interface ProjectSummary {
-  id: string;
-  name: string;
-  description: string;
-  screens: number;
-  updatedAt: string;
-  status: ProjectStatus;
-  accent: string;
-}
+import type { ProjectService, ProjectSummary } from "./projectService";
 
 const projects: ProjectSummary[] = [
   {
@@ -40,7 +30,7 @@ const projects: ProjectSummary[] = [
   },
 ];
 
-export const mockProjectService = {
+export const mockProjectService: ProjectService = {
   list(): ProjectSummary[] {
     return projects;
   },
