@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import styles from "./StudioPage.module.css";
 import { AiCommandDock } from "./ai/AiCommandDock";
 import { StudioCanvas } from "./canvas/StudioCanvas";
@@ -8,9 +9,13 @@ import { AiPanel } from "./sidebar/AiPanel";
 import { StudioSidebar } from "./sidebar/StudioSidebar";
 import { StudioToolbar } from "./toolbar/StudioToolbar";
 import type { LeftTab } from "./studio.types";
+import { LoadingState } from "../../components/ui";
+import { useGenerationJob } from "./state/useGenerationJob";
 
 export function StudioPage() {
   const studio = useStudioState();
+  const [searchParams] = useSearchParams();
+  const generation = useGenerationJob(searchParams.get("jobId"));
   const [leftOpen, setLeftOpen] = useState(true);
   const [mode, setMode] = useState<"design" | "flow" | "compare">("design");
   const composerRef = useRef<HTMLInputElement>(null);
@@ -20,7 +25,11 @@ export function StudioPage() {
       const ctrl = e.metaKey || e.ctrlKey;
       if (ctrl && e.key.toLowerCase() === "z") {
         e.preventDefault();
-        e.shiftKey ? studio.redo() : studio.undo();
+        if (e.shiftKey) {
+          studio.redo();
+        } else {
+          studio.undo();
+        }
       }
       if (ctrl && e.key.toLowerCase() === "k") {
         e.preventDefault();
@@ -44,18 +53,26 @@ export function StudioPage() {
     }
   };
 
-  if (!studio.activeScreen) return null;
+  if (!studio.activeScreen) return <LoadingState label="Studio hazırlanıyor..." />;
 
   const isAiTab = studio.leftTab === "ai";
 
   return (
     <div className={styles.studio}>
+      {generation.job && (generation.job.status === "queued" || generation.job.status === "processing") && (
+        <div className={styles.jobStatus} role="status" aria-live="polite">
+          AI üretimi devam ediyor · %{generation.job.progress}
+        </div>
+      )}
+      {generation.error && <div className={styles.jobError} role="alert">{generation.error}</div>}
       <StudioToolbar
         revision={studio.revision}
         mode={mode}
         onModeChange={setMode}
         onUndo={studio.undo}
         onRedo={studio.redo}
+        canUndo={studio.canUndo}
+        canRedo={studio.canRedo}
         onComposerFocus={() => composerRef.current?.focus()}
       />
 
@@ -118,10 +135,10 @@ export function StudioPage() {
           ) : (
             <StudioSidebar
               tab={studio.leftTab as Exclude<LeftTab, "ai">}
+              screens={studio.document.screens}
               screen={studio.activeScreen}
               activeScreenId={studio.activeScreenId}
               selectedNodeId={studio.selectedNodeId}
-              onTabChange={(tab) => studio.setLeftTab(tab as LeftTab)}
               onSelectScreen={studio.selectScreen}
               onSelectNode={studio.selectNode}
             />
@@ -182,6 +199,7 @@ export function StudioPage() {
             document={studio.document}
             activeScreenId={studio.activeScreenId}
             onTabChange={studio.setRightTab}
+            onUpdateNode={studio.updateSelectedNode}
           />
         </div>
       </div>

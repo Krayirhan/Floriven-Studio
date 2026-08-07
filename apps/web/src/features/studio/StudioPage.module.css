@@ -40,6 +40,24 @@
   -webkit-font-smoothing: antialiased;
 }
 
+.jobStatus,
+.jobError {
+  position: fixed;
+  top: 60px;
+  left: 50%;
+  z-index: 30;
+  padding: 8px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow);
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  transform: translateX(-50%);
+}
+
+.jobError { color: var(--color-danger); }
+
 /* ═══════════════════════════════
    TOOLBAR
    ═══════════════════════════════ */

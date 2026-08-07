@@ -1,10 +1,13 @@
 import styles from "../StudioPage.module.css";
+import { Link } from "react-router-dom";
 
 export function StudioToolbar({
   mode,
   onModeChange,
   onUndo,
   onRedo,
+  canUndo,
+  canRedo,
   onComposerFocus,
 }: {
   revision?: number;
@@ -12,14 +15,16 @@ export function StudioToolbar({
   onModeChange?: (mode: "design" | "flow" | "compare") => void;
   onUndo?: () => void;
   onRedo?: () => void;
+  canUndo?: boolean;
+  canRedo?: boolean;
   onComposerFocus?: () => void;
 }) {
   return (
     <header className={styles.toolbar}>
       <div className={styles.tbLeft}>
-        <a href="/" className={styles.tbLogo} aria-label="Floriven">
+        <Link to="/" className={styles.tbLogo} aria-label="Floriven">
           <img src="/logo/logo-white.png" alt="Floriven" className={styles.tbLogoImg} />
-        </a>
+        </Link>
         <span className={styles.tbDiv} />
         <div className={styles.tbCrumb}>
           Studio <b>/</b> <b>Kişisel Finans</b>
@@ -48,8 +53,8 @@ export function StudioToolbar({
           )}
         </div>
         <span className={styles.tbDiv} />
-        <button className={styles.tbBtn} aria-label="Geri al" onClick={onUndo} title="Geri al (Ctrl+Z)">↩</button>
-        <button className={styles.tbBtn} aria-label="Yinele" onClick={onRedo} title="Yinele (Ctrl+Y)">↪</button>
+        <button className={styles.tbBtn} aria-label="Geri al" onClick={onUndo} title="Geri al (Ctrl+Z)" disabled={!canUndo}>↩</button>
+        <button className={styles.tbBtn} aria-label="Yinele" onClick={onRedo} title="Yinele (Ctrl+Y)" disabled={!canRedo}>↪</button>
       </div>
 
       <div className={styles.tbGroup}>

@@ -12,14 +12,16 @@ const TABS: { key: RightTab; label: string }[] = [
 export function InspectorPanel({
   tab,
   node,
-  activeScreenId,
+  activeScreenId: _activeScreenId,
   onTabChange,
+  onUpdateNode,
 }: {
   tab: RightTab;
   node: DesignNode | undefined;
   document: DesignSpec;
   activeScreenId: string;
   onTabChange: (tab: RightTab) => void;
+  onUpdateNode?: (patch: Record<string, unknown>) => void;
 }) {
   return (
     <aside className={styles.rightSidebar}>
@@ -39,7 +41,7 @@ export function InspectorPanel({
           </span>
         )}
       </nav>
-      {tab === "design" && <DesignInspector node={node} />}
+      {tab === "design" && <DesignInspector node={node} onUpdate={onUpdateNode} />}
       {tab === "prototype" && <PrototypeInspector />}
     </aside>
   );

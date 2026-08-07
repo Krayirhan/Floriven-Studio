@@ -1,11 +1,6 @@
 import { useState } from "react";
+import type { Screen } from "@floriven/design-spec";
 import styles from "../StudioPage.module.css";
-
-const screens = [
-  { id: "scr_home", name: "Ana Sayfa", components: 6, variants: 3, time: "Şimdi" },
-  { id: "scr_tx", name: "İşlemler", components: 4, variants: 1, time: "5 dk önce" },
-  { id: "scr_bgt", name: "Bütçe Detayı", components: 4, variants: 1, time: "12 dk önce" },
-];
 
 const NEW_SCREEN_OPTIONS = [
   { icon: "📱", label: "Boş ekran" },
@@ -15,9 +10,11 @@ const NEW_SCREEN_OPTIONS = [
 ];
 
 export function ScreensPanel({
+  screens,
   activeId,
   onSelect,
 }: {
+  screens: Screen[];
   activeId: string;
   onSelect: (id: string) => void;
 }) {
@@ -26,7 +23,9 @@ export function ScreensPanel({
   return (
     <>
       <div className={styles.scList}>
-        {screens.map((screen) => (
+        {screens.map((screen) => {
+          const componentCount = screen.root.children?.length ?? 0;
+          return (
           <div
             className={`${styles.scCard} ${screen.id === activeId ? styles.scCardActive : ""}`}
             key={screen.id}
@@ -38,19 +37,14 @@ export function ScreensPanel({
                 <span />
               </div>
               <div className={styles.scThumbBody}>
-                <div />
-                <div />
-                <div />
-                <div />
-                <div />
+                {Array.from({ length: Math.min(componentCount, 5) }).map((_, i) => <div key={i} />)}
               </div>
             </div>
             <div className={styles.scInfo}>
               <div className={styles.scName}>{screen.name}</div>
               <div className={styles.scMeta}>
-                <span>{screen.components} bileşen</span>
-                <span>{screen.variants} varyasyon</span>
-                <span>{screen.time}</span>
+                <span>{componentCount} bileşen</span>
+                {screen.route && <span>{screen.route}</span>}
               </div>
             </div>
             <div className={styles.scHover}>
@@ -59,7 +53,8 @@ export function ScreensPanel({
               <button className={styles.scHoverBtn} title="Sil" onClick={(e) => e.stopPropagation()}>✕</button>
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className={styles.scActions}>

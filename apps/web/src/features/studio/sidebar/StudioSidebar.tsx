@@ -17,18 +17,18 @@ const labels: Record<SidebarTab, string> = {
 
 export function StudioSidebar({
   tab,
+  screens,
   screen,
   activeScreenId,
   selectedNodeId,
-  onTabChange,
   onSelectScreen,
   onSelectNode,
 }: {
   tab: SidebarTab;
+  screens: Screen[];
   screen: Screen;
   activeScreenId: string;
   selectedNodeId: string;
-  onTabChange: (tab: SidebarTab) => void;
   onSelectScreen: (id: string) => void;
   onSelectNode: (id: string) => void;
 }) {
@@ -39,7 +39,7 @@ export function StudioSidebar({
       </div>
       <div className={styles.leftContent}>
         {tab === "screens" && (
-          <ScreensPanel activeId={activeScreenId} onSelect={onSelectScreen} />
+          <ScreensPanel screens={screens} activeId={activeScreenId} onSelect={onSelectScreen} />
         )}
         {tab === "layers" && (
           <LayersPanel
