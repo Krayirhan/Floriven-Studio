@@ -304,15 +304,27 @@ async function processGenerationJob(options: ProcessGenerationJobOptions): Promi
     const forcedStrategy: Strategy | undefined = !editScreens && templateStrategy
       ? { mode: 'template', stylePresetId: selectedStyleId, ...templateStrategy, rationale: ['User selected a visual style'] }
       : undefined
-    const screens = normalizeScreens(result.raw, result.blueprint, forcedStrategy, result.domainPackId)
-    const qualityReport = evaluateGenerationQuality(screens, result.blueprint, result.domainPackId)
-    const identityIssues = validateDesignSpecIdentity({ screens })
-    if (identityIssues.length > 0) {
-      qualityReport.passed = false
-      qualityReport.score = 0
-      qualityReport.issues.push(...identityIssues.map((issue) => `${issue.code}: ${issue.message}`))
+    const applyIdentityGate = (candidate: Node[]) => {
+      const report = evaluateGenerationQuality(candidate, result.blueprint, result.domainPackId)
+      const identityIssues = validateDesignSpecIdentity({ screens: candidate })
+      if (identityIssues.length > 0) {
+        report.passed = false
+        report.score = 0
+        report.issues.push(...identityIssues.map((issue) => `${issue.code}: ${issue.message}`))
+      }
+      return report
     }
-    await updateStage('static_quality', 85, { quality_report: qualityReport, quality_version: 'v2' })
+    const enhancedScreens = normalizeScreens(result.raw, result.blueprint, forcedStrategy, result.domainPackId)
+    const enhancedQuality = applyIdentityGate(enhancedScreens)
+    const baselineScreens = !editScreens
+      ? normalizeScreens(composeDeterministicBaseScreens(result.blueprint), result.blueprint, forcedStrategy, result.domainPackId)
+      : undefined
+    const baselineQuality = baselineScreens ? applyIdentityGate(baselineScreens) : undefined
+    const useBaseline = !!baselineScreens && baselineQuality?.passed && !enhancedQuality.passed
+    const screens = useBaseline ? baselineScreens : enhancedScreens
+    const qualityReport = useBaseline ? baselineQuality! : enhancedQuality
+    if (useBaseline) providerEvents = appendProviderEvent(providerEvents, { operation: 'composition_quality_gate', status: 'fallback', fallbackUsed: true, errorCode: 'AI_ENHANCEMENT_REJECTED' })
+    await updateStage('static_quality', 85, { quality_report: qualityReport, quality_version: 'v2', provider_events: providerEvents, provider_metadata: { selectedCompositionMode: useBaseline ? 'deterministic_baseline' : 'ai_enhanced', baselineQualityScore: baselineQuality?.score, baselineQualityPassed: baselineQuality?.passed } })
     if (!qualityReport.passed) {
       const qualityMessage = `Static quality rejected candidate (${qualityReport.score}/100): ${qualityReport.issues.join(' ')}`
       const { error } = await supabase.from('generation_jobs').update({ status: 'failed', stage: 'QUALITY_REJECTED', progress: 100, result_screens: screens, error_code: 'QUALITY_REJECTED', error_message: qualityMessage, final_eligible: false, final_decision_reason: 'STATIC_QUALITY_REJECTED' }).eq('id', jobId)
@@ -1205,6 +1217,16 @@ function mapJob(raw: Node) {
     domainPackId: raw.domain_pack_id ?? undefined,
     stylePresetId: raw.style_preset_id ?? undefined,
     qualityReport: raw.quality_report ?? undefined,
+    staticQualityScore: raw.quality_report?.score ?? undefined,
+    staticQualityPassed: raw.quality_report?.passed ?? undefined,
+    staticQualityIssues: raw.quality_report?.issues ?? undefined,
+    staticQualityHardInvariants: raw.quality_report?.metrics ? {
+      nestedCardCount: raw.quality_report.metrics.nestedCardCount,
+      invalidFabCount: raw.quality_report.metrics.invalidFabCount,
+      focusedFlowBottomNavViolations: raw.quality_report.metrics.focusedFlowBottomNavViolations,
+    } : undefined,
+    generatedScreenCount: Array.isArray(raw.result_screens) ? raw.result_screens.length : undefined,
+    selectedCompositionMode: raw.provider_metadata?.selectedCompositionMode ?? undefined,
     runtimeQualityReport: raw.runtime_quality_report ?? undefined,
   }
 }
