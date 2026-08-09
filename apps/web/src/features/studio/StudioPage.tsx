@@ -103,6 +103,9 @@ export function StudioPage() {
         </div>
       )}
       {generation.error && <div className={styles.jobError} role="alert">{generation.error}</div>}
+      {generation.job?.status === "failed" && generation.job.errorCode === "QUALITY_REJECTED" && (
+        <div className={styles.jobStatus} role="status" aria-live="polite">Generation completed technically, but the static quality gate rejected this candidate.</div>
+      )}
       <StudioToolbar
         revision={studio.revision}
         mode={mode}

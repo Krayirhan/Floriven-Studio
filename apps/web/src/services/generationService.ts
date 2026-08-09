@@ -8,6 +8,7 @@ export interface GenerationJob {
   status: GenerationStatus;
   progress: number;
   errorMessage?: string;
+  errorCode?: string;
   resultScreens?: Screen[];
   productBlueprint?: ProductBlueprint;
   domainPackId?: "health-care" | "commerce" | "learning" | "publishing" | "operations";

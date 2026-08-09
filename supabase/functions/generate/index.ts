@@ -199,6 +199,15 @@ Deno.serve(async (req: Request) => {
       .eq('id', job.id)
     if (qualityErr) throw new Error(`Kalite raporu kaydedilemedi: ${qualityErr.message}`)
     if (!qualityReport.passed) {
+      const qualityMessage = `Static quality rejected candidate (${qualityReport.score}/100): ${qualityReport.issues.join(' ')}`
+      const { data: rejected, error: rejectionErr } = await supabase
+        .from('generation_jobs')
+        .update({ status: 'failed', progress: 100, result_screens: screens, error_code: 'QUALITY_REJECTED', error_message: qualityMessage, final_eligible: false, final_decision_reason: 'STATIC_QUALITY_REJECTED', quality_version: 'v2' })
+        .eq('id', job.id)
+        .select()
+        .single()
+      if (rejectionErr) throw new Error(`Quality rejection could not be persisted: ${rejectionErr.message}`)
+      return json(mapJob(rejected))
       throw new Error(`Tasarım kalite kapısını geçemedi (${qualityReport.score}/100): ${qualityReport.issues.join(' ')}`)
     }
 
@@ -1026,6 +1035,7 @@ function mapJob(raw: Node) {
     status: raw.status,
     progress: raw.progress,
     errorMessage: raw.error_message ?? undefined,
+    errorCode: raw.error_code ?? undefined,
     resultScreens: raw.result_screens ?? undefined,
     productBlueprint: raw.product_blueprint ?? undefined,
     domainPackId: raw.domain_pack_id ?? undefined,
