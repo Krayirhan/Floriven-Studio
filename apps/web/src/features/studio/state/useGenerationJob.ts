@@ -9,14 +9,19 @@ export function useGenerationJob(jobId: string | null) {
     if (!jobId) return;
     let active = true;
     let timer: ReturnType<typeof setTimeout> | undefined;
+    let attempts = 0;
+    const maxAttempts = 120;
 
     const load = async () => {
       try {
         const nextJob = await generationService.get(jobId);
         if (!active) return;
         setJob(nextJob);
-        if (nextJob.status === "queued" || nextJob.status === "processing") {
+        attempts += 1;
+        if ((nextJob.status === "queued" || nextJob.status === "processing") && attempts < maxAttempts) {
           timer = setTimeout(load, 1500);
+        } else if (nextJob.status === "queued" || nextJob.status === "processing") {
+          setError("Üretim beklenen süre içinde terminal duruma ulaşmadı.");
         }
       } catch (nextError) {
         if (active) setError(nextError instanceof Error ? nextError.message : "Üretim durumu alınamadı.");

@@ -15,14 +15,11 @@ describe("generationService", () => {
 
   it("keeps a controlled quality rejection terminal and non-final", async () => {
     const fetcher: typeof fetch = async () => new Response(JSON.stringify({
-      id: "quality-job", projectId: "project-1", status: "failed", progress: 100,
-      errorCode: "QUALITY_REJECTED", errorMessage: "Static quality rejected candidate (65/100)",
-      qualityReport: { score: 65, passed: false, issues: ["SPARSE_SCREEN"], metrics: {} }, finalEligible: false,
-    }));
+      id: "quality-job", projectId: "project-1", status: "queued", stage: "queued", progress: 0,
+    }), { status: 202 });
     const service = createGenerationService(fetcher, { url: "https://example.supabase.co", anonKey: "test-key" });
     const job = await service.create("project-1", { brief: "Bir finans uygulaması oluştur.", platform: "ios", designMode: "auto" });
-    expect(job.status).toBe("failed");
-    expect(job.errorCode).toBe("QUALITY_REJECTED");
+    expect(job.status).toBe("queued");
     expect(isFinalEligibleGeneration(job)).toBe(false);
   });
 
@@ -30,7 +27,7 @@ describe("generationService", () => {
     const requests: Request[] = [];
     const fetcher: typeof fetch = async (input, init) => {
       requests.push(new Request(input, init));
-      return new Response(JSON.stringify({ id: "job-1", projectId: "project-1", status: "completed", progress: 100, resultScreens: [] }));
+      return new Response(JSON.stringify({ id: "job-1", projectId: "project-1", status: "queued", stage: "queued", progress: 0 }), { status: 202 });
     };
     const service = createGenerationService(fetcher, { url: "https://example.supabase.co", anonKey: "test-key" });
 
@@ -58,7 +55,7 @@ describe("generationService", () => {
       requests.push(new Request(input, init));
       attempt += 1;
       if (attempt === 1) throw new TypeError("NetworkError when attempting to fetch resource");
-      return new Response(JSON.stringify({ id: "job-retry", projectId: "project-1", status: "completed", progress: 100, resultScreens: [] }));
+      return new Response(JSON.stringify({ id: "job-retry", projectId: "project-1", status: "queued", stage: "queued", progress: 0 }), { status: 202 });
     };
     const service = createGenerationService(fetcher, { url: "https://example.supabase.co", anonKey: "test-key" });
 

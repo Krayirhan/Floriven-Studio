@@ -156,8 +156,10 @@ Deno.serve(async (req: Request) => {
       idempotency_key: idempotencyKey,
       input_hash: inputHash,
       job_token_hash: jobTokenHash,
-      status: 'processing',
-      progress: 10,
+      status: 'queued',
+      stage: 'queued',
+      progress: 0,
+      final_eligible: false,
     })
     .select()
     .single()
@@ -179,6 +181,12 @@ Deno.serve(async (req: Request) => {
     }
     return json({ error: insertErr.message }, 500)
   }
+
+  const processPromise = processGenerationJob({ jobId: job.id, brief: String(brief), platform: String(platform), screenScope, countOptions: { requestedScreenCount, minScreenCount, maxScreenCount }, templateStrategy, selectedStyleId, editScreens: editScreensInput, supabase })
+  const edgeRuntime = (globalThis as typeof globalThis & { EdgeRuntime?: { waitUntil(promise: Promise<unknown>): void } }).EdgeRuntime
+  if (edgeRuntime) edgeRuntime.waitUntil(processPromise)
+  else void processPromise
+  return json({ ...mapJob({ ...job, status: 'queued', stage: 'queued', progress: 0, final_eligible: false }), jobId: job.id }, 202)
 
   try {
     const { blueprint, domainPackId, raw } = editScreensInput
@@ -241,6 +249,68 @@ Deno.serve(async (req: Request) => {
 // brief; an edit reuses the current document's own screens as that blueprint
 // and asks the model to change only what the instruction asks for.
 // ---------------------------------------------------------------------------
+
+type ProcessGenerationJobOptions = {
+  jobId: string
+  brief: string
+  platform: string
+  screenScope?: string
+  countOptions: ScreenCountOptions
+  templateStrategy: Omit<Strategy, 'mode' | 'templateId' | 'rationale'> | undefined
+  selectedStyleId?: string
+  editScreens?: Node[]
+  supabase: SupabaseClient
+}
+
+class GenerationPipelineError extends Error {
+  constructor(readonly code: string, message: string) { super(message) }
+}
+
+async function processGenerationJob(options: ProcessGenerationJobOptions): Promise<void> {
+  const { jobId, brief, platform, screenScope, countOptions, templateStrategy, selectedStyleId, editScreens, supabase } = options
+  const updateStage = async (stage: string, progress: number, extra: Record<string, unknown> = {}) => {
+    const { error } = await supabase.from('generation_jobs').update({ stage, progress, ...extra }).eq('id', jobId)
+    if (error) throw new GenerationPipelineError('TECHNICAL_FAILURE', `Stage persistence failed: ${error.message}`)
+  }
+
+  try {
+    await updateStage('provider_pending', 10, { status: 'processing', provider: 'google', provider_attempt: 1, final_eligible: false })
+    const result = editScreens
+      ? await runEditGeneration(brief, editScreens, jobId, supabase)
+      : await runFreshGeneration(brief, platform, screenScope, countOptions, templateStrategy, selectedStyleId, jobId, supabase)
+    await updateStage('provider_complete', 70, { provider_http_status: 200 })
+    if (result.raw.length === 0) throw new GenerationPipelineError('PROVIDER_BAD_RESPONSE', 'Provider returned no screens')
+
+    await updateStage('validating', 75)
+    const forcedStrategy: Strategy | undefined = !editScreens && templateStrategy
+      ? { mode: 'template', stylePresetId: selectedStyleId, ...templateStrategy, rationale: ['User selected a visual style'] }
+      : undefined
+    const screens = normalizeScreens(result.raw, result.blueprint, forcedStrategy, result.domainPackId)
+    const qualityReport = evaluateGenerationQuality(screens, result.blueprint, result.domainPackId)
+    const identityIssues = validateDesignSpecIdentity({ screens })
+    if (identityIssues.length > 0) {
+      qualityReport.passed = false
+      qualityReport.score = 0
+      qualityReport.issues.push(...identityIssues.map((issue) => `${issue.code}: ${issue.message}`))
+    }
+    await updateStage('static_quality', 85, { quality_report: qualityReport, quality_version: 'v2' })
+    if (!qualityReport.passed) {
+      const qualityMessage = `Static quality rejected candidate (${qualityReport.score}/100): ${qualityReport.issues.join(' ')}`
+      const { error } = await supabase.from('generation_jobs').update({ status: 'failed', stage: 'QUALITY_REJECTED', progress: 100, result_screens: screens, error_code: 'QUALITY_REJECTED', error_message: qualityMessage, final_eligible: false, final_decision_reason: 'STATIC_QUALITY_REJECTED' }).eq('id', jobId)
+      if (error) throw new GenerationPipelineError('TECHNICAL_FAILURE', `Quality rejection persistence failed: ${error.message}`)
+      return
+    }
+    const { error } = await supabase.from('generation_jobs').update({ status: 'completed', stage: 'candidate_ready', progress: 100, result_screens: screens, final_eligible: false, final_decision_reason: 'RUNTIME_EVIDENCE_REQUIRED', quality_version: 'v2' }).eq('id', jobId)
+    if (error) throw new GenerationPipelineError('TECHNICAL_FAILURE', `Result persistence failed: ${error.message}`)
+  } catch (err) {
+    const error = err instanceof GenerationPipelineError
+      ? err
+      : err instanceof ProviderError
+        ? new GenerationPipelineError(err.code, err.message)
+        : new GenerationPipelineError('TECHNICAL_FAILURE', err instanceof Error ? err.message : String(err))
+    await supabase.from('generation_jobs').update({ status: 'failed', stage: 'failed', progress: 100, error_code: error.code, error_message: error.message, final_eligible: false }).eq('id', jobId)
+  }
+}
 
 type SupabaseClient = ReturnType<typeof createClient>
 
@@ -480,6 +550,10 @@ function chunk<T>(items: T[], size: number): T[][] {
 
 type ChatMessage = { role: 'system' | 'user' | 'assistant'; content: string }
 
+class ProviderError extends Error {
+  constructor(readonly code: string, message: string) { super(message) }
+}
+
 async function complete(messages: ChatMessage[], maxTokens: number, temperature: number): Promise<string> {
   const providerOrder = [PROVIDERS.google, PROVIDERS.cerebras, PROVIDERS.groq]
   let configuredProviders = 0
@@ -544,7 +618,9 @@ async function complete(messages: ChatMessage[], maxTokens: number, temperature:
       }
       continue
     }
-    throw new Error(`AI sağlayıcı hatası (${res.status})`)
+    if (res.status === 401 || res.status === 403) throw new ProviderError('PROVIDER_AUTH_FAILED', `AI provider authentication failed (${res.status})`)
+    if (res.status >= 500) throw new ProviderError('PROVIDER_UNAVAILABLE', `AI provider unavailable (${res.status})`)
+    throw new ProviderError('PROVIDER_BAD_RESPONSE', `AI provider error (${res.status})`)
   }
   if (configuredProviders === 0) throw new Error('AI sağlayıcı anahtarları tanımsız')
   if (minuteLimitSeen) throw new Error('Tüm AI sağlayıcılarının dakikalık kotası doldu. Bir dakika sonra tekrar deneyin.')
@@ -1048,9 +1124,14 @@ function mapJob(raw: Node) {
     id: raw.id,
     projectId: raw.project_id,
     status: raw.status,
+    stage: raw.stage ?? raw.status,
     progress: raw.progress,
     errorMessage: raw.error_message ?? undefined,
     errorCode: raw.error_code ?? undefined,
+    provider: raw.provider ?? undefined,
+    providerHttpStatus: raw.provider_http_status ?? undefined,
+    finalEligible: raw.final_eligible ?? false,
+    finalDecisionReason: raw.final_decision_reason ?? undefined,
     resultScreens: raw.result_screens ?? undefined,
     productBlueprint: raw.product_blueprint ?? undefined,
     domainPackId: raw.domain_pack_id ?? undefined,

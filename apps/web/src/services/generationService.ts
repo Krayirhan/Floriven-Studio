@@ -7,6 +7,11 @@ export interface GenerationJob {
   projectId: string;
   status: GenerationStatus;
   progress: number;
+  stage?: string;
+  provider?: string;
+  providerHttpStatus?: number;
+  finalEligible?: boolean;
+  finalDecisionReason?: string;
   errorMessage?: string;
   errorCode?: string;
   resultScreens?: Screen[];
@@ -63,10 +68,8 @@ export interface GenerationService {
 type FunctionConfig = { url: string; anonKey: string };
 type CallOptions = { timeoutMs?: number; retries?: number };
 
-const GENERATION_TIMEOUT_MS = 180_000;
+const GENERATION_TIMEOUT_MS = 15_000;
 const STATUS_TIMEOUT_MS = 15_000;
-const MAX_STATUS_POLLS = 40;
-const STATUS_POLL_INTERVAL_MS = 1_500;
 
 function functionBaseUrl(url: string): string {
   try {
@@ -148,15 +151,6 @@ export function createGenerationService(
     { timeoutMs: STATUS_TIMEOUT_MS, retries: 1 },
   );
 
-  const waitForTerminalJob = async (job: GenerationJob): Promise<GenerationJob> => {
-    let current = job;
-    for (let attempt = 0; attempt < MAX_STATUS_POLLS && (current.status === "queued" || current.status === "processing"); attempt += 1) {
-      await new Promise((resolve) => setTimeout(resolve, STATUS_POLL_INTERVAL_MS));
-      current = await getJob(current.id);
-    }
-    return current;
-  };
-
   return {
     async create(projectId, request) {
       const idempotencyKey = crypto.randomUUID();
@@ -167,7 +161,7 @@ export function createGenerationService(
         body: JSON.stringify({ projectId, ...request }),
       }, { timeoutMs: GENERATION_TIMEOUT_MS, retries: 1 });
       rememberJobToken(job.id, jobToken);
-      return waitForTerminalJob(job);
+      return job;
     },
     get(jobId) {
       return getJob(jobId);
