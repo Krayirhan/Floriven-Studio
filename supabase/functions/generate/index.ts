@@ -12,6 +12,7 @@ import { scheduleGenerationJob } from './async-job-contract.ts'
 import { classifyProviderFailure } from './provider-contract.ts'
 import { GeminiAdapterError, parseGeminiGenerateContentResponse } from './gemini-adapter.ts'
 import { assertOutputBudgetWithinModelLimit, estimateCompositionBudget, GOOGLE_COMPOSITION_MAX_OUTPUT_TOKENS, GOOGLE_EDIT_MAX_OUTPUT_TOKENS, GOOGLE_MODEL_OUTPUT_LIMIT, GOOGLE_PLAN_MAX_OUTPUT_TOKENS } from './output-budget.ts'
+import { buildGoogleGenerateRequest } from './provider-request.ts'
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -590,14 +591,7 @@ async function complete(messages: ChatMessage[], maxTokens: number, temperature:
     let res: Response
     try {
       const requestBody = provider === PROVIDERS.google
-        ? {
-            contents: messages.filter((message) => message.role !== 'system').map((message) => ({
-              role: message.role === 'assistant' ? 'model' : 'user',
-              parts: [{ text: message.content }],
-            })),
-            ...(messages.find((message) => message.role === 'system') ? { systemInstruction: { parts: [{ text: messages.find((message) => message.role === 'system')?.content ?? '' }] } } : {}),
-            generationConfig: { maxOutputTokens: providerMaxTokens, temperature, responseMimeType: 'application/json' },
-          }
+        ? buildGoogleGenerateRequest(messages, providerMaxTokens, temperature, operation)
         : {
             model: provider.model,
             messages,
