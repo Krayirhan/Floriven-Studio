@@ -1,0 +1,16 @@
+{
+  "releaseSha": "10e0e096a50a2f547d614f2d2c7bc765db08fb1c",
+  "releaseTag": "floriven-v2-rc14",
+  "deployedGenerateVersion": 77,
+  "domain": "Finance",
+  "designMode": "auto",
+  "stylePresetId": null,
+  "jobId": "90b4f8dc-a422-40c1-97c1-d2c91845d4a7",
+  "initialHttpStatus": 202,
+  "initialResponseLatencyMs": 12659,
+  "idempotencyKey": "NOT_RECOVERABLE_FROM_HARNESS_OUTPUT",
+  "timestamp": "NOT_RECORDED",
+  "postReturnedBeforeProvider": true,
+  "sameJobPolled": true,
+  "duplicateJobCreated": false
+}

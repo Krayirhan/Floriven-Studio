@@ -11,6 +11,7 @@ import { buildProviderHeaders } from './provider-auth.ts'
 import { scheduleGenerationJob } from './async-job-contract.ts'
 import { classifyProviderFailure } from './provider-contract.ts'
 import { GeminiAdapterError, parseGeminiGenerateContentResponse } from './gemini-adapter.ts'
+import { assertOutputBudgetWithinModelLimit, estimateCompositionBudget, GOOGLE_COMPOSITION_MAX_OUTPUT_TOKENS, GOOGLE_EDIT_MAX_OUTPUT_TOKENS, GOOGLE_MODEL_OUTPUT_LIMIT, GOOGLE_PLAN_MAX_OUTPUT_TOKENS } from './output-budget.ts'
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -55,11 +56,11 @@ const PROVIDERS = {
   },
 } as const
 
-const PLAN_TOKENS = 1800
-const BUILD_TOKENS = 12000
+const PLAN_TOKENS = GOOGLE_PLAN_MAX_OUTPUT_TOKENS
+const BUILD_TOKENS = GOOGLE_COMPOSITION_MAX_OUTPUT_TOKENS
 // Edit mode round-trips the whole current document (input echo + rewritten output) in
 // one call, so it needs more headroom than a fresh build batch of 4 screens.
-const EDIT_TOKENS = 14000
+const EDIT_TOKENS = GOOGLE_EDIT_MAX_OUTPUT_TOKENS
 const MAX_EDIT_SCREENS = 10
 
 type Strategy = { mode: 'auto' | 'template'; stylePresetId?: string; templateId?: string; palette: string; cardStyle: string; density: string; navigationStyle: string; visualDirection: string; rationale: string[] }
@@ -285,9 +286,10 @@ async function processGenerationJob(options: ProcessGenerationJobOptions): Promi
   try {
     await updateStage('provider_pending', 10, { status: 'processing', provider: 'google', provider_attempt: 1, final_eligible: false })
     providerStartedAt = Date.now()
+    const setProviderPhase = async (phase: string) => { currentStage = phase; await supabase.from('generation_jobs').update({ stage: phase, provider_operation: phase }).eq('id', jobId) }
     const result = editScreens
-      ? await runEditGeneration(brief, editScreens, jobId, supabase)
-      : await runFreshGeneration(brief, platform, screenScope, countOptions, templateStrategy, selectedStyleId, jobId, supabase)
+      ? await runEditGeneration(brief, editScreens, jobId, supabase, setProviderPhase)
+      : await runFreshGeneration(brief, platform, screenScope, countOptions, templateStrategy, selectedStyleId, jobId, supabase, setProviderPhase)
     await updateStage('provider_complete', 70, { provider_http_status: 200, provider_duration_ms: Date.now() - providerStartedAt, provider_metadata: { attempts: [{ provider: 'google', status: 200 }] } })
     if (result.raw.length === 0) throw new GenerationPipelineError('PROVIDER_BAD_RESPONSE', 'Provider returned no screens')
 
@@ -333,9 +335,11 @@ async function runFreshGeneration(
   selectedStyleId: string | undefined,
   jobId: string,
   supabase: SupabaseClient,
+  setProviderPhase: (phase: string) => Promise<void>,
 ): Promise<{ blueprint: ProductBlueprint; domainPackId: DomainPackId | undefined; raw: unknown[] }> {
   // Phase 1 — cheap plan call. Anchors the screens to the pillars actually
   // named in the brief, so a three-pillar app never loses one to a generic screen.
+  await setProviderPhase('planning')
   const blueprint = await planProduct(brief, screenScope, countOptions)
   const plan = blueprint.screens
   const domainPackId = resolveDomainPack(blueprint, brief)
@@ -350,8 +354,10 @@ async function runFreshGeneration(
     : SYSTEM_PROMPT
 
   const raw: unknown[] = []
-  const batches = chunk(plan, 4)
+  const budget = estimateCompositionBudget(plan.length, plan.some((screen) => screen.contentDensity === 'high') ? 'high' : 'medium')
+  const batches = chunk(plan, budget.batchSize)
   for (let batchIndex = 0; batchIndex < batches.length; batchIndex += 1) {
+    await setProviderPhase('composition')
     const batch = batches[batchIndex]
     const userMsg = [
       `Uygulama: ${brief}`,
@@ -375,7 +381,7 @@ async function runFreshGeneration(
     const parsed = await completeJson([
       { role: 'system', content: runtimeSystemPrompt },
       { role: 'user', content: userMsg },
-    ], BUILD_TOKENS, 0.55) as { screens?: unknown }
+    ], BUILD_TOKENS, 0.55, 'composition') as { screens?: unknown }
     const batchScreens = Array.isArray(parsed.screens) ? parsed.screens : []
     if (batchScreens.length !== batch.length) throw new Error(`${batchIndex + 1}. ekran grubunda ${batch.length} yerine ${batchScreens.length} ekran üretildi`)
     raw.push(...batchScreens)
@@ -389,6 +395,7 @@ async function runEditGeneration(
   editScreens: Node[],
   jobId: string,
   supabase: SupabaseClient,
+  setProviderPhase: (phase: string) => Promise<void>,
 ): Promise<{ blueprint: ProductBlueprint; domainPackId: DomainPackId | undefined; raw: unknown[] }> {
   const blueprint = buildSyntheticBlueprint(editScreens)
   const domainPackId = detectDomainFromScreens(editScreens) ?? resolveDomainPack(blueprint, instruction)
@@ -413,6 +420,7 @@ async function runEditGeneration(
     `${blueprint.screens.length} ekranın tamamını, aynı sırada, güncellenmiş haliyle döndür.`,
   ].join('\n')
 
+  await setProviderPhase('composition')
   const parsed = await completeJson([
     { role: 'system', content: runtimeSystemPrompt },
     { role: 'user', content: userMsg },
@@ -564,7 +572,7 @@ class ProviderError extends Error {
   constructor(readonly code: string, message: string, readonly provider = 'unknown', readonly upstreamStatus?: number, readonly retryable = false, readonly diagnostics: Record<string, unknown> = {}) { super(message) }
 }
 
-async function complete(messages: ChatMessage[], maxTokens: number, temperature: number): Promise<string> {
+async function complete(messages: ChatMessage[], maxTokens: number, temperature: number, operation = 'provider'): Promise<string> {
   const providerOrder = [PROVIDERS.google, PROVIDERS.cerebras, PROVIDERS.groq]
   let configuredProviders = 0
   let minuteLimitSeen = false
@@ -574,7 +582,8 @@ async function complete(messages: ChatMessage[], maxTokens: number, temperature:
     const key = Deno.env.get(provider.keyEnv) ?? ''
     if (!key) continue
     configuredProviders += 1
-    const providerMaxTokens = provider === PROVIDERS.groq ? Math.min(maxTokens, 6500) : maxTokens
+      const providerMaxTokens = provider === PROVIDERS.groq ? Math.min(maxTokens, 6500) : maxTokens
+      if (provider === PROVIDERS.google) assertOutputBudgetWithinModelLimit(providerMaxTokens, GOOGLE_MODEL_OUTPUT_LIMIT)
     let res: Response
     try {
       const requestBody = provider === PROVIDERS.google
@@ -617,7 +626,7 @@ async function complete(messages: ChatMessage[], maxTokens: number, temperature:
       let diagnostics: Record<string, unknown> = {}
       try {
         if (provider === PROVIDERS.google) {
-          const normalized = parseGeminiGenerateContentResponse(data)
+          const normalized = parseGeminiGenerateContentResponse(data, { model: provider.model, operation, configuredMaxOutputTokens: providerMaxTokens })
           content = normalized.text
           diagnostics = normalized.diagnostics
         } else {
@@ -655,8 +664,8 @@ async function complete(messages: ChatMessage[], maxTokens: number, temperature:
   throw new ProviderError('PROVIDER_UNAVAILABLE', 'All configured AI providers were unavailable', 'provider-chain', undefined, true)
 }
 
-async function completeJson(messages: ChatMessage[], maxTokens: number, temperature: number): Promise<Record<string, unknown>> {
-  const first = await complete(messages, maxTokens, temperature)
+async function completeJson(messages: ChatMessage[], maxTokens: number, temperature: number, operation = 'provider'): Promise<Record<string, unknown>> {
+  const first = await complete(messages, maxTokens, temperature, operation)
   try {
     return repairModelJson(first)
   } catch (firstError) {
@@ -664,7 +673,7 @@ async function completeJson(messages: ChatMessage[], maxTokens: number, temperat
       role: 'system',
       content: 'Önceki yanıt JSON sözdizimine uymadı. Aynı sözleşmeyi eksiksiz uygula; yalnız geçerli, çift tırnaklı JSON döndür. Markdown, yorum ve trailing comma kullanma.',
     }
-    const second = await complete([...messages, correction], maxTokens, 0.1)
+    const second = await complete([...messages, correction], maxTokens, 0.1, `${operation}_repair`)
     try {
       return repairModelJson(second)
     } catch {
