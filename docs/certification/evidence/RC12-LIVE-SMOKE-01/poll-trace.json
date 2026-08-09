@@ -1,0 +1,10 @@
+{
+  "jobId": "157548e9-50e8-42b8-b2e5-688987bcc77c",
+  "initialResponse": { "httpStatus": 202, "status": "queued", "stage": "queued" },
+  "observedStages": ["queued", "provider_pending", "failed"],
+  "terminal": { "status": "failed", "stage": "failed", "progress": 100, "errorCode": "TECHNICAL_FAILURE" },
+  "sameJobPolled": true,
+  "duplicateJobCreated": false,
+  "rawProviderStatus": "NOT EXPOSED BY RETURNED JOB PAYLOAD",
+  "qualityReport": "NOT REACHED/NOT EXPOSED"
+}

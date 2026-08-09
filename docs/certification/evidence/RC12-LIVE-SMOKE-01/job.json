@@ -1,0 +1,13 @@
+{
+  "id": "157548e9-50e8-42b8-b2e5-688987bcc77c",
+  "status": "failed",
+  "stage": "failed",
+  "progress": 100,
+  "errorCode": "TECHNICAL_FAILURE",
+  "qualityReport": null,
+  "resultScreens": null,
+  "runtimeQualityReport": null,
+  "finalEligible": false,
+  "provider": "NOT EXPOSED BY RETURNED JOB PAYLOAD",
+  "providerHttpStatus": "NOT EXPOSED BY RETURNED JOB PAYLOAD"
+}

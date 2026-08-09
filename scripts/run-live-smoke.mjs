@@ -22,7 +22,7 @@ const created = await fetch(generateUrl, {
   headers,
   body: JSON.stringify({
     projectId: `live-smoke-finance-auto-${crypto.randomUUID()}`,
-    brief: "Serbest çalışanların gelir, müşteriler, faturalar ve ödeme takibini yönetebileceği sade bir finans uygulaması tasarla.",
+    brief: "Freelancerlar ve bağımsız çalışanlar için kişisel finans ve fatura yönetimi mobil uygulaması tasarla.\n\nKullanıcı bu ayki gelirini, giderini, toplam bakiyesini, ödenmemiş faturalarını ve vergi için ayırması gereken miktarı görebilmeli.\n\nİşlemler ekranında çok sayıda gelir ve gider kaydını tarayabilmeli, arayabilmeli ve filtreleyebilmeli.\n\nFaturalar taslak, gönderildi, gecikti ve ödendi durumlarını desteklemeli.\n\nYeni fatura oluşturma ekranında müşteri, hizmet kalemleri, miktar, fiyat, vergi, son ödeme tarihi ve not alanları bulunmalı.\n\nAnaliz ekranı yalnızca dekoratif grafik değil, gelir-gider trendleri ve karar vermeye yardımcı insight'lar sunmalı.\n\nProfil ve ayarlar bölümü para birimi, bildirim ve hesap tercihlerini içermeli.",
     platform: "ios",
     designMode: "auto",
   }),

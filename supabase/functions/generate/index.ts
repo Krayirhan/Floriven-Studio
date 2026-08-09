@@ -268,22 +268,26 @@ type ProcessGenerationJobOptions = {
 }
 
 class GenerationPipelineError extends Error {
-  constructor(readonly code: string, message: string) { super(message) }
+  constructor(readonly code: string, message: string, readonly provider?: string, readonly upstreamStatus?: number, readonly retryable = false) { super(message) }
 }
 
 async function processGenerationJob(options: ProcessGenerationJobOptions): Promise<void> {
   const { jobId, brief, platform, screenScope, countOptions, templateStrategy, selectedStyleId, editScreens, supabase } = options
+  let currentStage = 'provider_pending'
+  let providerStartedAt = Date.now()
   const updateStage = async (stage: string, progress: number, extra: Record<string, unknown> = {}) => {
+    currentStage = stage
     const { error } = await supabase.from('generation_jobs').update({ stage, progress, ...extra }).eq('id', jobId)
     if (error) throw new GenerationPipelineError('TECHNICAL_FAILURE', `Stage persistence failed: ${error.message}`)
   }
 
   try {
     await updateStage('provider_pending', 10, { status: 'processing', provider: 'google', provider_attempt: 1, final_eligible: false })
+    providerStartedAt = Date.now()
     const result = editScreens
       ? await runEditGeneration(brief, editScreens, jobId, supabase)
       : await runFreshGeneration(brief, platform, screenScope, countOptions, templateStrategy, selectedStyleId, jobId, supabase)
-    await updateStage('provider_complete', 70, { provider_http_status: 200 })
+    await updateStage('provider_complete', 70, { provider_http_status: 200, provider_duration_ms: Date.now() - providerStartedAt, provider_metadata: { attempts: [{ provider: 'google', status: 200 }] } })
     if (result.raw.length === 0) throw new GenerationPipelineError('PROVIDER_BAD_RESPONSE', 'Provider returned no screens')
 
     await updateStage('validating', 75)
@@ -311,9 +315,9 @@ async function processGenerationJob(options: ProcessGenerationJobOptions): Promi
     const error = err instanceof GenerationPipelineError
       ? err
       : err instanceof ProviderError
-        ? new GenerationPipelineError(err.code, err.message)
+        ? new GenerationPipelineError(err.code, err.message, err.provider, err.upstreamStatus, err.retryable)
         : new GenerationPipelineError('TECHNICAL_FAILURE', err instanceof Error ? err.message : String(err))
-    await supabase.from('generation_jobs').update({ status: 'failed', stage: 'failed', progress: 100, error_code: error.code, error_message: error.message, final_eligible: false }).eq('id', jobId)
+    await supabase.from('generation_jobs').update({ status: 'failed', stage: 'failed', failed_stage: currentStage, progress: 100, error_code: error.code, error_message: error.message, provider: error.provider ?? 'google', provider_http_status: error.upstreamStatus ?? null, provider_duration_ms: Date.now() - providerStartedAt, provider_metadata: { retryable: error.retryable, failedStage: currentStage }, final_eligible: false }).eq('id', jobId)
   }
 }
 
@@ -556,7 +560,7 @@ function chunk<T>(items: T[], size: number): T[][] {
 type ChatMessage = { role: 'system' | 'user' | 'assistant'; content: string }
 
 class ProviderError extends Error {
-  constructor(readonly code: string, message: string) { super(message) }
+  constructor(readonly code: string, message: string, readonly provider = 'unknown', readonly upstreamStatus?: number, readonly retryable = false) { super(message) }
 }
 
 async function complete(messages: ChatMessage[], maxTokens: number, temperature: number): Promise<string> {
@@ -596,19 +600,27 @@ async function complete(messages: ChatMessage[], maxTokens: number, temperature:
         body: JSON.stringify(requestBody),
       })
     } catch (error) {
-      if (classifyProviderFailure(error)) throw new ProviderError('PROVIDER_TIMEOUT', 'AI provider request timed out')
-      continue
+      const providerName = provider === PROVIDERS.google ? 'google' : provider === PROVIDERS.cerebras ? 'cerebras' : 'groq'
+      if (classifyProviderFailure(error)) throw new ProviderError('PROVIDER_TIMEOUT', 'AI provider request timed out', providerName, undefined, true)
+      throw new ProviderError('PROVIDER_UNAVAILABLE', 'AI provider request failed before a response was received', providerName, undefined, true)
     }
 
     if (res.ok) {
-      const data = await res.json()
+      let data: Record<string, unknown>
+      try {
+        data = await res.json() as Record<string, unknown>
+      } catch {
+        throw new ProviderError('PROVIDER_PARSE_FAILED', 'AI provider returned malformed JSON', provider === PROVIDERS.google ? 'google' : 'openai-compatible', res.status, false)
+      }
       const content: string = provider === PROVIDERS.google
-        ? data.candidates?.[0]?.content?.parts?.map((part: { text?: string }) => part.text ?? '').join('') ?? ''
-        : data.choices?.[0]?.message?.content ?? ''
-      if (!content.trim()) throw new Error('AI boş yanıt döndü')
+        ? (data as { candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }> }).candidates?.[0]?.content?.parts?.map((part) => part.text ?? '').join('') ?? ''
+        : (data as { choices?: Array<{ message?: { content?: string } }> }).choices?.[0]?.message?.content ?? ''
+      if (!content.trim()) throw new ProviderError('PROVIDER_PARSE_FAILED', 'AI provider returned no usable model content', provider === PROVIDERS.google ? 'google' : 'openai-compatible', res.status, false)
       return content
     }
 
+    const providerName = provider === PROVIDERS.google ? 'google' : provider === PROVIDERS.cerebras ? 'cerebras' : 'groq'
+    if (res.status === 401 || res.status === 403) throw new ProviderError('PROVIDER_AUTH_FAILED', `AI provider authentication failed (${res.status})`, providerName, res.status, false)
     if (res.status === 402 || res.status >= 500) continue
 
     // 429/413 carry two very different meanings on the free tier: a per-minute
@@ -624,14 +636,11 @@ async function complete(messages: ChatMessage[], maxTokens: number, temperature:
       }
       continue
     }
-    if (res.status === 401 || res.status === 403) throw new ProviderError('PROVIDER_AUTH_FAILED', `AI provider authentication failed (${res.status})`)
-    if (res.status >= 500) throw new ProviderError('PROVIDER_UNAVAILABLE', `AI provider unavailable (${res.status})`)
-    throw new ProviderError('PROVIDER_BAD_RESPONSE', `AI provider error (${res.status})`)
+    throw new ProviderError('PROVIDER_BAD_RESPONSE', `AI provider error (${res.status})`, providerName, res.status, false)
   }
-  if (configuredProviders === 0) throw new Error('AI sağlayıcı anahtarları tanımsız')
-  if (minuteLimitSeen) throw new Error('Tüm AI sağlayıcılarının dakikalık kotası doldu. Bir dakika sonra tekrar deneyin.')
-  if (dailyLimitSeen) throw new Error('Tüm AI sağlayıcılarının günlük token kotası doldu. Kota yarın sıfırlanır.')
-  throw new Error('AI sağlayıcıya ulaşılamadı')
+  if (configuredProviders === 0) throw new ProviderError('PROVIDER_INTERNAL_ERROR', 'No AI provider credentials are configured', 'none', undefined, false)
+  if (minuteLimitSeen || dailyLimitSeen) throw new ProviderError('PROVIDER_RATE_LIMITED', dailyLimitSeen ? 'AI provider daily quota is exhausted' : 'AI provider rate limit reached', 'provider-chain', 429, true)
+  throw new ProviderError('PROVIDER_UNAVAILABLE', 'All configured AI providers were unavailable', 'provider-chain', undefined, true)
 }
 
 async function completeJson(messages: ChatMessage[], maxTokens: number, temperature: number): Promise<Record<string, unknown>> {
@@ -1136,6 +1145,10 @@ function mapJob(raw: Node) {
     errorCode: raw.error_code ?? undefined,
     provider: raw.provider ?? undefined,
     providerHttpStatus: raw.provider_http_status ?? undefined,
+    providerAttempt: raw.provider_attempt ?? undefined,
+    providerDurationMs: raw.provider_duration_ms ?? undefined,
+    providerMetadata: raw.provider_metadata ?? undefined,
+    failedStage: raw.failed_stage ?? undefined,
     finalEligible: raw.final_eligible ?? false,
     finalDecisionReason: raw.final_decision_reason ?? undefined,
     resultScreens: raw.result_screens ?? undefined,

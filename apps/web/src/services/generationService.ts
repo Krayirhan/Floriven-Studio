@@ -10,6 +10,10 @@ export interface GenerationJob {
   stage?: string;
   provider?: string;
   providerHttpStatus?: number;
+  providerAttempt?: number;
+  providerDurationMs?: number;
+  providerMetadata?: Record<string, unknown>;
+  failedStage?: string;
   finalEligible?: boolean;
   finalDecisionReason?: string;
   errorMessage?: string;
