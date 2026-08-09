@@ -32,6 +32,9 @@
 | ADR-0003 | AI orchestration için ayrı Python worker | Kabul edildi | 2026-08-05 | [ADR-0003.md](ADR-0003.md) |
 | ADR-0004 | Editörde DOM/SVG-first renderer | Kabul edildi | 2026-08-05 | [ADR-0004.md](ADR-0004.md) |
 | ADR-0005 | Monorepo yapısı (Turborepo) | Kabul edildi | 2026-08-05 | [ADR-0005.md](ADR-0005.md) |
+| ADR-0006 | Görsel stil ve ürün domainini ayırma | Kabul edildi | 2026-08-08 | [ADR-0006.md](ADR-0006.md) |
+| ADR-0007 | Dinamik ürün bilgi mimarisi ve ekran gruplu üretim | Kabul edildi | 2026-08-08 | [ADR-0007.md](ADR-0007.md) |
+| ADR-0008 | Semantic UX plan and presentation strategy boundaries | Kabul edildi | 2026-08-09 | [ADR-0008.md](ADR-0008.md) |
 
 Yeni ADR'ler `docs/10-templates/ADR_TEMPLATE.md` ile oluşturulur ve bu indeks güncellenir.
 

@@ -23,6 +23,9 @@ export function StudioSidebar({
   selectedNodeId,
   onSelectScreen,
   onSelectNode,
+  onDeleteScreen,
+  onDuplicateScreen,
+  onCreateBlankScreen,
 }: {
   tab: SidebarTab;
   screens: Screen[];
@@ -31,6 +34,9 @@ export function StudioSidebar({
   selectedNodeId: string;
   onSelectScreen: (id: string) => void;
   onSelectNode: (id: string) => void;
+  onDeleteScreen: (screenId: string) => void;
+  onDuplicateScreen: (screenId: string) => void;
+  onCreateBlankScreen: () => void;
 }) {
   return (
     <aside className={styles.leftSidebar}>
@@ -39,7 +45,14 @@ export function StudioSidebar({
       </div>
       <div className={styles.leftContent}>
         {tab === "screens" && (
-          <ScreensPanel screens={screens} activeId={activeScreenId} onSelect={onSelectScreen} />
+          <ScreensPanel
+            screens={screens}
+            activeId={activeScreenId}
+            onSelect={onSelectScreen}
+            onDelete={onDeleteScreen}
+            onDuplicate={onDuplicateScreen}
+            onCreateBlank={onCreateBlankScreen}
+          />
         )}
         {tab === "layers" && (
           <LayersPanel

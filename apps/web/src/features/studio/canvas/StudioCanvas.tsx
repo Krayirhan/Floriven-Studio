@@ -1,5 +1,5 @@
-import type { Screen } from "@floriven/design-spec";
 import { useRef, useState } from "react";
+import type { PresentationSpec, Screen } from "@floriven/design-spec";
 import styles from "../StudioPage.module.css";
 import { FlowConnections } from "./FlowConnections";
 import { PhoneScreen } from "./PhoneScreen";
@@ -18,6 +18,47 @@ const SCREEN_META: Record<string, { device: string; dims: string }> = {
   scr_bgt: { device: "iPhone 15 Pro", dims: "390 × 844" },
 };
 
+const PALETTE_LABELS: Record<string, string> = {
+  obsidian: "Obsidian", serene: "Serene", terracotta: "Terracotta", electric: "Electric", editorial: "Editorial",
+};
+
+/** What the screen's own data says its style is — never a label decoupled from the render. */
+function screenPaletteLabel(screen: Screen): string {
+  const strategy = screen.root.props.strategy;
+  const palette = strategy && typeof strategy === "object" && !Array.isArray(strategy)
+    ? (strategy as Record<string, unknown>).palette
+    : undefined;
+  if (typeof palette === "string" && PALETTE_LABELS[palette]) return PALETTE_LABELS[palette];
+  const theme = screen.root.props.theme;
+  return typeof theme === "string" && theme.length > 0 ? theme.charAt(0).toUpperCase() + theme.slice(1) : "Original";
+}
+
+function designStrategy(screen: Screen | undefined) {
+  const value = screen?.root.props.strategy;
+  if (!value || typeof value !== "object" || Array.isArray(value)) return undefined;
+  const strategy = value as Record<string, unknown>;
+  return {
+    direction: typeof strategy.visualDirection === "string" ? strategy.visualDirection : "Otomatik tasarım yönü",
+    mode: strategy.mode === "template" ? "Şablon" : "AI otomatik",
+    rationale: Array.isArray(strategy.rationale) ? strategy.rationale.filter((item): item is string => typeof item === "string").slice(0, 2) : [],
+  };
+}
+
+function screenPresentation(screen: Screen): PresentationSpec | undefined {
+  const value = screen.root.props.strategy;
+  if (!value || typeof value !== "object" || Array.isArray(value)) return undefined;
+  const strategy = value as Record<string, unknown>;
+  if (typeof strategy.palette !== "string" || typeof strategy.cardStyle !== "string" || typeof strategy.density !== "string" || typeof strategy.navigationStyle !== "string") return undefined;
+  return {
+    version: "1.0.0",
+    palette: strategy.palette as PresentationSpec["palette"],
+    cardStyle: strategy.cardStyle as PresentationSpec["cardStyle"],
+    density: strategy.density as PresentationSpec["density"],
+    navigationStyle: strategy.navigationStyle as PresentationSpec["navigationStyle"],
+    visualDirection: typeof strategy.visualDirection === "string" ? strategy.visualDirection : "",
+  };
+}
+
 export function StudioCanvas({
   screens,
   activeScreenId,
@@ -26,6 +67,8 @@ export function StudioCanvas({
   onSelectScreen,
   onSelectNode,
   onClearSelection,
+  onDeleteScreen,
+  onDuplicateScreen,
 }: {
   screens: Screen[];
   activeScreenId: string;
@@ -34,10 +77,13 @@ export function StudioCanvas({
   onSelectScreen: (id: string) => void;
   onSelectNode: (id: string) => void;
   onClearSelection: () => void;
+  onDeleteScreen: (screenId: string) => void;
+  onDuplicateScreen: (screenId: string) => void;
 }) {
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [tool, setTool] = useState<Tool>("select");
+  const strategy = designStrategy(screens[0]);
   const drag = useRef<{ x: number; y: number; px: number; py: number } | null>(null);
 
   const resetView = () => { setZoom(1); setPan({ x: 0, y: 0 }); };
@@ -49,6 +95,7 @@ export function StudioCanvas({
       style={{ cursor: tool === "hand" ? "grab" : "default" }}
       onClick={onClearSelection}
       onWheel={(e) => {
+        if ((e.target as HTMLElement).closest(`.${styles.phBody}`)) return;
         e.preventDefault();
         setZoom((v) => Math.min(1.5, Math.max(0.4, v - e.deltaY * 0.001)));
       }}
@@ -64,6 +111,8 @@ export function StudioCanvas({
       onPointerUp={() => { drag.current = null; }}
     >
       <div className={styles.canvasGrid} aria-hidden="true" />
+
+      {strategy && <aside className={styles.strategySummary} onClick={(event) => event.stopPropagation()}><span>{strategy.mode}</span><strong>{strategy.direction}</strong>{strategy.rationale.map((reason) => <small key={reason}>✦ {reason}</small>)}</aside>}
 
       {/* Canvas mini-toolbar */}
       <div className={styles.canvasTool} onClick={(e) => e.stopPropagation()}>
@@ -113,17 +162,7 @@ export function StudioCanvas({
                 <div className={styles.scrLabel}>
                   <span className={`${styles.scrLabelDot} ${active ? styles.scrLabelDotActive : ""}`} />
                   <span className={styles.scrName}>{screen.name}</span>
-                  <span className={styles.scrLabelVars}>
-                    <select
-                      aria-label={`${screen.name} varyasyonu`}
-                      defaultValue={active ? "Original" : "Editorial"}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <option>Original</option>
-                      <option>Editorial</option>
-                      <option>Soft Futurism</option>
-                    </select>
-                  </span>
+                  <span className={styles.scrLabelVars} title="Bu ekranın gerçek stili">{screenPaletteLabel(screen)}</span>
                 </div>
                 <div className={styles.scrMeta2}>
                   <span className={styles.scrDims}>{meta.dims}</span>
@@ -131,14 +170,26 @@ export function StudioCanvas({
                   <span className={styles.scrDevice}>{meta.device}</span>
                 </div>
                 <div className={styles.scrHeaderActions}>
-                  <button className={styles.scrHeaderBtn} onClick={(e) => e.stopPropagation()}>Önizle</button>
-                  <button className={styles.scrHeaderBtn} onClick={(e) => e.stopPropagation()}>Çoğalt</button>
-                  <button className={styles.scrHeaderBtn} onClick={(e) => e.stopPropagation()}>✦ Varyasyon</button>
-                  <button className={styles.scrHeaderBtn} onClick={(e) => e.stopPropagation()}>Sil</button>
+                  <button
+                    className={styles.scrHeaderBtn}
+                    onClick={(e) => { e.stopPropagation(); onDuplicateScreen(screen.id); }}
+                  >
+                    Çoğalt
+                  </button>
+                  <button
+                    className={styles.scrHeaderBtn}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (window.confirm(`"${screen.name}" ekranını silmek istediğine emin misin?`)) onDeleteScreen(screen.id);
+                    }}
+                  >
+                    Sil
+                  </button>
                 </div>
               </div>
               <PhoneScreen
                 screen={screen}
+                presentation={screenPresentation(screen)}
                 active={active}
                 selectedNodeId={selectedNodeId}
                 onSelect={onSelectNode}

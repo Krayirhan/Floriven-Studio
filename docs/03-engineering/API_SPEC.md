@@ -39,9 +39,39 @@ GET    /workspaces/{workspaceId}/credits
 GET    /workspaces/{workspaceId}/credit-ledger
 ```
 
+Generation job isteği `designMode: "auto" | "template"` taşır. Template modunda
+`stylePresetId` zorunludur ve sunucudaki sürümlü allowlist üzerinden doğrulanır;
+istemcinin gönderdiği serbest stil nesnesine güvenilmez. Eski istemcilerin
+`templateId` alanı geçici olarak `stylePresetId` alias'ı kabul edilir. Auto modda
+stil kimliği gönderilmez ve DesignStrategy model çıktısı şema/enum doğrulamasından
+geçirilir. Görsel stil seçimi ProductBlueprint ekranlarını, domainini veya
+terminolojisini değiştiremez; domain capability pack yalnız brief analizinden seçilir.
+
+İstek isteğe bağlı `requestedScreenCount`, `minScreenCount` ve `maxScreenCount`
+alanlarını kabul eder. Açık sayı 1–12 aralığında tam hedeflenir. Sayı verilmezse
+planner 3–8 ekran arasında ürün görevlerine göre karar verir. `screenScope` eski
+istemciler için korunur: `Tek ekran` 1, `Tam akış` 8 ekrana eşlenir; `AI belirlesin`
+otomatik politikayı kullanır. Dörtten büyük planlar sunucuda gruplu üretilir fakat
+tek idempotent generation job olarak döner.
+
+Job yanıtı ayrıca doğrulanmış `productBlueprint`, brief'ten türetilmiş opsiyonel
+`domainPackId`, yalnız görsel `stylePresetId` ve deterministik `qualityReport`
+alanlarını döndürür. `qualityReport.passed=false` olan üretim tamamlanmış sonuç
+sayılmaz ve `resultScreens` kalıcılaştırılmaz.
+
 ## Idempotency
 
 Generation, export, kredi satın alma ve webhook yan etkileri `Idempotency-Key` kullanır. Aynı key + aynı payload önceki sonucu döndürür; farklı payload 409 verir. Kayıt saklama süresi endpoint'e göre belgelenir.
+
+Generation istemcisi ağ kopması, timeout veya `502/503/504` durumunda aynı
+`Idempotency-Key` ile en fazla bir otomatik retry yapar. Sunucu `(project_id,
+idempotency_key)` benzersizliğiyle ikinci job oluşmasını engeller. İlk çağrı hâlâ
+işleniyorsa istemci mevcut job kimliğini periyodik olarak sorgular.
+
+Generation POST ve GET çağrıları en az 32 karakterli `X-Job-Token` taşır. İstemci
+token'ı session kapsamıyla saklar; sunucu yalnız SHA-256 özetini tutar. Tokensız veya
+yanlış token'lı job okuması `403` döndürür. `generation_jobs` için anonim doğrudan
+SELECT politikası bulunmaz; tüm okumalar bu Edge Function sınırından geçer.
 
 ## Concurrency
 

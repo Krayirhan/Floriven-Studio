@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import styles from "./StudioPage.module.css";
 import { AiCommandDock } from "./ai/AiCommandDock";
 import { StudioCanvas } from "./canvas/StudioCanvas";
@@ -9,16 +9,45 @@ import { AiPanel } from "./sidebar/AiPanel";
 import { StudioSidebar } from "./sidebar/StudioSidebar";
 import { StudioToolbar } from "./toolbar/StudioToolbar";
 import type { LeftTab } from "./studio.types";
-import { LoadingState } from "../../components/ui";
 import { useGenerationJob } from "./state/useGenerationJob";
+import { isFinalEligibleGeneration } from "../../services/generationService";
 
 export function StudioPage() {
-  const studio = useStudioState();
+  const { projectId } = useParams();
+  const studio = useStudioState(projectId ?? "");
   const [searchParams] = useSearchParams();
   const generation = useGenerationJob(searchParams.get("jobId"));
   const [leftOpen, setLeftOpen] = useState(true);
   const [mode, setMode] = useState<"design" | "flow" | "compare">("design");
   const composerRef = useRef<HTMLInputElement>(null);
+  const screensAddedRef = useRef(false);
+
+  const handleDeleteScreen = (screenId: string) => {
+    const wasActive = screenId === studio.activeScreenId;
+    studio.deleteScreen(screenId);
+    if (wasActive) {
+      const remaining = studio.document.screens.filter((screen) => screen.id !== screenId);
+      studio.selectScreen(remaining[0]?.id ?? "");
+    }
+  };
+
+  const handleDuplicateScreen = (screenId: string) => {
+    const newId = studio.duplicateScreen(screenId);
+    if (newId) studio.selectScreen(newId);
+  };
+
+  useEffect(() => {
+    if (
+      generation.job?.status === "completed" &&
+      generation.job.resultScreens?.length &&
+      !screensAddedRef.current
+    ) {
+      screensAddedRef.current = true;
+      studio.setGeneratedScreens(generation.job.resultScreens);
+      const firstScreen = generation.job.resultScreens[0];
+      if (firstScreen) studio.selectScreen(firstScreen.id);
+    }
+  }, [generation.job, studio]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -53,7 +82,6 @@ export function StudioPage() {
     }
   };
 
-  if (!studio.activeScreen) return <LoadingState label="Studio hazırlanıyor..." />;
 
   const isAiTab = studio.leftTab === "ai";
 
@@ -62,6 +90,16 @@ export function StudioPage() {
       {generation.job && (generation.job.status === "queued" || generation.job.status === "processing") && (
         <div className={styles.jobStatus} role="status" aria-live="polite">
           AI üretimi devam ediyor · %{generation.job.progress}
+        </div>
+      )}
+      {generation.job?.status === "completed" && !isFinalEligibleGeneration(generation.job) && (
+        <div className={styles.jobStatus} role="status" aria-live="polite">
+          Preview ready. Runtime quality evidence is still pending.
+        </div>
+      )}
+      {generation.job && isFinalEligibleGeneration(generation.job) && (
+        <div className={styles.jobStatus} role="status" aria-live="polite">
+          Final quality gate passed.
         </div>
       )}
       {generation.error && <div className={styles.jobError} role="alert">{generation.error}</div>}
@@ -132,7 +170,7 @@ export function StudioPage() {
                 onBriefChange={studio.setBrief}
               />
             </div>
-          ) : (
+          ) : studio.activeScreen ? (
             <StudioSidebar
               tab={studio.leftTab as Exclude<LeftTab, "ai">}
               screens={studio.document.screens}
@@ -141,7 +179,12 @@ export function StudioPage() {
               selectedNodeId={studio.selectedNodeId}
               onSelectScreen={studio.selectScreen}
               onSelectNode={studio.selectNode}
+              onDeleteScreen={handleDeleteScreen}
+              onDuplicateScreen={handleDuplicateScreen}
+              onCreateBlankScreen={() => studio.selectScreen(studio.createBlankScreen())}
             />
+          ) : (
+            <div className={styles.aiDrawerWrap}>Henüz ekran oluşturulmadı.</div>
           )}
         </div>
 
@@ -154,6 +197,8 @@ export function StudioPage() {
           onSelectScreen={studio.selectScreen}
           onSelectNode={studio.selectNode}
           onClearSelection={() => studio.selectNode("")}
+          onDeleteScreen={handleDeleteScreen}
+          onDuplicateScreen={handleDuplicateScreen}
         />
 
         {/* Flow mode banner */}
@@ -210,6 +255,7 @@ export function StudioPage() {
         onPromptChange={studio.setPrompt}
         onGenerate={studio.generate}
         composerRef={composerRef}
+        isGenerating={studio.isGenerating}
       />
     </div>
   );

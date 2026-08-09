@@ -9,7 +9,7 @@ const BEFORE = [
 ];
 
 const AFTER = [
-  { icon: '⚡', text: '18 saniyede brief → 4 eksiksiz ekran' },
+  { icon: '⚡', text: 'Brief kapsamına göre eksiksiz ürün akışı' },
   { icon: '🔄', text: 'Navigasyon, modal ve akışlar otomatik' },
   { icon: '🤖', text: 'Brief yazabiliyorsan tasarım yapabilirsin' },
   { icon: '🚀', text: 'DesignSpec v1 ile geliştirici çıktısı hazır' },

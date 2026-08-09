@@ -2,21 +2,20 @@ import { useState } from "react";
 import type { Screen } from "@floriven/design-spec";
 import styles from "../StudioPage.module.css";
 
-const NEW_SCREEN_OPTIONS = [
-  { icon: "📱", label: "Boş ekran" },
-  { icon: "✦", label: "AI ile oluştur" },
-  { icon: "⧉", label: "Seçiliyi çoğalt" },
-  { icon: "📐", label: "Şablondan" },
-];
-
 export function ScreensPanel({
   screens,
   activeId,
   onSelect,
+  onDelete,
+  onDuplicate,
+  onCreateBlank,
 }: {
   screens: Screen[];
   activeId: string;
   onSelect: (id: string) => void;
+  onDelete: (screenId: string) => void;
+  onDuplicate: (screenId: string) => void;
+  onCreateBlank: () => void;
 }) {
   const [showNewMenu, setShowNewMenu] = useState(false);
 
@@ -48,9 +47,17 @@ export function ScreensPanel({
               </div>
             </div>
             <div className={styles.scHover}>
-              <button className={styles.scHoverBtn} title="Çoğalt" onClick={(e) => e.stopPropagation()}>⧉</button>
-              <button className={styles.scHoverBtn} title="Varyasyon üret" onClick={(e) => e.stopPropagation()}>✦</button>
-              <button className={styles.scHoverBtn} title="Sil" onClick={(e) => e.stopPropagation()}>✕</button>
+              <button className={styles.scHoverBtn} title="Çoğalt" onClick={(e) => { e.stopPropagation(); onDuplicate(screen.id); }}>⧉</button>
+              <button
+                className={styles.scHoverBtn}
+                title="Sil"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (window.confirm(`"${screen.name}" ekranını silmek istediğine emin misin?`)) onDelete(screen.id);
+                }}
+              >
+                ✕
+              </button>
             </div>
           </div>
           );
@@ -61,16 +68,21 @@ export function ScreensPanel({
         <div className={styles.scNewWrap}>
           {showNewMenu && (
             <div className={styles.newScreenMenu}>
-              {NEW_SCREEN_OPTIONS.map((opt) => (
-                <button
-                  key={opt.label}
-                  className={styles.newScreenMenuItem}
-                  onClick={() => setShowNewMenu(false)}
-                >
-                  <span>{opt.icon}</span>
-                  {opt.label}
-                </button>
-              ))}
+              <button
+                className={styles.newScreenMenuItem}
+                onClick={() => { setShowNewMenu(false); onCreateBlank(); }}
+              >
+                <span>📱</span>
+                Boş ekran
+              </button>
+              <button
+                className={styles.newScreenMenuItem}
+                onClick={() => { setShowNewMenu(false); if (activeId) onDuplicate(activeId); }}
+                disabled={!activeId}
+              >
+                <span>⧉</span>
+                Seçiliyi çoğalt
+              </button>
             </div>
           )}
           <button

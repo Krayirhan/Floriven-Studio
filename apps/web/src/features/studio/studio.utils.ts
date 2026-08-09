@@ -40,6 +40,17 @@ export function updateNode(
   };
 }
 
+/** Regenerates every node id under a fresh screen slug so a duplicated screen never
+ * shares an id with the one it was copied from. */
+export function remapNodeIds(node: DesignNode, slug: string, seen: { current: number }): DesignNode {
+  const id = `${slug}_n${seen.current++}`;
+  return {
+    ...node,
+    id,
+    ...(node.children ? { children: node.children.map((child) => remapNodeIds(child, slug, seen)) } : {}),
+  };
+}
+
 export function typeIcon(type: string): string {
   const icons: Record<string, string> = {
     Screen: "▦",

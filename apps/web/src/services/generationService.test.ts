@@ -1,21 +1,59 @@
 import { describe, expect, it } from "vitest";
-import { createGenerationService } from "./generationService";
-import type { ApiClient, ApiRequestInit } from "./apiClient";
+import { createGenerationService, isFinalEligibleGeneration } from "./generationService";
 
 describe("generationService", () => {
+  it("does not treat a completed job as final without trusted runtime evidence", () => {
+    expect(isFinalEligibleGeneration({ id: "job", projectId: "project", status: "completed", progress: 100 })).toBe(false);
+    expect(isFinalEligibleGeneration({
+      id: "job", projectId: "project", status: "completed", progress: 100,
+      runtimeQualityReport: {
+        gates: { geometry: true, visual: true, crossScreen: true },
+        pendingGates: [], finalEligible: true,
+      },
+    })).toBe(true);
+  });
+
   it("creates an idempotent generation job request", async () => {
-    const calls: { path: string; init?: ApiRequestInit }[] = [];
-    const request: ApiClient["request"] = async <T>(path: string, init: ApiRequestInit | undefined) => {
-      calls.push(init ? { path, init } : { path });
-      return { id: "job-1", projectId: "project-1", status: "queued", progress: 0 } as T;
+    const requests: Request[] = [];
+    const fetcher: typeof fetch = async (input, init) => {
+      requests.push(new Request(input, init));
+      return new Response(JSON.stringify({ id: "job-1", projectId: "project-1", status: "completed", progress: 100, resultScreens: [] }));
     };
-    const service = createGenerationService({ request });
+    const service = createGenerationService(fetcher, { url: "https://example.supabase.co", anonKey: "test-key" });
 
-    await service.create("project-1", { brief: "Bir finans uygulaması oluştur.", platform: "ios" });
+    await service.create("project-1", { brief: "Bir finans uygulaması oluştur.", platform: "ios", designMode: "template", stylePresetId: "obsidian-precision" });
 
-    expect(calls[0]).toMatchObject({ path: "/v1/projects/project-1/generation-jobs", init: expect.objectContaining({
-      method: "POST",
-      headers: expect.objectContaining({ "Idempotency-Key": expect.any(String) }),
-    }) });
+    expect(requests[0]?.url).toBe("https://example.supabase.co/functions/v1/generate");
+    expect(requests[0]?.method).toBe("POST");
+    expect(requests[0]?.headers.get("Idempotency-Key")).toEqual(expect.any(String));
+    expect(requests[0]?.headers.get("X-Job-Token")?.length).toBeGreaterThanOrEqual(64);
+    await expect(requests[0]?.json()).resolves.toMatchObject({ designMode: "template", stylePresetId: "obsidian-precision" });
+  });
+
+  it("reports an unreachable function with an actionable error", async () => {
+    const fetcher: typeof fetch = async () => { throw new TypeError("Failed to fetch"); };
+    const service = createGenerationService(fetcher, { url: "https://example.supabase.co", anonKey: "test-key" });
+
+    await expect(service.create("project-1", { brief: "Bir uygulama oluştur.", platform: "ios", designMode: "auto" }))
+      .rejects.toThrow("Üretim servisine ulaşılamadı");
+  });
+
+  it("retries a network failure once with the same idempotency key", async () => {
+    const requests: Request[] = [];
+    let attempt = 0;
+    const fetcher: typeof fetch = async (input, init) => {
+      requests.push(new Request(input, init));
+      attempt += 1;
+      if (attempt === 1) throw new TypeError("NetworkError when attempting to fetch resource");
+      return new Response(JSON.stringify({ id: "job-retry", projectId: "project-1", status: "completed", progress: 100, resultScreens: [] }));
+    };
+    const service = createGenerationService(fetcher, { url: "https://example.supabase.co", anonKey: "test-key" });
+
+    const job = await service.create("project-1", { brief: "Bir finans uygulaması oluştur.", platform: "ios", designMode: "auto" });
+
+    expect(job.id).toBe("job-retry");
+    expect(requests).toHaveLength(2);
+    expect(requests[0]?.headers.get("Idempotency-Key")).toBe(requests[1]?.headers.get("Idempotency-Key"));
+    expect(requests[0]?.headers.get("X-Job-Token")).toBe(requests[1]?.headers.get("X-Job-Token"));
   });
 });

@@ -1,21 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { templates } from "../dashboard.data";
+import { findDesignTemplate, type DesignTemplateId } from "@floriven/design-spec";
 import { useDashboardAdvancedOptions } from "../useDashboardAdvancedOptions";
 import { generationService } from "../../../services";
-
-const PROJECT_ID = "prj_finance_01";
 
 export function useDashboardComposer() {
   const navigate = useNavigate();
   const location = useLocation();
   const advancedOptions = useDashboardAdvancedOptions();
-  const { selectedPlatform, screenScope } = advancedOptions;
+  const { selectedPlatform, screenScope, setAdvancedDirection } = advancedOptions;
   const [creationMode, setCreationMode] = useState<"mobile" | "web" | "redesign">("mobile");
   const [prompt, setPrompt] = useState("");
   const [generating, setGenerating] = useState(false);
   const [generationError, setGenerationError] = useState<string | null>(null);
   const [selectedQuickStart, setSelectedQuickStart] = useState<string | null>(null);
+  const [selectedTemplateId, setSelectedTemplateId] = useState<DesignTemplateId | null>(null);
   const referenceInputRef = useRef<HTMLInputElement>(null);
   const [referenceName, setReferenceName] = useState<string | null>(null);
 
@@ -24,10 +23,13 @@ export function useDashboardComposer() {
     setGenerating(true);
     setGenerationError(null);
     try {
-      const job = await generationService.create(PROJECT_ID, {
+      const projectId = `prj_${crypto.randomUUID()}`;
+      const job = await generationService.create(projectId, {
         brief: prompt.trim(),
         platform: creationMode === "web" ? "web" : selectedPlatform === "Android" ? "android" : "ios",
         screenScope,
+        designMode: selectedTemplateId ? "template" : "auto",
+        ...(selectedTemplateId ? { stylePresetId: selectedTemplateId } : {}),
       });
       navigate(`/app/projeler/${job.projectId}/studio?jobId=${job.id}`);
     } catch (error) {
@@ -39,6 +41,7 @@ export function useDashboardComposer() {
 
   const handleSelectQuickStart = (chipPrompt: string) => {
     setPrompt(chipPrompt);
+    setSelectedTemplateId(null);
     setSelectedQuickStart(chipPrompt);
     document.getElementById("design-prompt")?.focus();
   };
@@ -54,9 +57,12 @@ export function useDashboardComposer() {
     if (file) setReferenceName(file.name);
   };
 
-  const handleSelectTemplate = (templatePrompt: string) => {
+  const handleSelectTemplate = (templateId: string) => {
+    const template = findDesignTemplate(templateId);
+    if (!template) return;
     setCreationMode("mobile");
-    setPrompt(templatePrompt);
+    setSelectedTemplateId(template.id);
+    setAdvancedDirection(template.name);
     const textarea = document.getElementById("design-prompt");
     if (textarea) {
       textarea.focus();
@@ -66,22 +72,15 @@ export function useDashboardComposer() {
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const templateKey = params.get("template");
-    const templateId = templateKey === "finance"
-      ? "finance_pro"
-      : templateKey === "wellness"
-        ? "calm_wellness"
-        : templateKey === "commerce"
-          ? "warm_organic"
-          : null;
-    const template = templates.find((item) => item.id === templateId);
+    const template = findDesignTemplate(params.get("template") ?? undefined);
     if (template) {
       setCreationMode("mobile");
-      setPrompt(template.prompt);
+      setSelectedTemplateId(template.id);
+      setAdvancedDirection(template.name);
     }
     if (params.get("focus") !== "prompt" && !template) return;
     window.setTimeout(() => document.getElementById("design-prompt")?.focus(), 0);
-  }, [location.search]);
+  }, [location.search, setAdvancedDirection]);
 
   return {
     ...advancedOptions,
@@ -92,6 +91,8 @@ export function useDashboardComposer() {
     generationError,
     setGenerating,
     selectedQuickStart,
+    selectedTemplateId,
+    selectedTemplate: findDesignTemplate(selectedTemplateId ?? undefined),
     referenceInputRef,
     referenceName,
     startGeneration,
@@ -99,6 +100,7 @@ export function useDashboardComposer() {
     handlePromptChange,
     selectReference,
     handleSelectTemplate,
+    useAutoDesign: () => { setSelectedTemplateId(null); setAdvancedDirection("Otomatik"); },
   };
 }
 

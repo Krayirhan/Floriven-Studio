@@ -16,11 +16,13 @@ export function AiCommandDock({
   onPromptChange,
   onGenerate,
   composerRef,
+  isGenerating = false,
 }: {
   prompt: string;
   onPromptChange: (prompt: string) => void;
   onGenerate?: () => void;
   composerRef?: React.RefObject<HTMLInputElement>;
+  isGenerating?: boolean;
 }) {
   const [expanded, setExpanded] = useState(false);
 
@@ -70,8 +72,8 @@ export function AiCommandDock({
           onBlur={() => setTimeout(() => setExpanded(false), 200)}
           onKeyDown={handleKeyDown}
         />
-        <button className={styles.aiDockGenerate} onClick={onGenerate}>
-          ✦ Üret
+        <button className={styles.aiDockGenerate} onClick={onGenerate} disabled={isGenerating}>
+          {isGenerating ? "⏳ Üretiliyor..." : "✦ Üret"}
         </button>
       </div>
     </footer>

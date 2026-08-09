@@ -41,7 +41,11 @@ export function InspectorPanel({
           </span>
         )}
       </nav>
-      {tab === "design" && <DesignInspector node={node} onUpdate={onUpdateNode} />}
+      {tab === "design" && (
+        onUpdateNode
+          ? <DesignInspector node={node} onUpdate={onUpdateNode} />
+          : <DesignInspector node={node} />
+      )}
       {tab === "prototype" && <PrototypeInspector />}
     </aside>
   );

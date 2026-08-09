@@ -53,7 +53,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/studio",
-    element: <Navigate to="/app/projeler/prj_finance_01/studio" replace />,
+    element: <Navigate to="/app?focus=prompt" replace />,
   },
   {
     path: "/app/projeler/:projectId/studio",

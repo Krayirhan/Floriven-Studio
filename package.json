@@ -7,7 +7,15 @@
     "test": "turbo run test",
     "lint": "turbo run lint",
     "type-check": "turbo run type-check",
-    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\"",
+    "prompts:build": "node scripts/build-prompts.mjs",
+    "benchmarks:validate": "node scripts/validate-benchmark-catalog.mjs",
+    "benchmarks:run": "node scripts/run-benchmarks.mjs",
+    "certification:preflight": "node scripts/certification/run-certification-preflight.mjs",
+    "certification:security": "node scripts/certification/run-security-audit.mjs",
+    "test:generation-architecture": "pnpm --filter @floriven/web exec vitest --root ../.. run supabase/functions/generate/domain.test.ts supabase/functions/generate/quality.test.ts",
+    "test:e2e": "pnpm --filter @floriven/web test:e2e",
+    "functions:deploy": "pnpm prompts:build && supabase functions deploy generate --project-ref ndhuwqzznivzscjqtxbj"
   },
   "devDependencies": {
     "@types/node": "^26.1.2",

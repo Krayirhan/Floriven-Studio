@@ -7,7 +7,7 @@ import { useStudioHistory } from "../state/useStudioHistory";
 import { useStudioSelection } from "../state/useStudioSelection";
 import { useStudioUiState } from "../state/useStudioUiState";
 
-export function useStudioState() {
+export function useStudioState(projectId: string) {
   const ui = useStudioUiState();
   const historyState = useStudioHistory();
 
@@ -17,6 +17,7 @@ export function useStudioState() {
 
   const selection = useStudioSelection(screensRef, ui.setRightTab);
   const documentState = useStudioDocument(
+    projectId,
     selection.activeScreenId,
     selection.selectedNodeId,
     historyState.incrementRevision,
@@ -24,7 +25,13 @@ export function useStudioState() {
 
   screensRef.current = documentState.document.screens;
 
-  const generation = useStudioGeneration(ui, historyState.addHistoryEntry);
+  const generation = useStudioGeneration(
+    ui,
+    historyState.addHistoryEntry,
+    documentState.setGeneratedScreens,
+    projectId,
+    () => screensRef.current,
+  );
   const { revision, history } = historyState;
 
   return {

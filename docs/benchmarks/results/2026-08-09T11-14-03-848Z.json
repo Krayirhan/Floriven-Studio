@@ -1,0 +1,253 @@
+{
+  "catalogVersion": 1,
+  "sourceRevision": "local-uncommitted",
+  "generatedAt": "2026-08-09T11:53:03.578Z",
+  "results": [
+    {
+      "benchmarkId": "finance",
+      "brief": "Serbest çalışanlar için gelir, müşteriler, faturalar ve ödeme takibini yöneten bir finans uygulaması tasarla.",
+      "designMode": "auto",
+      "status": "completed",
+      "qualityReport": {
+        "score": 95,
+        "issues": [
+          "1 ekran yeterli içerik yoğunluğuna sahip değil."
+        ],
+        "passed": true,
+        "metrics": {
+          "screenCount": 3,
+          "settingsCoverage": 1,
+          "blueprintAlignment": 1,
+          "structureDiversity": 1,
+          "vocabularyCoverage": 0.5,
+          "navigationConsistency": 1,
+          "navigationReachability": 1,
+          "foreignDomainComponents": 0
+        }
+      },
+      "generationId": "05b64f54-3013-42a1-862c-85d0c1e55d83"
+    },
+    {
+      "benchmarkId": "finance",
+      "brief": "Serbest çalışanlar için gelir, müşteriler, faturalar ve ödeme takibini yöneten bir finans uygulaması tasarla.",
+      "designMode": "template",
+      "stylePresetId": "obsidian-precision",
+      "status": "completed",
+      "qualityReport": {
+        "score": 85,
+        "issues": [
+          "3 ekran yeterli içerik yoğunluğuna sahip değil."
+        ],
+        "passed": true,
+        "metrics": {
+          "screenCount": 5,
+          "settingsCoverage": 1,
+          "blueprintAlignment": 1,
+          "structureDiversity": 0.7,
+          "vocabularyCoverage": 0.75,
+          "navigationConsistency": 1,
+          "navigationReachability": 1,
+          "foreignDomainComponents": 0
+        }
+      },
+      "generationId": "0106466a-f8e6-49a8-a828-d6bca28949e3"
+    },
+    {
+      "benchmarkId": "finance",
+      "brief": "Serbest çalışanlar için gelir, müşteriler, faturalar ve ödeme takibini yöneten bir finans uygulaması tasarla.",
+      "designMode": "template",
+      "stylePresetId": "serene-health",
+      "status": "completed",
+      "qualityReport": {
+        "score": 100,
+        "issues": [],
+        "passed": true,
+        "metrics": {
+          "screenCount": 6,
+          "settingsCoverage": 1,
+          "blueprintAlignment": 1,
+          "structureDiversity": 1,
+          "vocabularyCoverage": 0.7857142857142857,
+          "navigationConsistency": 1,
+          "navigationReachability": 1,
+          "foreignDomainComponents": 0
+        }
+      },
+      "generationId": "3a6c96e1-4710-47af-b40a-70993ec15190"
+    },
+    {
+      "benchmarkId": "finance",
+      "brief": "Serbest çalışanlar için gelir, müşteriler, faturalar ve ödeme takibini yöneten bir finans uygulaması tasarla.",
+      "designMode": "template",
+      "stylePresetId": "terracotta-market",
+      "status": "completed",
+      "qualityReport": {
+        "score": 100,
+        "issues": [],
+        "passed": true,
+        "metrics": {
+          "screenCount": 4,
+          "settingsCoverage": 1,
+          "blueprintAlignment": 1,
+          "structureDiversity": 1,
+          "vocabularyCoverage": 0.6428571428571429,
+          "navigationConsistency": 1,
+          "navigationReachability": 1,
+          "foreignDomainComponents": 0
+        }
+      },
+      "generationId": "35c2a5f3-a59f-4be7-9f4c-1dcde8a31806"
+    },
+    {
+      "benchmarkId": "finance",
+      "brief": "Serbest çalışanlar için gelir, müşteriler, faturalar ve ödeme takibini yöneten bir finans uygulaması tasarla.",
+      "designMode": "template",
+      "stylePresetId": "electric-learning",
+      "status": "completed",
+      "qualityReport": {
+        "score": 95,
+        "issues": [
+          "1 ekran yeterli içerik yoğunluğuna sahip değil."
+        ],
+        "passed": true,
+        "metrics": {
+          "screenCount": 6,
+          "settingsCoverage": 1,
+          "blueprintAlignment": 1,
+          "structureDiversity": 1,
+          "vocabularyCoverage": 1,
+          "navigationConsistency": 1,
+          "navigationReachability": 1,
+          "foreignDomainComponents": 0
+        }
+      },
+      "generationId": "cceaca20-64f2-4180-8286-8ccceaede021"
+    },
+    {
+      "benchmarkId": "finance",
+      "brief": "Serbest çalışanlar için gelir, müşteriler, faturalar ve ödeme takibini yöneten bir finans uygulaması tasarla.",
+      "designMode": "template",
+      "stylePresetId": "editorial-culture",
+      "status": "completed",
+      "qualityReport": {
+        "score": 85,
+        "issues": [
+          "3 ekran yeterli içerik yoğunluğuna sahip değil."
+        ],
+        "passed": true,
+        "metrics": {
+          "screenCount": 6,
+          "settingsCoverage": 1,
+          "blueprintAlignment": 1,
+          "structureDiversity": 0.8,
+          "vocabularyCoverage": 1,
+          "navigationConsistency": 1,
+          "navigationReachability": 1,
+          "foreignDomainComponents": 0
+        }
+      },
+      "generationId": "57e47aa5-05ba-456b-a3fc-faa3026bd7c4"
+    },
+    {
+      "benchmarkId": "restaurant",
+      "brief": "Restoran yöneticileri için masa, sipariş, stok ve vardiya operasyonlarını yöneten bir uygulama tasarla.",
+      "designMode": "auto",
+      "status": "completed",
+      "qualityReport": {
+        "score": 100,
+        "issues": [],
+        "passed": true,
+        "metrics": {
+          "screenCount": 6,
+          "settingsCoverage": 1,
+          "blueprintAlignment": 1,
+          "structureDiversity": 1,
+          "vocabularyCoverage": 0.8333333333333334,
+          "navigationConsistency": 1,
+          "navigationReachability": 1,
+          "foreignDomainComponents": 0
+        }
+      },
+      "generationId": "351d9089-90e1-4e9e-9999-6df2122815e9"
+    },
+    {
+      "benchmarkId": "restaurant",
+      "brief": "Restoran yöneticileri için masa, sipariş, stok ve vardiya operasyonlarını yöneten bir uygulama tasarla.",
+      "designMode": "template",
+      "stylePresetId": "obsidian-precision",
+      "status": "failed",
+      "qualityReport": null,
+      "generationId": null,
+      "error": "Tüm AI sağlayıcılarının dakikalık kotası doldu. Bir dakika sonra tekrar deneyin."
+    },
+    {
+      "benchmarkId": "restaurant",
+      "brief": "Restoran yöneticileri için masa, sipariş, stok ve vardiya operasyonlarını yöneten bir uygulama tasarla.",
+      "designMode": "template",
+      "stylePresetId": "serene-health",
+      "status": "completed",
+      "qualityReport": {
+        "score": 100,
+        "issues": [],
+        "passed": true,
+        "metrics": {
+          "screenCount": 6,
+          "settingsCoverage": 1,
+          "blueprintAlignment": 1,
+          "structureDiversity": 1,
+          "vocabularyCoverage": 0.75,
+          "navigationConsistency": 1,
+          "navigationReachability": 1,
+          "foreignDomainComponents": 0
+        }
+      },
+      "generationId": "8e6f437f-6d9b-47d7-8574-11eaa712fe00"
+    },
+    {
+      "benchmarkId": "restaurant",
+      "brief": "Restoran yöneticileri için masa, sipariş, stok ve vardiya operasyonlarını yöneten bir uygulama tasarla.",
+      "designMode": "template",
+      "stylePresetId": "terracotta-market",
+      "status": "completed",
+      "qualityReport": {
+        "score": 100,
+        "issues": [],
+        "passed": true,
+        "metrics": {
+          "screenCount": 4,
+          "settingsCoverage": 1,
+          "blueprintAlignment": 1,
+          "structureDiversity": 1,
+          "vocabularyCoverage": 0.8571428571428571,
+          "navigationConsistency": 1,
+          "navigationReachability": 1,
+          "foreignDomainComponents": 0
+        }
+      },
+      "generationId": "dbd91d8d-c917-4f07-88a0-7c0625274e16"
+    },
+    {
+      "benchmarkId": "restaurant",
+      "brief": "Restoran yöneticileri için masa, sipariş, stok ve vardiya operasyonlarını yöneten bir uygulama tasarla.",
+      "designMode": "template",
+      "stylePresetId": "electric-learning",
+      "status": "completed",
+      "qualityReport": {
+        "score": 100,
+        "issues": [],
+        "passed": true,
+        "metrics": {
+          "screenCount": 6,
+          "settingsCoverage": 1,
+          "blueprintAlignment": 1,
+          "structureDiversity": 1,
+          "vocabularyCoverage": 0.6666666666666666,
+          "navigationConsistency": 1,
+          "navigationReachability": 1,
+          "foreignDomainComponents": 0
+        }
+      },
+      "generationId": "03166b12-a16a-4185-b6f5-4e78f008f0a9"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 import styles from "../DashboardPage.module.css";
-import { quickStarts } from "../dashboard.data";
+import { quickStarts, templates } from "../dashboard.data";
 import type { DashboardComposerState } from "./useDashboardComposer";
 import { RedesignWorkflow } from "./RedesignWorkflow";
 import type { RedesignWorkflowState } from "./useRedesignWorkflow";
@@ -25,6 +25,7 @@ export function DashboardComposer({ composer, redesign }: Props) {
       {creationMode === "redesign" ? <RedesignWorkflow workflow={redesign} /> : (
         <>
           <div className={styles.consoleBody}>
+            <div className={styles.quickStartSection}><span className={styles.quickStartLabel}>TASARIM MOTORU</span><div className={styles.chipScrollRow}><button className={`${styles.quickChip} ${!composer.selectedTemplateId ? styles.quickChipSelected : ""}`} onClick={composer.useAutoDesign}>✦ AI otomatik yön</button>{composer.selectedTemplate && <button className={`${styles.quickChip} ${styles.quickChipSelected}`} onClick={() => composer.selectedTemplate && composer.handleSelectTemplate(composer.selectedTemplate.id)}>◈ {composer.selectedTemplate.name} · v{composer.selectedTemplate.version}</button>}</div></div>
             <textarea id="design-prompt" value={composer.prompt} onChange={(e) => composer.handlePromptChange(e.target.value, e.currentTarget)} placeholder={creationMode === "mobile" ? "Nasıl bir mobil uygulama tasarlamak istiyorsun?" : "Nasıl bir web arayüzü veya dashboard tasarlamak istiyorsun?"} rows={3} />
             <div className={styles.quickStartSection}>
               <span className={styles.quickStartLabel}>Hızlı başlangıçlar</span>
@@ -41,8 +42,8 @@ export function DashboardComposer({ composer, redesign }: Props) {
               {creationMode === "mobile" ? (
                 <div className={styles.advancedGrid}>
                   <AdvancedGroup label="PLATFORM" values={["iOS", "Android", "Her ikisi"]} selected={composer.selectedPlatform} onSelect={composer.setSelectedPlatform} />
-                  <AdvancedGroup label="EKRAN KAPSAMI" values={["Tek ekran", "Temel akış", "Tam akış"]} selected={composer.screenScope} onSelect={composer.setScreenScope} />
-                  <AdvancedGroup label="TASARIM YÖNÜ" values={["Otomatik", "Editorial Minimal", "Soft Futurism", "Warm Organic", "Professional", "Experimental"]} selected={composer.advancedDirection} onSelect={composer.setAdvancedDirection} />
+                  <AdvancedGroup label="EKRAN KAPSAMI" values={["AI belirlesin", "Tek ekran", "Tam akış"]} selected={composer.screenScope} onSelect={composer.setScreenScope} />
+                  <AdvancedGroup label="TASARIM YÖNÜ" values={["Otomatik", ...templates.map((item) => item.name)]} selected={composer.advancedDirection} onSelect={(value) => { if (value === "Otomatik") composer.useAutoDesign(); else { const template = templates.find((item) => item.name === value); if (template) composer.handleSelectTemplate(template.id); } }} />
                   <AdvancedGroup label="VARYASYON VE KALİTE" values={["1 Varyasyon", "2 Varyasyon", "3 Varyasyon", "Hızlı", "Standart", "Yüksek"]} selected={`${composer.advancedVariations} Varyasyon`} onSelect={(value) => value.endsWith(" Varyasyon") ? composer.setAdvancedVariations(Number(value[0])) : composer.setQualityMode(value)} />
                 </div>
               ) : (

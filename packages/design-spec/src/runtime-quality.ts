@@ -1,0 +1,45 @@
+import type { CriticReport } from "./critic-gate";
+import type { GeometryIssue } from "./geometry-validator";
+
+export type RuntimeGateName = "geometry" | "visual" | "crossScreen";
+
+export type RuntimeQualityEvidence = {
+  geometryIssues: readonly GeometryIssue[];
+  visualCritic?: CriticReport;
+  crossScreenCritic?: CriticReport;
+};
+
+export type RuntimeQualityReport = {
+  gates: Record<RuntimeGateName, boolean>;
+  pendingGates: RuntimeGateName[];
+  finalEligible: boolean;
+};
+
+export function evaluateFinalEligibility(staticQualityPassed: boolean, evidence: RuntimeQualityEvidence): RuntimeQualityReport {
+  const runtime = evaluateRuntimeQuality(evidence);
+  return staticQualityPassed ? runtime : { ...runtime, finalEligible: false };
+}
+
+/**
+ * Combines trusted renderer and critic outputs. This function deliberately
+ * does not produce those outputs: callers must supply renderer-derived bounds
+ * and a completed critic report before an output can be called final.
+ */
+export function evaluateRuntimeQuality(evidence: RuntimeQualityEvidence): RuntimeQualityReport {
+  const visualReady = evidence.visualCritic !== undefined;
+  const crossScreenReady = evidence.crossScreenCritic !== undefined;
+  const gates = {
+    geometry: evidence.geometryIssues.length === 0,
+    visual: evidence.visualCritic?.passed === true,
+    crossScreen: evidence.crossScreenCritic?.passed === true,
+  };
+  const pendingGates = (Object.entries({ visual: visualReady, crossScreen: crossScreenReady }) as [RuntimeGateName, boolean][])
+    .filter(([, ready]) => !ready)
+    .map(([gate]) => gate);
+
+  return {
+    gates,
+    pendingGates,
+    finalEligible: pendingGates.length === 0 && Object.values(gates).every(Boolean),
+  };
+}

@@ -58,6 +58,7 @@ export function useRedesignWorkflow(generating: boolean, setGenerating: Dispatch
         brief: redesignInstruction.trim() || "Yüklenen ekranın işlevlerini koruyarak yeniden tasarla.",
         platform: "ios",
         screenScope: "redesign",
+        designMode: "auto",
       });
       setGenerating(false);
       setRedesignStage("generated");
