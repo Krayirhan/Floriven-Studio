@@ -47,12 +47,13 @@ export function useStudioGeneration(
     });
 
     try {
-      const job = await generationService.create(projectId, {
+      const createdJob = await generationService.create(projectId, {
         brief: trimmed,
         platform: "ios",
         designMode: "auto",
         ...(isEdit ? { editScreens: currentScreens } : {}),
       });
+      const job = await generationService.waitForTerminal(createdJob);
 
       if (job.status === "completed" && job.resultScreens?.length) {
         setGeneratedScreens(job.resultScreens);
