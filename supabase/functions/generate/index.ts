@@ -10,6 +10,7 @@ import { validateDesignSpecIdentity } from '../../../packages/design-spec/src/id
 import { buildProviderHeaders } from './provider-auth.ts'
 import { scheduleGenerationJob } from './async-job-contract.ts'
 import { classifyProviderFailure } from './provider-contract.ts'
+import { GeminiAdapterError, parseGeminiGenerateContentResponse } from './gemini-adapter.ts'
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -268,7 +269,7 @@ type ProcessGenerationJobOptions = {
 }
 
 class GenerationPipelineError extends Error {
-  constructor(readonly code: string, message: string, readonly provider?: string, readonly upstreamStatus?: number, readonly retryable = false) { super(message) }
+  constructor(readonly code: string, message: string, readonly provider?: string, readonly upstreamStatus?: number, readonly retryable = false, readonly diagnostics: Record<string, unknown> = {}) { super(message) }
 }
 
 async function processGenerationJob(options: ProcessGenerationJobOptions): Promise<void> {
@@ -315,9 +316,9 @@ async function processGenerationJob(options: ProcessGenerationJobOptions): Promi
     const error = err instanceof GenerationPipelineError
       ? err
       : err instanceof ProviderError
-        ? new GenerationPipelineError(err.code, err.message, err.provider, err.upstreamStatus, err.retryable)
+        ? new GenerationPipelineError(err.code, err.message, err.provider, err.upstreamStatus, err.retryable, err.diagnostics)
         : new GenerationPipelineError('TECHNICAL_FAILURE', err instanceof Error ? err.message : String(err))
-    await supabase.from('generation_jobs').update({ status: 'failed', stage: 'failed', failed_stage: currentStage, progress: 100, error_code: error.code, error_message: error.message, provider: error.provider ?? 'google', provider_http_status: error.upstreamStatus ?? null, provider_duration_ms: Date.now() - providerStartedAt, provider_metadata: { retryable: error.retryable, failedStage: currentStage }, final_eligible: false }).eq('id', jobId)
+    await supabase.from('generation_jobs').update({ status: 'failed', stage: 'failed', failed_stage: currentStage, progress: 100, error_code: error.code, error_message: error.message, provider: error.provider ?? 'google', provider_http_status: error.upstreamStatus ?? null, provider_duration_ms: Date.now() - providerStartedAt, provider_metadata: { ...error.diagnostics, retryable: error.retryable, failedStage: currentStage }, final_eligible: false }).eq('id', jobId)
   }
 }
 
@@ -560,7 +561,7 @@ function chunk<T>(items: T[], size: number): T[][] {
 type ChatMessage = { role: 'system' | 'user' | 'assistant'; content: string }
 
 class ProviderError extends Error {
-  constructor(readonly code: string, message: string, readonly provider = 'unknown', readonly upstreamStatus?: number, readonly retryable = false) { super(message) }
+  constructor(readonly code: string, message: string, readonly provider = 'unknown', readonly upstreamStatus?: number, readonly retryable = false, readonly diagnostics: Record<string, unknown> = {}) { super(message) }
 }
 
 async function complete(messages: ChatMessage[], maxTokens: number, temperature: number): Promise<string> {
@@ -610,12 +611,23 @@ async function complete(messages: ChatMessage[], maxTokens: number, temperature:
       try {
         data = await res.json() as Record<string, unknown>
       } catch {
-        throw new ProviderError('PROVIDER_PARSE_FAILED', 'AI provider returned malformed JSON', provider === PROVIDERS.google ? 'google' : 'openai-compatible', res.status, false)
+        throw new ProviderError('PROVIDER_RESPONSE_DECODE_FAILED', 'AI provider returned malformed JSON', provider === PROVIDERS.google ? 'google' : 'openai-compatible', res.status, false)
       }
-      const content: string = provider === PROVIDERS.google
-        ? (data as { candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }> }).candidates?.[0]?.content?.parts?.map((part) => part.text ?? '').join('') ?? ''
-        : (data as { choices?: Array<{ message?: { content?: string } }> }).choices?.[0]?.message?.content ?? ''
-      if (!content.trim()) throw new ProviderError('PROVIDER_PARSE_FAILED', 'AI provider returned no usable model content', provider === PROVIDERS.google ? 'google' : 'openai-compatible', res.status, false)
+      let content: string
+      let diagnostics: Record<string, unknown> = {}
+      try {
+        if (provider === PROVIDERS.google) {
+          const normalized = parseGeminiGenerateContentResponse(data)
+          content = normalized.text
+          diagnostics = normalized.diagnostics
+        } else {
+          content = (data as { choices?: Array<{ message?: { content?: string } }> }).choices?.[0]?.message?.content ?? ''
+          if (!content.trim()) throw new GeminiAdapterError('PROVIDER_ENVELOPE_INVALID', 'OpenAI-compatible provider returned no usable content')
+        }
+      } catch (error) {
+        if (error instanceof GeminiAdapterError) throw new ProviderError(error.code, error.message, provider === PROVIDERS.google ? 'google' : 'openai-compatible', res.status, false, error.diagnostics)
+        throw error
+      }
       return content
     }
 
