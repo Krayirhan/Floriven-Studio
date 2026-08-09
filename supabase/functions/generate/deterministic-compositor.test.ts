@@ -22,4 +22,19 @@ describe('deterministic compositor', () => {
     expect(report.passed).toBe(true)
     expect(report.metrics.nestedCardCount).toBe(0)
   })
+
+  it('RC22_PRODUCTION_REPLAY keeps every Finance archetype above the sparse threshold', () => {
+    const blueprint = resolvePlanningIntent(fallbackPlanningIntent('fatura gelir gider vergi'), 'finance')
+    const screens = composeDeterministicBaseScreens(blueprint)
+    const countNodes = (node: Record<string, unknown>): number => {
+      const children = Array.isArray(node.children) ? node.children as Record<string, unknown>[] : []
+      return 1 + children.reduce((total, child) => total + countNodes(child), 0)
+    }
+
+    expect(screens).toHaveLength(6)
+    for (const screen of screens) {
+      expect(countNodes(screen.root as Record<string, unknown>) - 1, screen.name).toBeGreaterThanOrEqual(12)
+    }
+    expect(evaluateGenerationQuality(screens, blueprint).passed).toBe(true)
+  })
 })

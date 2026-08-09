@@ -16,6 +16,8 @@ import { buildGoogleGenerateRequest } from './provider-request.ts'
 import { fallbackPlanningIntent, resolvePlanningIntent, validatePlanningIntent } from './planning-intent.ts'
 import { composeDeterministicBaseScreens } from './deterministic-compositor.ts'
 import { appendProviderEvent, type ProviderEvent } from './provider-events.ts'
+import { selectCompositionMode } from './composition-selection.ts'
+import { validateArchetypeMinimumContent, validateCanonicalNavigation } from './candidate-invariants.ts'
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -307,10 +309,15 @@ async function processGenerationJob(options: ProcessGenerationJobOptions): Promi
     const applyIdentityGate = (candidate: Node[]) => {
       const report = evaluateGenerationQuality(candidate, result.blueprint, result.domainPackId)
       const identityIssues = validateDesignSpecIdentity({ screens: candidate })
-      if (identityIssues.length > 0) {
+      const candidateIssues = [
+        ...identityIssues.map((issue) => `${issue.code}: ${issue.message}`),
+        ...validateCanonicalNavigation(candidate, result.blueprint),
+        ...validateArchetypeMinimumContent(candidate, result.blueprint),
+      ]
+      if (candidateIssues.length > 0) {
         report.passed = false
         report.score = 0
-        report.issues.push(...identityIssues.map((issue) => `${issue.code}: ${issue.message}`))
+        report.issues.push(...candidateIssues)
       }
       return report
     }
@@ -320,11 +327,16 @@ async function processGenerationJob(options: ProcessGenerationJobOptions): Promi
       ? normalizeScreens(composeDeterministicBaseScreens(result.blueprint), result.blueprint, forcedStrategy, result.domainPackId)
       : undefined
     const baselineQuality = baselineScreens ? applyIdentityGate(baselineScreens) : undefined
-    const useBaseline = !!baselineScreens && baselineQuality?.passed && !enhancedQuality.passed
+    // An AI candidate that cannot clear static quality is never a shippable
+    // composition mode.  Prefer the deterministic candidate whenever enhanced
+    // composition fails, including the (terminal) case where the baseline also
+    // fails, so persisted state cannot claim an invalid AI enhancement won.
+    const selectedCompositionMode = selectCompositionMode({ hasBaseline: !!baselineScreens, enhancedPassed: enhancedQuality.passed })
+    const useBaseline = selectedCompositionMode === 'deterministic_baseline'
     const screens = useBaseline ? baselineScreens : enhancedScreens
     const qualityReport = useBaseline ? baselineQuality! : enhancedQuality
-    if (useBaseline) providerEvents = appendProviderEvent(providerEvents, { operation: 'composition_quality_gate', status: 'fallback', fallbackUsed: true, errorCode: 'AI_ENHANCEMENT_REJECTED' })
-    await updateStage('static_quality', 85, { quality_report: qualityReport, quality_version: 'v2', provider_events: providerEvents, provider_metadata: { selectedCompositionMode: useBaseline ? 'deterministic_baseline' : 'ai_enhanced', baselineQualityScore: baselineQuality?.score, baselineQualityPassed: baselineQuality?.passed } })
+    if (useBaseline) providerEvents = appendProviderEvent(providerEvents, { operation: 'composition_quality_gate', status: 'fallback', fallbackUsed: true, errorCode: 'QUALITY_REGRESSION' })
+    await updateStage('static_quality', 85, { quality_report: qualityReport, quality_version: 'v2', provider_events: providerEvents, provider_metadata: { selectedCompositionMode, baselineQualityScore: baselineQuality?.score, baselineQualityPassed: baselineQuality?.passed } })
     if (!qualityReport.passed) {
       const qualityMessage = `Static quality rejected candidate (${qualityReport.score}/100): ${qualityReport.issues.join(' ')}`
       const { error } = await supabase.from('generation_jobs').update({ status: 'failed', stage: 'QUALITY_REJECTED', progress: 100, result_screens: screens, error_code: 'QUALITY_REJECTED', error_message: qualityMessage, final_eligible: false, final_decision_reason: 'STATIC_QUALITY_REJECTED' }).eq('id', jobId)
@@ -829,7 +841,11 @@ function normalizeScreens(raw: unknown[], blueprint: ProductBlueprint, forcedStr
       removeComponents(root, new Set(['BottomNavigation', 'TabBar']))
     }
 
-    repairStructure(root, slug, String(screen.name), navItems, seenIds, plannedScreen?.navigationPlacement === 'primary' && !focusedFlow)
+    // Static quality defines persistent navigation by flow type: forms and
+    // details are focused flows; every other screen shares the canonical set.
+    // Using navigationPlacement here made settings/hierarchical screens lose
+    // their navigation during normalization and broke production parity.
+    repairStructure(root, slug, String(screen.name), navItems, seenIds, !focusedFlow)
 
     const count = flatten(root).length - 1
     if (false && count < MIN_NODES) {
