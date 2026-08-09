@@ -17,6 +17,8 @@ export function validatePlanningIntent(value: unknown): PlanningIntent {
 
 export function resolvePlanningIntent(intent: PlanningIntent, brief: string, options: ScreenCountOptions = {}): ProductBlueprint {
   const specs = intent.screens.map((key, index) => toScreenSpec(key, index, intent.nav, brief))
+  const primary = specs.filter((screen) => intent.nav.includes(screen.id)).map((screen) => screen.id)
+  specs.forEach((screen) => { if (!primary.includes(screen.id) && screen.navigationPlacement === 'hierarchical') screen.parentId = primary[0] })
   const policy = { minCount: specs.length, maxCount: specs.length, requestedCount: specs.length, rationale: 'Deterministic planning intent resolver' }
   return {
     productDomain: intent.domain,
@@ -25,7 +27,7 @@ export function resolvePlanningIntent(intent: PlanningIntent, brief: string, opt
     capabilities: intent.features,
     contentVocabulary: intent.features,
     screens: specs,
-    navigation: { primaryScreenIds: specs.filter((screen) => intent.nav.includes(screen.id)).map((screen) => screen.id), utilityScreenIds: specs.filter((screen) => !intent.nav.includes(screen.id)).map((screen) => screen.id) },
+    navigation: { primaryScreenIds: primary, utilityScreenIds: specs.filter((screen) => !intent.nav.includes(screen.id)).map((screen) => screen.id) },
     screenPolicy: { ...policy, ...(options.requestedScreenCount ? { requestedCount: options.requestedScreenCount } : {}) },
   }
 }

@@ -14,6 +14,8 @@ import { GeminiAdapterError, parseGeminiGenerateContentResponse } from './gemini
 import { assertOutputBudgetWithinModelLimit, estimateCompositionBudget, GOOGLE_COMPOSITION_MAX_OUTPUT_TOKENS, GOOGLE_EDIT_MAX_OUTPUT_TOKENS, GOOGLE_MODEL_OUTPUT_LIMIT, GOOGLE_PLAN_MAX_OUTPUT_TOKENS } from './output-budget.ts'
 import { buildGoogleGenerateRequest } from './provider-request.ts'
 import { fallbackPlanningIntent, resolvePlanningIntent, validatePlanningIntent } from './planning-intent.ts'
+import { composeDeterministicBaseScreens } from './deterministic-compositor.ts'
+import { appendProviderEvent, type ProviderEvent } from './provider-events.ts'
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -191,12 +193,11 @@ Deno.serve(async (req: Request) => {
     return json({ error: insertErr.message }, 500)
   }
 
-  const processPromise = processGenerationJob({ jobId: job.id, brief: String(brief), platform: String(platform), screenScope, countOptions: { requestedScreenCount, minScreenCount, maxScreenCount }, templateStrategy, selectedStyleId, editScreens: editScreensInput, supabase })
   const edgeRuntime = (globalThis as typeof globalThis & { EdgeRuntime?: { waitUntil(promise: Promise<unknown>): void } }).EdgeRuntime
   const scheduled = scheduleGenerationJob(
     { id: job.id, status: 'queued', stage: 'queued', providerExecutions: 0 },
-    () => processPromise,
-    (work) => { if (edgeRuntime) edgeRuntime.waitUntil(work); else void work },
+    () => processGenerationJob({ jobId: job.id, brief: String(brief), platform: String(platform), screenScope, countOptions: { requestedScreenCount, minScreenCount, maxScreenCount }, templateStrategy, selectedStyleId, editScreens: editScreensInput, supabase }),
+    (work) => { queueMicrotask(() => { if (edgeRuntime) edgeRuntime.waitUntil(work()); else void work() }) },
   )
   return json({ ...mapJob({ ...job, status: 'queued', stage: 'queued', progress: 0, final_eligible: false }), ...scheduled }, 202)
 
@@ -282,16 +283,17 @@ async function processGenerationJob(options: ProcessGenerationJobOptions): Promi
   const { jobId, brief, platform, screenScope, countOptions, templateStrategy, selectedStyleId, editScreens, supabase } = options
   let currentStage = 'provider_pending'
   let providerStartedAt = Date.now()
+  let providerEvents: ProviderEvent[] = []
   const updateStage = async (stage: string, progress: number, extra: Record<string, unknown> = {}) => {
     currentStage = stage
-    const { error } = await supabase.from('generation_jobs').update({ stage, progress, ...extra }).eq('id', jobId)
+    const { error } = await supabase.from('generation_jobs').update({ stage, progress, generation_checkpoint: stage, ...extra }).eq('id', jobId)
     if (error) throw new GenerationPipelineError('TECHNICAL_FAILURE', `Stage persistence failed: ${error.message}`)
   }
 
   try {
     await updateStage('provider_pending', 10, { status: 'processing', provider: 'google', provider_attempt: 1, final_eligible: false })
     providerStartedAt = Date.now()
-    const setProviderPhase = async (phase: string) => { currentStage = phase; await supabase.from('generation_jobs').update({ stage: phase, provider_operation: phase }).eq('id', jobId) }
+    const setProviderPhase = async (phase: string) => { currentStage = phase; providerEvents = appendProviderEvent(providerEvents, { operation: phase, status: 'started', provider: 'google' }); await supabase.from('generation_jobs').update({ stage: phase, provider_operation: phase, provider_events: providerEvents }).eq('id', jobId) }
     const result = editScreens
       ? await runEditGeneration(brief, editScreens, jobId, supabase, setProviderPhase)
       : await runFreshGeneration(brief, platform, screenScope, countOptions, templateStrategy, selectedStyleId, jobId, supabase, setProviderPhase)
@@ -325,7 +327,8 @@ async function processGenerationJob(options: ProcessGenerationJobOptions): Promi
       : err instanceof ProviderError
         ? new GenerationPipelineError(err.code, err.message, err.provider, err.upstreamStatus, err.retryable, err.diagnostics)
         : new GenerationPipelineError('TECHNICAL_FAILURE', err instanceof Error ? err.message : String(err))
-    await supabase.from('generation_jobs').update({ status: 'failed', stage: 'failed', failed_stage: currentStage, progress: 100, error_code: error.code, error_message: error.message, provider: error.provider ?? 'google', provider_http_status: error.upstreamStatus ?? null, provider_duration_ms: Date.now() - providerStartedAt, provider_metadata: { ...error.diagnostics, retryable: error.retryable, failedStage: currentStage }, final_eligible: false }).eq('id', jobId)
+    providerEvents = appendProviderEvent(providerEvents, { operation: currentStage, provider: error.provider ?? 'google', status: 'failed', errorCode: error.code, durationMs: Date.now() - providerStartedAt })
+    await supabase.from('generation_jobs').update({ status: 'failed', stage: 'failed', failed_stage: currentStage, generation_checkpoint: 'failed', progress: 100, error_code: error.code, error_message: error.message, provider: error.provider ?? 'google', provider_http_status: error.upstreamStatus ?? null, provider_duration_ms: Date.now() - providerStartedAt, provider_metadata: { ...error.diagnostics, retryable: error.retryable, failedStage: currentStage }, provider_events: providerEvents, final_eligible: false }).eq('id', jobId)
   }
 }
 
@@ -383,11 +386,15 @@ async function runFreshGeneration(
       'Alt navigasyon yalnız GLOBAL NAVİGASYON primaryScreenIds ekranlarının adlarını içerir ve her ekranda aynıdır.',
       'Tüm metinler bu uygulamanın alanına ait olsun: kendi terimleri, kendi birimleri, kendi sayıları.',
     ].join('\n')
-    const parsed = await completeJson([
-      { role: 'system', content: runtimeSystemPrompt },
-      { role: 'user', content: userMsg },
-    ], BUILD_TOKENS, 0.55, 'composition') as { screens?: unknown }
-    const batchScreens = Array.isArray(parsed.screens) ? parsed.screens : []
+    let batchScreens: unknown[]
+    try {
+      const parsed = await completeJson([{ role: 'system', content: runtimeSystemPrompt }, { role: 'user', content: userMsg }], BUILD_TOKENS, 0.55, 'composition') as { screens?: unknown }
+      batchScreens = Array.isArray(parsed.screens) ? parsed.screens : []
+    } catch (error) {
+      if (error instanceof ProviderError && error.code === 'PROVIDER_AUTH_FAILED') throw error
+      batchScreens = composeDeterministicBaseScreens({ ...blueprint, screens: batch }).map((screen) => screen)
+      await supabase.from('generation_jobs').update({ provider_metadata: { compositionMode: 'deterministic_fallback', fallbackReason: error instanceof Error ? error.message : String(error), generationPhase: 'composition', batchIndex } }).eq('id', jobId)
+    }
     if (batchScreens.length !== batch.length) throw new Error(`${batchIndex + 1}. ekran grubunda ${batch.length} yerine ${batchScreens.length} ekran üretildi`)
     raw.push(...batchScreens)
     await supabase.from('generation_jobs').update({ progress: 35 + Math.round(((batchIndex + 1) / batches.length) * 35) }).eq('id', jobId)
@@ -1178,6 +1185,8 @@ function mapJob(raw: Node) {
     providerDurationMs: raw.provider_duration_ms ?? undefined,
     providerOperation: raw.provider_operation ?? undefined,
     providerMetadata: raw.provider_metadata ?? undefined,
+    providerEvents: raw.provider_events ?? undefined,
+    generationCheckpoint: raw.generation_checkpoint ?? undefined,
     providerDiagnostics: raw.provider_metadata ? {
       model: raw.provider_metadata.model,
       generationPhase: raw.provider_metadata.operation ?? raw.provider_operation,

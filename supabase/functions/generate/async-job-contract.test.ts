@@ -6,7 +6,7 @@ describe('async generation contract', () => {
     const job: JobSnapshot = { id: 'job-async', status: 'queued', stage: 'queued', providerExecutions: 0 }
     let resolveProvider!: () => void
     const provider = new Promise<void>((resolve) => { resolveProvider = resolve })
-    let background!: Promise<void>
+    let background!: () => Promise<void>
     const startedAt = performance.now()
 
     const response = scheduleGenerationJob(job, async () => {
@@ -20,10 +20,11 @@ describe('async generation contract', () => {
 
     expect(performance.now() - startedAt).toBeLessThan(100)
     expect(response).toEqual({ jobId: 'job-async', status: 'queued', stage: 'queued' })
-    expect(job.providerExecutions).toBe(1)
-    expect(job.stage).toBe('provider_pending')
+    expect(job.providerExecutions).toBe(0)
+    expect(job.stage).toBe('queued')
+    const running = background()
     resolveProvider()
-    await background
+    await running
     expect(job).toMatchObject({ status: 'completed', stage: 'candidate_ready', providerExecutions: 1 })
   })
 
