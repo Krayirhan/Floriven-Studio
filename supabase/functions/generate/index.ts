@@ -26,6 +26,11 @@ const CORS = {
  * be a one-constant switch, not a rewrite.
  */
 const PROVIDERS = {
+  google: {
+    url: 'https://generativelanguage.googleapis.com/v1beta/models',
+    model: Deno.env.get('GOOGLE_MODEL') ?? 'gemini-3.6-flash',
+    keyEnv: 'GOOGLE_API_KEY',
+  },
   cerebras: {
     url: 'https://api.cerebras.ai/v1/chat/completions',
     model: 'gpt-oss-120b',
@@ -475,7 +480,7 @@ function chunk<T>(items: T[], size: number): T[][] {
 type ChatMessage = { role: 'system' | 'user' | 'assistant'; content: string }
 
 async function complete(messages: ChatMessage[], maxTokens: number, temperature: number): Promise<string> {
-  const providerOrder = [PROVIDERS.cerebras, PROVIDERS.groq]
+  const providerOrder = [PROVIDERS.google, PROVIDERS.cerebras, PROVIDERS.groq]
   let configuredProviders = 0
   let minuteLimitSeen = false
   let dailyLimitSeen = false
@@ -487,21 +492,32 @@ async function complete(messages: ChatMessage[], maxTokens: number, temperature:
     const providerMaxTokens = provider === PROVIDERS.groq ? Math.min(maxTokens, 6500) : maxTokens
     let res: Response
     try {
-      res = await fetch(provider.url, {
+      const requestBody = provider === PROVIDERS.google
+        ? {
+            contents: messages.filter((message) => message.role !== 'system').map((message) => ({
+              role: message.role === 'assistant' ? 'model' : 'user',
+              parts: [{ text: message.content }],
+            })),
+            ...(messages.find((message) => message.role === 'system') ? { systemInstruction: { parts: [{ text: messages.find((message) => message.role === 'system')?.content ?? '' }] } } : {}),
+            generationConfig: { maxOutputTokens: providerMaxTokens, temperature, responseMimeType: 'application/json' },
+          }
+        : {
+            model: provider.model,
+            messages,
+            [provider.tokenParam]: providerMaxTokens,
+            temperature,
+            response_format: { type: 'json_object' },
+            ...provider.extra,
+          }
+      res = await fetch(provider === PROVIDERS.google ? `${provider.url}/${provider.model}:generateContent` : provider.url, {
         method: 'POST',
         signal: AbortSignal.timeout(45_000),
         headers: {
           Authorization: `Bearer ${key}`,
+          ...(provider === PROVIDERS.google ? { 'x-goog-api-key': key } : {}),
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          model: provider.model,
-          messages,
-          [provider.tokenParam]: providerMaxTokens,
-          temperature,
-          response_format: { type: 'json_object' },
-          ...provider.extra,
-        }),
+        body: JSON.stringify(requestBody),
       })
     } catch {
       continue
@@ -509,7 +525,9 @@ async function complete(messages: ChatMessage[], maxTokens: number, temperature:
 
     if (res.ok) {
       const data = await res.json()
-      const content: string = data.choices?.[0]?.message?.content ?? ''
+      const content: string = provider === PROVIDERS.google
+        ? data.candidates?.[0]?.content?.parts?.map((part: { text?: string }) => part.text ?? '').join('') ?? ''
+        : data.choices?.[0]?.message?.content ?? ''
       if (!content.trim()) throw new Error('AI boş yanıt döndü')
       return content
     }
