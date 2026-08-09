@@ -8,6 +8,8 @@ import { DOMAIN_COMPONENT_PROMPTS, PLAN_PROMPT, SYSTEM_PROMPT } from './prompts.
 import { findDesignTemplate } from '../../../packages/design-spec/src/strategy.ts'
 import { validateDesignSpecIdentity } from '../../../packages/design-spec/src/identity-validator.ts'
 import { buildProviderHeaders } from './provider-auth.ts'
+import { scheduleGenerationJob } from './async-job-contract.ts'
+import { classifyProviderFailure } from './provider-contract.ts'
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -184,9 +186,12 @@ Deno.serve(async (req: Request) => {
 
   const processPromise = processGenerationJob({ jobId: job.id, brief: String(brief), platform: String(platform), screenScope, countOptions: { requestedScreenCount, minScreenCount, maxScreenCount }, templateStrategy, selectedStyleId, editScreens: editScreensInput, supabase })
   const edgeRuntime = (globalThis as typeof globalThis & { EdgeRuntime?: { waitUntil(promise: Promise<unknown>): void } }).EdgeRuntime
-  if (edgeRuntime) edgeRuntime.waitUntil(processPromise)
-  else void processPromise
-  return json({ ...mapJob({ ...job, status: 'queued', stage: 'queued', progress: 0, final_eligible: false }), jobId: job.id }, 202)
+  const scheduled = scheduleGenerationJob(
+    { id: job.id, status: 'queued', stage: 'queued', providerExecutions: 0 },
+    () => processPromise,
+    (work) => { if (edgeRuntime) edgeRuntime.waitUntil(work); else void work },
+  )
+  return json({ ...mapJob({ ...job, status: 'queued', stage: 'queued', progress: 0, final_eligible: false }), ...scheduled }, 202)
 
   try {
     const { blueprint, domainPackId, raw } = editScreensInput
@@ -590,7 +595,8 @@ async function complete(messages: ChatMessage[], maxTokens: number, temperature:
         headers: buildProviderHeaders(provider === PROVIDERS.google ? 'google-native' : 'openai-compatible', key),
         body: JSON.stringify(requestBody),
       })
-    } catch {
+    } catch (error) {
+      if (classifyProviderFailure(error)) throw new ProviderError('PROVIDER_TIMEOUT', 'AI provider request timed out')
       continue
     }
 
