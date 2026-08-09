@@ -36,7 +36,17 @@ for (let attempt = 0; attempt < 120; attempt += 1) {
   const response = await fetch(`${generateUrl}?id=${encodeURIComponent(job.id)}`, { headers: { apikey: anonKey, Authorization: `Bearer ${anonKey}`, "X-Job-Token": jobToken } });
   const current = await response.json();
   if (!response.ok) throw new Error(current.error ?? `Polling failed with HTTP ${response.status}`);
-  console.log(JSON.stringify({ jobId: current.id, status: current.status, stage: current.stage, progress: current.progress, errorCode: current.errorCode ?? null }));
+  console.log(JSON.stringify({
+    jobId: current.id,
+    status: current.status,
+    stage: current.stage,
+    progress: current.progress,
+    errorCode: current.errorCode ?? null,
+    provider: current.provider ?? null,
+    providerOperation: current.providerOperation ?? null,
+    providerDurationMs: current.providerDurationMs ?? null,
+    providerDiagnostics: current.providerDiagnostics ?? null,
+  }));
   if (current.status === "completed" || current.status === "failed") process.exit(0);
 }
 

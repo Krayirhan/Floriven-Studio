@@ -56,6 +56,9 @@ const PROVIDERS = {
   },
 } as const
 
+// Planning is a compact semantic contract, never a component-tree response.
+// Keep the hard cap below 800 so a verbose model cannot spend composition-sized
+// budget on ScreenGraph/ProductBlueprint decisions.
 const PLAN_TOKENS = GOOGLE_PLAN_MAX_OUTPUT_TOKENS
 const BUILD_TOKENS = GOOGLE_COMPOSITION_MAX_OUTPUT_TOKENS
 // Edit mode round-trips the whole current document (input echo + rewritten output) in
@@ -1168,7 +1171,18 @@ function mapJob(raw: Node) {
     providerHttpStatus: raw.provider_http_status ?? undefined,
     providerAttempt: raw.provider_attempt ?? undefined,
     providerDurationMs: raw.provider_duration_ms ?? undefined,
+    providerOperation: raw.provider_operation ?? undefined,
     providerMetadata: raw.provider_metadata ?? undefined,
+    providerDiagnostics: raw.provider_metadata ? {
+      model: raw.provider_metadata.model,
+      generationPhase: raw.provider_metadata.operation ?? raw.provider_operation,
+      finishReason: raw.provider_metadata.finishReason,
+      promptTokenCount: raw.provider_metadata.usageMetadata?.promptTokenCount,
+      candidatesTokenCount: raw.provider_metadata.usageMetadata?.candidatesTokenCount,
+      thoughtsTokenCount: raw.provider_metadata.usageMetadata?.thoughtsTokenCount,
+      totalTokenCount: raw.provider_metadata.usageMetadata?.totalTokenCount,
+      configuredMaxOutputTokens: raw.provider_metadata.configuredMaxOutputTokens,
+    } : undefined,
     failedStage: raw.failed_stage ?? undefined,
     finalEligible: raw.final_eligible ?? false,
     finalDecisionReason: raw.final_decision_reason ?? undefined,
