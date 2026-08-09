@@ -7,6 +7,7 @@ import { detectDomainFromScreens, evaluateGenerationQuality } from './quality.ts
 import { DOMAIN_COMPONENT_PROMPTS, PLAN_PROMPT, SYSTEM_PROMPT } from './prompts.generated.ts'
 import { findDesignTemplate } from '../../../packages/design-spec/src/strategy.ts'
 import { validateDesignSpecIdentity } from '../../../packages/design-spec/src/identity-validator.ts'
+import { buildProviderHeaders } from './provider-auth.ts'
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -512,11 +513,7 @@ async function complete(messages: ChatMessage[], maxTokens: number, temperature:
       res = await fetch(provider === PROVIDERS.google ? `${provider.url}/${provider.model}:generateContent` : provider.url, {
         method: 'POST',
         signal: AbortSignal.timeout(45_000),
-        headers: {
-          Authorization: `Bearer ${key}`,
-          ...(provider === PROVIDERS.google ? { 'x-goog-api-key': key } : {}),
-          'Content-Type': 'application/json',
-        },
+        headers: buildProviderHeaders(provider === PROVIDERS.google ? 'google-native' : 'openai-compatible', key),
         body: JSON.stringify(requestBody),
       })
     } catch {
