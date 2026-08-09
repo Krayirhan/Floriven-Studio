@@ -1,0 +1,9 @@
+{
+  "projectId": "rc6-live-smoke-01",
+  "platform": "ios",
+  "designMode": "auto",
+  "certificationCaseCount": 1,
+  "providerRetryCount": 1,
+  "idempotencyKeys": ["rc6-live-smoke-01-713126db-4f88-488d-8bf4-0486e276864b", "rc6-live-smoke-01-retry-b5981232-24ed-4062-aaa1-a124374e4004"],
+  "secrets": "not recorded"
+}

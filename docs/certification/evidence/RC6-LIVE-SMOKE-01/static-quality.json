@@ -1,0 +1,6 @@
+{
+  "score": 70,
+  "passed": false,
+  "issues": ["Alt navigasyon tüm ekranlarda aynı değil.", "2 ekran yeterli içerik yoğunluğuna sahip değil."],
+  "metrics": {"blueprintAlignment": 1, "navigationConsistency": 0, "navigationReachability": 1, "nestedCardCount": 0, "invalidFabCount": 0, "focusedFlowBottomNavViolations": 0, "oversizedHeadingCount": 0, "screenCount": 7, "sparseScreens": 2, "foreignDomainComponents": 0, "vocabularyCoverage": 0.9375}
+}
