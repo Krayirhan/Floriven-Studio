@@ -5,6 +5,7 @@ import { evaluateGenerationQuality } from './quality.ts'
 import { canonicalNavigation, validateArchetypeMinimumContent, validateCanonicalNavigation } from './candidate-invariants.ts'
 import { selectCompositionMode } from './composition-selection.ts'
 import { appendProviderEvent } from './provider-events.ts'
+import { scheduleGenerationJob, type JobSnapshot } from './async-job-contract.ts'
 
 // Frozen from RC22's persisted six-screen Finance ScreenGraph semantics.
 const RC22_PRODUCTION_REPLAY = {
@@ -53,5 +54,20 @@ describe('RC22 production baseline replay', () => {
     })
     expect(events).toMatchObject([{ operation: 'composition_quality_gate', status: 'fallback', fallbackUsed: true, errorCode: 'QUALITY_REGRESSION' }])
     expect(report.passed).toBe(true)
+  })
+
+  it('hands the quality-passing selected application to the mocked runtime boundary', async () => {
+    const job: JobSnapshot & { resultScreens?: unknown[] } = { id: 'rc22-replay', status: 'queued', stage: 'queued', providerExecutions: 0 }
+    let work!: () => Promise<void>
+    const acknowledgement = scheduleGenerationJob(job, async () => {
+      expect(report.passed).toBe(true)
+      job.resultScreens = baseline
+      job.stage = 'candidate_ready'
+      job.status = 'completed'
+    }, (scheduled) => { work = scheduled })
+
+    expect(acknowledgement.status).toBe('queued')
+    await work()
+    expect(job).toMatchObject({ status: 'completed', stage: 'candidate_ready', resultScreens: baseline })
   })
 })
