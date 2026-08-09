@@ -2,7 +2,7 @@ export type OutputBudgetClass = 'SMALL' | 'MEDIUM' | 'LARGE'
 
 export const GOOGLE_MODEL_OUTPUT_LIMIT = 65_536
 export const GOOGLE_COMPOSITION_MAX_OUTPUT_TOKENS = 24_000
-export const GOOGLE_PLAN_MAX_OUTPUT_TOKENS = 800
+export const GOOGLE_PLAN_MAX_OUTPUT_TOKENS = 256
 export const GOOGLE_EDIT_MAX_OUTPUT_TOKENS = 24_000
 
 export type BudgetEstimate = {

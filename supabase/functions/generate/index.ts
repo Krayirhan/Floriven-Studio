@@ -13,6 +13,7 @@ import { classifyProviderFailure } from './provider-contract.ts'
 import { GeminiAdapterError, parseGeminiGenerateContentResponse } from './gemini-adapter.ts'
 import { assertOutputBudgetWithinModelLimit, estimateCompositionBudget, GOOGLE_COMPOSITION_MAX_OUTPUT_TOKENS, GOOGLE_EDIT_MAX_OUTPUT_TOKENS, GOOGLE_MODEL_OUTPUT_LIMIT, GOOGLE_PLAN_MAX_OUTPUT_TOKENS } from './output-budget.ts'
 import { buildGoogleGenerateRequest } from './provider-request.ts'
+import { fallbackPlanningIntent, resolvePlanningIntent, validatePlanningIntent } from './planning-intent.ts'
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -448,7 +449,14 @@ async function planProduct(brief: string, scope?: string, options: ScreenCountOp
     { role: 'system', content: PLAN_PROMPT },
     { role: 'user', content: `Uygulama: ${brief}${scope ? `\nEkran kapsamı: ${scope}` : ''}\nZORUNLU EKRAN POLİTİKASI: ${JSON.stringify(policy)}` },
   ]
-  let parsed = await completeJson(planMessages, PLAN_TOKENS, 0.1)
+  let parsed: Record<string, unknown>
+  try {
+    parsed = await completeJson(planMessages, PLAN_TOKENS, 0.1, 'planning')
+    if (Array.isArray(parsed.screens) && parsed.screens.every((screen) => typeof screen === 'string')) return resolvePlanningIntent(validatePlanningIntent(parsed), brief, options)
+  } catch (error) {
+    if (error instanceof ProviderError && error.code === 'PROVIDER_AUTH_FAILED') throw error
+    return resolvePlanningIntent(fallbackPlanningIntent(brief), brief, options)
+  }
   let list = Array.isArray(parsed.screens) ? parsed.screens : []
   const planRequiresSettings = () => requiresSettingsScreen(
     Array.isArray(parsed.capabilities) ? parsed.capabilities.filter((item): item is string => typeof item === 'string') : [],
@@ -590,6 +598,9 @@ async function complete(messages: ChatMessage[], maxTokens: number, temperature:
       if (provider === PROVIDERS.google) assertOutputBudgetWithinModelLimit(providerMaxTokens, GOOGLE_MODEL_OUTPUT_LIMIT)
     let res: Response
     try {
+      const providerModel = provider === PROVIDERS.google && operation === 'planning'
+        ? (Deno.env.get('GOOGLE_PLANNING_MODEL') ?? 'gemini-2.5-flash-lite')
+        : provider.model
       const requestBody = provider === PROVIDERS.google
         ? buildGoogleGenerateRequest(messages, providerMaxTokens, temperature, operation)
         : {
@@ -600,7 +611,7 @@ async function complete(messages: ChatMessage[], maxTokens: number, temperature:
             response_format: { type: 'json_object' },
             ...provider.extra,
           }
-      res = await fetch(provider === PROVIDERS.google ? `${provider.url}/${provider.model}:generateContent` : provider.url, {
+      res = await fetch(provider === PROVIDERS.google ? `${provider.url}/${providerModel}:generateContent` : provider.url, {
         method: 'POST',
         signal: AbortSignal.timeout(45_000),
         headers: buildProviderHeaders(provider === PROVIDERS.google ? 'google-native' : 'openai-compatible', key),
@@ -623,7 +634,7 @@ async function complete(messages: ChatMessage[], maxTokens: number, temperature:
       let diagnostics: Record<string, unknown> = {}
       try {
         if (provider === PROVIDERS.google) {
-          const normalized = parseGeminiGenerateContentResponse(data, { model: provider.model, operation, configuredMaxOutputTokens: providerMaxTokens })
+          const normalized = parseGeminiGenerateContentResponse(data, { model: providerModel, operation, configuredMaxOutputTokens: providerMaxTokens })
           content = normalized.text
           diagnostics = normalized.diagnostics
         } else {
