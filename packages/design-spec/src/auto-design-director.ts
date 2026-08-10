@@ -1,5 +1,5 @@
-import type { ProductBlueprint } from "./product-blueprint";
-import { findDesignTemplate, type DesignTemplateId, type LayoutPattern, type SurfaceStyle } from "./strategy";
+import type { ProductBlueprint } from "./product-blueprint.ts";
+import { findDesignTemplate, type DesignTemplateId, type LayoutPattern, type SurfaceStyle } from "./strategy.ts";
 
 export type AutoMood = "technical" | "calm" | "tactile" | "energetic" | "editorial";
 export type ChartLanguage = "operational" | "trend" | "progress" | "editorial";

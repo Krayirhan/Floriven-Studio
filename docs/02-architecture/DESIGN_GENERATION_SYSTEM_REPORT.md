@@ -50,11 +50,11 @@ apps/web/src/features/studio/canvas/PhoneScreen.tsx içindeki strategyClasses(),
 
 ### 9. Auto modda stili kim seçer?
 
-Auto modda üretim strategy değerleri döndürür. normalizeStrategy() bunları izinli enumlara indirger. Fallback: obsidian, crisp, comfortable ve solid.
+Auto modda üretim strategy değerleri döndürür. `resolveAutoStrategy()` bunları izinli enumlara indirger. Model geçerli bir görsel karar döndürmezse sabit bir preset kullanılmaz; Auto Design Director kullanıcı brief'i ile ProductBlueprint alanını, hedef kitlesini, yeteneklerini ve sözlüğünü analiz ederek palet, kart stili, yoğunluk ve navigasyon stilini belirler. Sonuç `mode: auto` kalır ve preset kimliği taşımaz.
 
 ### 10. Auto tasarımın görünümünü değiştirmek için nereler değişir?
 
-supabase/functions/generate/index.ts içindeki auto yönlendirmesi ve normalizeStrategy() fallback'leri; ardından StudioPage.module.css içindeki karşılık CSS kuralları değişir. Yeni enum değeri için strategy.ts ve PhoneScreen.tsx de güncellenir.
+supabase/functions/generate/auto-strategy.ts içindeki auto yönlendirmesi ve Auto Design Director kararı; ardından StudioPage.module.css içindeki karşılık CSS kuralları değişir. Yeni enum değeri için strategy.ts ve PhoneScreen.tsx de güncellenir.
 
 ### 11. Ürün yapısını kim belirler?
 
@@ -138,4 +138,3 @@ PhoneScreen.tsx → StudioPage.module.css.
 - supabase/functions/generate/quality.ts
 - apps/web/src/features/studio/canvas/PhoneScreen.tsx
 - apps/web/src/features/studio/StudioPage.module.css
-

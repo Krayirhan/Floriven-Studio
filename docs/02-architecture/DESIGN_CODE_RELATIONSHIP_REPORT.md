@@ -209,7 +209,7 @@ Sadece CSS değişirse mevcut üretilmiş ekranların görünümü değişir. st
 1. Dashboard composer selectedTemplateId boş bırakır.
 2. generationService designMode auto gönderir.
 3. generate/index.ts auto tasarım yönergesini generation aşamasına ekler.
-4. normalizeStrategy() izinli strategy alanlarını/fallback'i belirler.
+4. resolveAutoStrategy() model kararını izinli strategy alanlarına indirger; eksik kararı sabit Obsidian fallback'i yerine brief ve ProductBlueprint tabanlı Auto Design Director ile tamamlar.
 5. PhoneScreen + CSS sonucu çizer.
 
 ## 16. Design node değişikliği hangi zinciri etkiler?
@@ -266,4 +266,3 @@ Backend: generate/index.ts, domain.ts, quality.ts, runtime-quality.ts, record-ge
 ## 21. Sonuç
 
 Tasarım sistemi üç ayrı ama bağlı bölgeden oluşur: shared tasarım sözleşmesi, Studio'nun renderer/editor yüzeyi ve Supabase generation orchestration. Dosya değişikliği yapılırken yalnızca “hangi ekranda görünüyor?” değil, “hangi katman bu verinin sahibi, renderer bunu nasıl tüketiyor, generation bunu nasıl üretiyor ve test hangi sözleşmeyi koruyor?” soruları birlikte cevaplanmalıdır.
-

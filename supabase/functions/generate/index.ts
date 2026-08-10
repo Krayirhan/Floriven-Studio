@@ -19,6 +19,7 @@ import { appendProviderEvent, type ProviderEvent } from './provider-events.ts'
 import { selectCompositionMode } from './composition-selection.ts'
 import { validateArchetypeMinimumContent, validateCanonicalNavigation } from './candidate-invariants.ts'
 import { createRuntimeCandidateHash } from '../_shared/runtime-hash.ts'
+import { resolveAutoStrategy } from './auto-strategy.ts'
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -217,7 +218,7 @@ Deno.serve(async (req: Request) => {
     const forcedStrategy: Strategy | undefined = !editScreensInput && templateStrategy
       ? { mode: 'template', stylePresetId:selectedStyleId, ...templateStrategy, rationale: ['Kullanıcı bu görsel stili seçti'] }
       : undefined
-    const screens = normalizeScreens(raw, blueprint, forcedStrategy, domainPackId)
+    const screens = normalizeScreens(raw, blueprint, forcedStrategy, domainPackId, String(brief))
     const qualityReport = evaluateGenerationQuality(screens, blueprint, domainPackId)
     const identityIssues = validateDesignSpecIdentity({ screens })
     if (identityIssues.length > 0) {
@@ -322,10 +323,10 @@ async function processGenerationJob(options: ProcessGenerationJobOptions): Promi
       }
       return report
     }
-    const enhancedScreens = normalizeScreens(result.raw, result.blueprint, forcedStrategy, result.domainPackId)
+    const enhancedScreens = normalizeScreens(result.raw, result.blueprint, forcedStrategy, result.domainPackId, brief)
     const enhancedQuality = applyIdentityGate(enhancedScreens)
     const baselineScreens = !editScreens
-      ? normalizeScreens(composeDeterministicBaseScreens(result.blueprint, brief), result.blueprint, forcedStrategy, result.domainPackId)
+      ? normalizeScreens(composeDeterministicBaseScreens(result.blueprint, brief), result.blueprint, forcedStrategy, result.domainPackId, brief)
       : undefined
     const baselineQuality = baselineScreens ? applyIdentityGate(baselineScreens) : undefined
     // An AI candidate that cannot clear static quality is never a shippable
@@ -762,21 +763,7 @@ const MAX_NODES = 60
 
 type Node = Record<string, unknown>
 
-function normalizeStrategy(value: unknown): Strategy {
-  const raw = asProps(value)
-  const pick = (candidate: unknown, allowed: string[], fallback: string) => typeof candidate === 'string' && allowed.includes(candidate) ? candidate : fallback
-  return {
-    mode: 'auto',
-    palette: pick(raw.palette, ['obsidian', 'serene', 'terracotta', 'electric', 'editorial'], 'obsidian'),
-    cardStyle: pick(raw.cardStyle, ['crisp', 'soft', 'layered', 'playful', 'minimal'], 'crisp'),
-    density: pick(raw.density, ['compact', 'comfortable', 'spacious'], 'comfortable'),
-    navigationStyle: pick(raw.navigationStyle, ['solid', 'floating', 'glass', 'minimal'], 'solid'),
-    visualDirection: typeof raw.visualDirection === 'string' && raw.visualDirection ? raw.visualDirection.slice(0, 120) : 'Ürüne uygun dengeli tasarım yönü',
-    rationale: Array.isArray(raw.rationale) ? raw.rationale.filter((item): item is string => typeof item === 'string').slice(0, 3) : ['Ürün bağlamı ve ana kullanıcı görevleri analiz edildi'],
-  }
-}
-
-function normalizeScreens(raw: unknown[], blueprint: ProductBlueprint, forcedStrategy?: Strategy, domainPackId?: DomainPackId): Node[] {
+function normalizeScreens(raw: unknown[], blueprint: ProductBlueprint, forcedStrategy?: Strategy, domainPackId?: DomainPackId, brief = ''): Node[] {
   const screens = raw.filter((s): s is Node => !!s && typeof s === 'object')
   if (screens.length !== blueprint.screens.length) throw new Error(`${blueprint.screens.length} geçerli ekran bekleniyordu; ${screens.length} ekran bulundu`)
 
@@ -791,7 +778,7 @@ function normalizeScreens(raw: unknown[], blueprint: ProductBlueprint, forcedStr
   const projectTheme = typeof firstProps.theme === 'string' && allowedThemes.has(firstProps.theme)
     ? firstProps.theme
     : 'ocean'
-  const strategy = forcedStrategy ?? normalizeStrategy(firstProps.strategy)
+  const strategy = forcedStrategy ?? resolveAutoStrategy(firstProps.strategy, blueprint, brief)
   const seenIds = new Set<string>()
 
   const result = screens.map((screen, index) => {
