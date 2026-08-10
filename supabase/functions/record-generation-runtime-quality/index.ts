@@ -1,48 +1,62 @@
-import { createClient } from "jsr:@supabase/supabase-js@2";
-import { evaluateRuntimeQuality, isRuntimeQualityEvidence } from "../generate/runtime-quality.ts";
+import { createClient } from 'jsr:@supabase/supabase-js@2';
+import { createRuntimeCandidateHash } from '../_shared/runtime-hash.ts';
+import { googleRuntimeCritic, RuntimeCriticError } from './runtime-critic.ts';
 
-const CORS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-generation-runtime-secret",
-};
+const CORS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-generation-runtime-secret' };
 
 Deno.serve(async (request) => {
-  if (request.method === "OPTIONS") return new Response("ok", { headers: CORS });
-  if (request.method !== "POST") return json({ error: "Method not allowed" }, 405);
-
-  const expectedSecret = Deno.env.get("GENERATION_RUNTIME_QUALITY_SECRET");
-  const providedSecret = request.headers.get("x-generation-runtime-secret");
-  if (!expectedSecret || !providedSecret || providedSecret !== expectedSecret) {
-    return json({ error: "Runtime quality writer is not authorized" }, 403);
-  }
-
+  if (request.method === 'OPTIONS') return new Response('ok', { headers: CORS });
+  if (request.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
+  const certificationToken = request.headers.get('x-runtime-certification-token')?.trim();
+  if (!authorized(request) && !certificationToken) return json({ error: 'Runtime quality writer is not authorized' }, 403);
   const body = await request.json().catch(() => undefined);
-  if (!isRecord(body) || typeof body.jobId !== "string" || !isRuntimeQualityEvidence(body.evidence)) {
-    return json({ error: "jobId and valid runtime quality evidence are required" }, 400);
-  }
+  if (!isRecord(body) || typeof body.jobId !== 'string' || !isRuntimeEvidence(body.evidence) || hasClientDecisionFields(body)) return json({ error: 'jobId and trusted runtime evidence are required' }, 400);
 
-  const report = evaluateRuntimeQuality(body.evidence);
-  const supabase = createClient(
-    Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-  );
-  const { data, error } = await supabase
-    .from("generation_jobs")
-    .update({ runtime_quality_report: { ...report, recordedAt: new Date().toISOString() }, final_eligible: report.finalEligible, final_decision_reason: report.finalEligible ? 'ALL_RUNTIME_GATES_PASSED' : 'RUNTIME_GATE_FAILED' })
-    .eq("id", body.jobId)
-    .select("id, runtime_quality_report")
-    .single();
-  if (error) return json({ error: error.message }, 500);
-  return json({ id: data.id, runtimeQualityReport: data.runtime_quality_report });
+  const supabase = createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '');
+  const { data: job, error: jobError } = await supabase.from('generation_jobs').select('id,result_screens,quality_report,runtime_quality_report').eq('id', body.jobId).single();
+  if (jobError || !Array.isArray(job?.result_screens)) return json({ error: 'Runtime candidate was not found' }, 404);
+  if (job.quality_report?.passed !== true) return json({ error: 'Static quality must pass before runtime certification' }, 409);
+  const screens = job.result_screens as Array<{ id?: unknown }>;
+  if (screens.length !== 6) return json({ error: 'Exactly six screens are required for runtime certification' }, 409);
+  const expectedScreenIds = screens.map((screen) => typeof screen.id === 'string' ? screen.id : '').filter(Boolean);
+  const candidateHash = createRuntimeCandidateHash(screens);
+  if (certificationToken && !(await verifyCertificationToken(certificationToken, job.id, candidateHash))) return json({ error: 'Certification token denied or expired' }, 403);
+  const evidenceIssues = validateRuntimeEvidence(body.evidence, expectedScreenIds, candidateHash);
+  if (evidenceIssues.length) return json({ error: 'Runtime evidence rejected', issues: evidenceIssues }, 422);
+  const existing = isRecord(job.runtime_quality_report) ? job.runtime_quality_report : undefined;
+  if (existing?.candidateHash === candidateHash && existing.evaluationVersion === body.evidence.evaluationVersion) return json({ id: job.id, runtimeQualityReport: existing, idempotent: true });
+
+  try {
+    const visualScores = await googleRuntimeCritic(body.evidence, 'visual');
+    const crossScreenScores = await googleRuntimeCritic(body.evidence, 'cross_screen');
+    const report = evaluateRuntimeCertification(body.evidence, visualScores, crossScreenScores);
+    const persisted = { ...report, recordedAt: new Date().toISOString() };
+    const { data, error } = await supabase.from('generation_jobs').update({ runtime_quality_report: persisted, final_eligible: report.passed, final_decision_reason: report.passed ? 'ALL_RUNTIME_GATES_PASSED' : 'RUNTIME_GATE_FAILED' }).eq('id', body.jobId).select('id,runtime_quality_report,final_eligible').single();
+    if (error) return json({ error: error.message }, 500);
+    return json({ id: data.id, runtimeQualityReport: data.runtime_quality_report, finalEligible: data.final_eligible });
+  } catch (error) {
+    const criticError = error instanceof RuntimeCriticError ? error : new RuntimeCriticError('RUNTIME_CRITIC_INVALID_RESPONSE', error instanceof Error ? error.message : 'Runtime critic failed');
+    await supabase.from('generation_jobs').update({ runtime_quality_report: { candidateHash, evaluationVersion: body.evidence.evaluationVersion, passed: false, criticalIssues: [criticError.code], recordedAt: new Date().toISOString() }, final_eligible: false, final_decision_reason: criticError.code }).eq('id', body.jobId);
+    return json({ error: criticError.message, code: criticError.code }, 502);
+  }
 });
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return !!value && typeof value === "object" && !Array.isArray(value);
+function authorized(request: Request) { const expected = Deno.env.get('GENERATION_RUNTIME_QUALITY_SECRET'); return !!expected && request.headers.get('x-generation-runtime-secret') === expected; }
+async function verifyCertificationToken(token: string, jobId: string, candidateHash: string) {
+  const secret = Deno.env.get('RUNTIME_INSPECTOR_GRANT');
+  if (!secret) return false;
+  const [payload, signature] = token.split('.');
+  if (!payload || !signature || signature !== await sha256(`${payload}.${secret}`)) return false;
+  try {
+    const claims = JSON.parse(atob(payload)) as { purpose?: string; jobId?: string; candidateHash?: string; exp?: number };
+    return claims.purpose === 'runtime_certification' && claims.jobId === jobId && claims.candidateHash === candidateHash && typeof claims.exp === 'number' && claims.exp > Math.floor(Date.now() / 1000);
+  } catch { return false; }
 }
-
-function json(data: unknown, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { ...CORS, "Content-Type": "application/json" },
-  });
-}
+async function sha256(value: string) { const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value)); return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join(''); }
+function hasClientDecisionFields(body: Record<string, unknown>) { return ['finalEligible', 'runtimePassed', 'geometryPassed', 'visualCriticPassed', 'crossScreenPassed', 'qualityScore'].some((key) => key in body); }
+type RuntimeCertificationEvidence = { candidateHash: string; evaluationVersion: string; screens: Array<{ screenId: string; screenshotData: string; screenshotSha256: string; screenshotBytes: number; bounds: Array<{ nodeId: string; x: number; y: number; width: number; height: number }>; viewport: { width: number; height: number }; rendererVersion: string }> };
+function isRuntimeEvidence(value: unknown): value is RuntimeCertificationEvidence { return isRecord(value) && typeof value.candidateHash === 'string' && typeof value.evaluationVersion === 'string' && Array.isArray(value.screens); }
+function validateRuntimeEvidence(evidence: RuntimeCertificationEvidence, expectedIds: string[], expectedHash: string) { const issues: string[] = []; if (evidence.candidateHash !== expectedHash) issues.push('CANDIDATE_HASH_MISMATCH'); if (evidence.evaluationVersion !== 'v1') issues.push('RUNTIME_EVALUATION_VERSION_MISMATCH'); if (evidence.screens.length !== expectedIds.length) issues.push('INCOMPLETE_SCREEN_EVIDENCE'); const ids = new Set(evidence.screens.map((screen) => screen.screenId)); if (ids.size !== evidence.screens.length || expectedIds.some((id) => !ids.has(id))) issues.push('SCREEN_ID_MISMATCH'); for (const screen of evidence.screens) { if (!screen.screenshotData.startsWith('data:image/') || screen.screenshotBytes <= 0 || !/^[a-f0-9]{64}$/i.test(screen.screenshotSha256)) issues.push(`INVALID_SCREENSHOT:${screen.screenId}`); if (!screen.bounds.length || screen.viewport.width <= 0 || screen.viewport.height <= 0) issues.push(`INVALID_RENDER_METADATA:${screen.screenId}`); } return issues; }
+function evaluateRuntimeCertification(evidence: RuntimeCertificationEvidence, visualScores: Record<string, number>, crossScores: Record<string, number>) { const geometry = evidence.screens.map((screen) => ({ screenId: screen.screenId, report: { issues: screen.bounds.flatMap((bound) => bound.width <= 0 || bound.height <= 0 || bound.x < 0 || bound.y < 0 || bound.x + bound.width > screen.viewport.width || bound.y + bound.height > screen.viewport.height ? ['INVALID_DIMENSION'] : []) } })); const critic = (scores: Record<string, number>) => ({ scores, failures: scores.taskClarity >= 7 && scores.navigation >= 7 && scores.patternSuitability >= 7 && Object.values(scores).reduce((a, b) => a + b, 0) / Object.values(scores).length >= 7.5 ? [] : ['CRITIC_THRESHOLD_FAILED'] }); const visualCritic = critic(visualScores); const crossScreenCritic = critic(crossScores); const criticalIssues = [...geometry.flatMap((item) => item.report.issues.map((issue) => `${item.screenId}:${issue}`)), ...visualCritic.failures, ...crossScreenCritic.failures]; return { candidateHash: evidence.candidateHash, evaluationVersion: evidence.evaluationVersion, evidenceScreenCount: evidence.screens.length, geometry, visualCritic, crossScreenCritic, passed: criticalIssues.length === 0, criticalIssues }; }
+function isRecord(value: unknown): value is Record<string, unknown> { return !!value && typeof value === 'object' && !Array.isArray(value); }
+function json(data: unknown, status = 200) { return new Response(JSON.stringify(data), { status, headers: { ...CORS, 'Content-Type': 'application/json' } }); }

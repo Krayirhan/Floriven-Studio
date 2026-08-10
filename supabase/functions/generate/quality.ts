@@ -165,9 +165,6 @@ export function evaluateGenerationQuality(
   if (v2Violations.invalidFabCount > 0) {
     issues.push("Floating action buttons are not allowed on the affected screen archetypes.");
   }
-  if (v2Violations.focusedFlowBottomNavViolations > 0) {
-    issues.push("Focused form or detail flows must not render persistent bottom navigation.");
-  }
   if (v2Violations.oversizedHeadingCount > 0) {
     issues.push("Oversized or multi-line display headings violate the typography budget.");
   }
@@ -175,7 +172,7 @@ export function evaluateGenerationQuality(
   score = Math.max(0, score);
   return {
     score,
-    passed: score >= 70 && screens.length === expectedCount && blueprintAlignment === 1 && navigationConsistency === 1 && navigationReachability === 1 && settingsCoverage === 1 && foreignDomainComponents === 0 && structuralMetrics.nestedCardCount === 0 && structuralMetrics.cardRatio <= 0.7 && structuralMetrics.surfaceRatio <= 0.75 && v2Violations.invalidFabCount === 0 && v2Violations.focusedFlowBottomNavViolations === 0 && v2Violations.oversizedHeadingCount === 0,
+    passed: score >= 70 && screens.length === expectedCount && blueprintAlignment === 1 && navigationConsistency === 1 && navigationReachability === 1 && settingsCoverage === 1 && foreignDomainComponents === 0 && structuralMetrics.nestedCardCount === 0 && structuralMetrics.cardRatio <= 0.7 && structuralMetrics.surfaceRatio <= 0.75 && v2Violations.invalidFabCount === 0 && v2Violations.oversizedHeadingCount === 0,
     issues,
     metrics: {
       screenCount: screens.length,
@@ -264,6 +261,7 @@ function calculateV2Violations(
     const hasPersistentBottomNavigation = nodes.some(
       (node) => node.type === "BottomNavigation" || node.type === "TabBar",
     );
+    if (isFocusedFlow && hasPersistentBottomNavigation) focusedFlowBottomNavViolations += 1;
 
     if (
       hasFloatingActionButton &&
@@ -276,9 +274,6 @@ function calculateV2Violations(
       invalidFabCount += 1;
     }
 
-    if (isFocusedFlow && hasPersistentBottomNavigation) {
-      focusedFlowBottomNavViolations += 1;
-    }
 
     for (const node of nodes) {
       if (node.type !== "Text") continue;

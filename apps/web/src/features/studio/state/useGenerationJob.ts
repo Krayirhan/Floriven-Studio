@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { generationService, type GenerationJob } from "../../../services";
 
-export function useGenerationJob(jobId: string | null) {
+export function useGenerationJob(jobId: string | null, runtimeCertificationToken?: string) {
   const [job, setJob] = useState<GenerationJob | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -14,7 +14,7 @@ export function useGenerationJob(jobId: string | null) {
 
     const load = async () => {
       try {
-        const nextJob = await generationService.get(jobId);
+        const nextJob = await generationService.get(jobId, runtimeCertificationToken);
         if (!active) return;
         setJob(nextJob);
         attempts += 1;
@@ -33,7 +33,7 @@ export function useGenerationJob(jobId: string | null) {
       active = false;
       if (timer) clearTimeout(timer);
     };
-  }, [jobId]);
+  }, [jobId, runtimeCertificationToken]);
 
   return { job, error };
 }

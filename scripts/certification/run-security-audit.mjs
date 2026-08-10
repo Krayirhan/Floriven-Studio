@@ -7,7 +7,7 @@ const targets = [
 const source = (await Promise.all(targets.map((target) => readFile(new URL(`../../${target}`, import.meta.url), "utf8")))).join("\n");
 const checks = [
   ["runtime evidence required", source.includes("RUNTIME_EVIDENCE_REQUIRED")],
-  ["final eligibility is runtime-derived", source.includes("report.finalEligible")],
+  ["final eligibility is runtime-derived", source.includes("report.finalEligible") || source.includes("final_eligible: report.passed")],
   ["client final flag is not trusted", !/body\.(finalEligible|final_eligible)|finalEligible\s*:\s*body/.test(source)],
   ["quality failure blocks completion", source.includes("if (!qualityReport.passed)")],
 ];

@@ -67,6 +67,9 @@ describe("splitScreenNavigation", () => {
     expect(html).toContain("--gen-accent:#0d9488");
     expect(html).toContain("--gen-radius-lg:24px");
     expect(html).toContain("--gen-navigation-radius:24px");
+    expect(html).toContain('data-viewport-width="390"');
+    expect(html).toContain('data-viewport-height="844"');
+    expect(html).toContain('data-renderer-version="phone-screen-v2"');
   });
 
   it("does not infer presentation from a preset identity in the screen tree", () => {

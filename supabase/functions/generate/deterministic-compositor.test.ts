@@ -15,6 +15,14 @@ describe('deterministic compositor', () => {
     const screens = composeDeterministicBaseScreens(blueprint)
     expect(new Set(screens.map((screen) => screen.id)).size).toBe(screens.length)
   })
+  it('keeps arbitrary briefs in their own context when the provider is unavailable', () => {
+    const blueprint = resolvePlanningIntent(fallbackPlanningIntent('futbol fantezi ligi uygulaması'), 'futbol fantezi ligi uygulaması')
+    const screens = composeDeterministicBaseScreens(blueprint, 'futbol fantezi ligi uygulaması')
+    const text = JSON.stringify(screens)
+    expect(text).toContain('futbol fantezi ligi')
+    expect(text).not.toContain('₺124.500')
+    expect(text).not.toContain('Fatura')
+  })
   it('reports the real deterministic quality baseline', () => {
     const blueprint = resolvePlanningIntent(fallbackPlanningIntent('fatura gelir gider vergi'), 'finance')
     const report = evaluateGenerationQuality(composeDeterministicBaseScreens(blueprint), blueprint)

@@ -25,6 +25,12 @@ describe("V2 stage contracts", () => {
     expect(ux.screens.map((screen) => [screen.screenId, screen.archetype, screen.navigationMode])).toEqual([
       ["home", "dashboard", "root"], ["invoices", "management_list", "root"], ["settings", "settings", "root"],
     ]);
+    expect(ux.screens[0]).toMatchObject({
+      version: "1.0.0",
+      heroAllowed: true,
+      fabAllowed: false,
+      bottomNavigationAllowed: true,
+    });
     expect(obsidian).not.toEqual(editorial);
     expect(ux.screens).toHaveLength(3);
   });

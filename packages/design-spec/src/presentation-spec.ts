@@ -8,6 +8,9 @@ export type PresentationSpec = {
   density: DesignStrategy["density"];
   navigationStyle: DesignStrategy["navigationStyle"];
   visualDirection: string;
+  /** Runtime selections compiled from PresentationSpecV2. */
+  cardFamilies?: readonly string[];
+  chartTypes?: readonly string[];
 };
 
 export function createPresentationSpec(strategy: DesignStrategy): PresentationSpec {

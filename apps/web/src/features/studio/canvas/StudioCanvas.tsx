@@ -1,5 +1,5 @@
-import { useRef, useState } from "react";
-import type { PresentationSpec, Screen } from "@floriven/design-spec";
+import { useEffect, useRef, useState } from "react";
+import { createCandidateHash, type PresentationSpec, type Screen } from "@floriven/design-spec";
 import styles from "../StudioPage.module.css";
 import { FlowConnections } from "./FlowConnections";
 import { PhoneScreen } from "./PhoneScreen";
@@ -28,6 +28,10 @@ function screenPaletteLabel(screen: Screen): string {
   const palette = strategy && typeof strategy === "object" && !Array.isArray(strategy)
     ? (strategy as Record<string, unknown>).palette
     : undefined;
+  const mode = strategy && typeof strategy === "object" && !Array.isArray(strategy)
+    ? (strategy as Record<string, unknown>).mode
+    : undefined;
+  if (mode !== "template") return "Auto";
   if (typeof palette === "string" && PALETTE_LABELS[palette]) return PALETTE_LABELS[palette];
   const theme = screen.root.props.theme;
   return typeof theme === "string" && theme.length > 0 ? theme.charAt(0).toUpperCase() + theme.slice(1) : "Original";
@@ -69,6 +73,8 @@ export function StudioCanvas({
   onClearSelection,
   onDeleteScreen,
   onDuplicateScreen,
+  readOnly = false,
+  runtimeCandidate,
 }: {
   screens: Screen[];
   activeScreenId: string;
@@ -77,14 +83,30 @@ export function StudioCanvas({
   onSelectScreen: (id: string) => void;
   onSelectNode: (id: string) => void;
   onClearSelection: () => void;
-  onDeleteScreen: (screenId: string) => void;
-  onDuplicateScreen: (screenId: string) => void;
+  onDeleteScreen?: (screenId: string) => void;
+  onDuplicateScreen?: (screenId: string) => void;
+  readOnly?: boolean;
+  runtimeCandidate?: { jobId: string; staticQualityPassed: boolean; runtimePending: boolean } | undefined;
 }) {
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [tool, setTool] = useState<Tool>("select");
   const strategy = designStrategy(screens[0]);
   const drag = useRef<{ x: number; y: number; px: number; py: number } | null>(null);
+  const [runtimeReady, setRuntimeReady] = useState(false);
+  const candidateHash = screens.length ? createCandidateHash(screens) : undefined;
+
+  useEffect(() => {
+    setRuntimeReady(false);
+    if (!runtimeCandidate || !runtimeCandidate.staticQualityPassed || !runtimeCandidate.runtimePending || !candidateHash || screens.length === 0) return;
+    let cancelled = false;
+    const markReady = () => requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (!cancelled) setRuntimeReady(true);
+    }));
+    if (document.fonts?.status === 'loaded') markReady();
+    else void document.fonts?.ready.then(markReady);
+    return () => { cancelled = true; };
+  }, [candidateHash, runtimeCandidate, screens.length]);
 
   const resetView = () => { setZoom(1); setPan({ x: 0, y: 0 }); };
   const fitAll = () => { setZoom(0.85); setPan({ x: 0, y: 0 }); };
@@ -92,6 +114,9 @@ export function StudioCanvas({
   return (
     <section
       className={styles.canvas}
+      data-runtime-evidence-ready={runtimeReady ? 'true' : undefined}
+      data-runtime-job-id={runtimeReady ? runtimeCandidate?.jobId : undefined}
+      data-runtime-candidate-hash={runtimeReady ? candidateHash : undefined}
       style={{ cursor: tool === "hand" ? "grab" : "default" }}
       onClick={onClearSelection}
       onWheel={(e) => {
@@ -170,21 +195,21 @@ export function StudioCanvas({
                   <span className={styles.scrDevice}>{meta.device}</span>
                 </div>
                 <div className={styles.scrHeaderActions}>
-                  <button
+                  {!readOnly && <button
                     className={styles.scrHeaderBtn}
-                    onClick={(e) => { e.stopPropagation(); onDuplicateScreen(screen.id); }}
+                    onClick={(e) => { e.stopPropagation(); onDuplicateScreen?.(screen.id); }}
                   >
                     Çoğalt
-                  </button>
-                  <button
+                  </button>}
+                  {!readOnly && <button
                     className={styles.scrHeaderBtn}
                     onClick={(e) => {
                       e.stopPropagation();
-                      if (window.confirm(`"${screen.name}" ekranını silmek istediğine emin misin?`)) onDeleteScreen(screen.id);
+                      if (window.confirm(`"${screen.name}" ekranını silmek istediğine emin misin?`)) onDeleteScreen?.(screen.id);
                     }}
                   >
                     Sil
-                  </button>
+                  </button>}
                 </div>
               </div>
               <PhoneScreen

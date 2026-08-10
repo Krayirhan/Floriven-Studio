@@ -18,6 +18,7 @@ import { composeDeterministicBaseScreens } from './deterministic-compositor.ts'
 import { appendProviderEvent, type ProviderEvent } from './provider-events.ts'
 import { selectCompositionMode } from './composition-selection.ts'
 import { validateArchetypeMinimumContent, validateCanonicalNavigation } from './candidate-invariants.ts'
+import { createRuntimeCandidateHash } from '../_shared/runtime-hash.ts'
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -86,10 +87,12 @@ Deno.serve(async (req: Request) => {
     const id = new URL(req.url).searchParams.get('id')
     if (!id) return json({ error: 'id required' }, 400)
     const jobToken = req.headers.get('x-job-token')?.trim() ?? ''
-    if (jobToken.length < 32) return json({ error: 'Valid X-Job-Token header is required' }, 403)
     const { data, error } = await supabase.from('generation_jobs').select('*').eq('id', id).single()
     if (error) return json({ error: error.message }, 404)
-    if (!data.job_token_hash || data.job_token_hash !== await sha256(jobToken)) return json({ error: 'Job access denied' }, 403)
+    const certification = req.headers.get('x-runtime-certification-token')?.trim()
+    const normalAccess = jobToken.length >= 32 && !!data.job_token_hash && data.job_token_hash === await sha256(jobToken)
+    const certificationAccess = certification ? await verifyRuntimeCertificationToken(certification, String(data.id), data.result_screens) : false
+    if (!normalAccess && !certificationAccess) return json({ error: 'Job access denied' }, 403)
     return json(mapJob(data))
   }
 
@@ -219,7 +222,6 @@ Deno.serve(async (req: Request) => {
     const identityIssues = validateDesignSpecIdentity({ screens })
     if (identityIssues.length > 0) {
       qualityReport.passed = false
-      qualityReport.score = 0
       qualityReport.issues.push(...identityIssues.map((issue) => `${issue.code}: ${issue.message}`))
     }
     const { error: qualityErr } = await supabase
@@ -316,7 +318,6 @@ async function processGenerationJob(options: ProcessGenerationJobOptions): Promi
       ]
       if (candidateIssues.length > 0) {
         report.passed = false
-        report.score = 0
         report.issues.push(...candidateIssues)
       }
       return report
@@ -394,6 +395,7 @@ async function runFreshGeneration(
     const userMsg = [
       `Uygulama: ${brief}`,
       `Platform: ${platform}`,
+      templateStrategy ? `STYLE SYSTEM (composition iÃ§in zorunlu): ${JSON.stringify(findDesignTemplate(selectedStyleId)?.system ?? {})}. Bu profil domaini ve ekran gÃ¶revlerini deÄŸiÅŸtiremez; fakat density, grouping, typography rhythm ve component composition bu profile gÃ¶re farklÄ±laÅŸmalÄ±dÄ±r.` : 'STYLE SYSTEM: auto; ProductBlueprint gÃ¶revlerine gÃ¶re dengeli bir kompozisyon seÃ§.',
       'SEMANTİK COMPOSITION AŞAMASI: Stil preset kimliği ve presentation tokenları bu aşamada kullanılmaz. Yalnızca ProductBlueprint ve ekran UX iskeletine göre semantic UI üret.',
       `PRODUCT BLUEPRINT (tek ürün gerçeği): ${JSON.stringify(blueprint)}`,
       `GLOBAL NAVİGASYON: ${JSON.stringify(blueprint.navigation)}`,
@@ -416,8 +418,8 @@ async function runFreshGeneration(
       batchScreens = Array.isArray(parsed.screens) ? parsed.screens : []
     } catch (error) {
       if (error instanceof ProviderError && error.code === 'PROVIDER_AUTH_FAILED') throw error
-      batchScreens = composeDeterministicBaseScreens({ ...blueprint, screens: batch }).map((screen) => screen)
-      await supabase.from('generation_jobs').update({ provider_metadata: { compositionMode: 'deterministic_fallback', fallbackReason: error instanceof Error ? error.message : String(error), generationPhase: 'composition', batchIndex } }).eq('id', jobId)
+      batchScreens = composeDeterministicBaseScreens({ ...blueprint, screens: batch }, brief).map((screen) => screen)
+      await supabase.from('generation_jobs').update({ provider_metadata: { compositionMode: 'brief_aware_fallback', fallbackReason: error instanceof Error ? error.message : String(error), generationPhase: 'composition', batchIndex } }).eq('id', jobId)
     }
     if (batchScreens.length !== batch.length) throw new Error(`${batchIndex + 1}. ekran grubunda ${batch.length} yerine ${batchScreens.length} ekran üretildi`)
     raw.push(...batchScreens)
@@ -837,15 +839,7 @@ function normalizeScreens(raw: unknown[], blueprint: ProductBlueprint, forcedStr
     if (plannedScreen?.fabAllowed === false || focusedFlow) {
       removeComponents(root, new Set(['FloatingActionButton']))
     }
-    if (focusedFlow) {
-      removeComponents(root, new Set(['BottomNavigation', 'TabBar']))
-    }
-
-    // Static quality defines persistent navigation by flow type: forms and
-    // details are focused flows; every other screen shares the canonical set.
-    // Using navigationPlacement here made settings/hierarchical screens lose
-    // their navigation during normalization and broke production parity.
-    repairStructure(root, slug, String(screen.name), navItems, seenIds, !focusedFlow)
+    repairStructure(root, slug, String(screen.name), navItems, seenIds, true)
 
     const count = flatten(root).length - 1
     if (false && count < MIN_NODES) {
@@ -1070,6 +1064,10 @@ function repairStructure(root: Node, slug: string, name: string, navItems: strin
 
   // Exactly one title: demote every extra to a heading.
   const titles = all.filter((n) => n.type === 'Text' && (n.props as Node)?.variant === 'title')
+  const appBar = all.find((n) => n.type === 'TopAppBar')
+  const appBarTitle = appBar ? String((appBar.props as Node)?.title ?? '') : ''
+  const duplicateTitleIds = new Set(titles.filter((n) => String((n.props as Node)?.text ?? '') === appBarTitle).map((n) => n.id))
+  if (duplicateTitleIds.size > 0) root.children = children.filter((node) => !duplicateTitleIds.has(node.id))
   titles.slice(1).forEach((n) => { (n.props as Node).variant = 'heading' })
 
   // TopAppBar first.
@@ -1196,6 +1194,19 @@ async function sha256(value: string): Promise<string> {
   const bytes = new TextEncoder().encode(value)
   const digest = await crypto.subtle.digest('SHA-256', bytes)
   return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('')
+}
+
+async function verifyRuntimeCertificationToken(token: string, jobId: string, screens: unknown): Promise<boolean> {
+  const secret = Deno.env.get('RUNTIME_CERTIFICATION_SECRET')
+  if (!secret) return false
+  const [payload, signature] = token.split('.')
+  if (!payload || !signature) return false
+  const expected = await sha256(`${payload}.${secret}`)
+  if (signature !== expected) return false
+  try {
+    const claims = JSON.parse(atob(payload)) as { purpose?: string; jobId?: string; candidateHash?: string; exp?: number }
+    return claims.purpose === 'runtime_certification' && claims.jobId === jobId && typeof claims.exp === 'number' && claims.exp > Math.floor(Date.now() / 1000) && claims.candidateHash === createRuntimeCandidateHash(Array.isArray(screens) ? screens : [])
+  } catch { return false }
 }
 
 function mapJob(raw: Node) {

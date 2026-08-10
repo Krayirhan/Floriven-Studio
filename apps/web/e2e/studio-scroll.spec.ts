@@ -49,6 +49,7 @@ test("phone content scrolls while bottom navigation stays fixed", async ({ page 
   await page.getByRole("textbox", { name: "Nasıl bir mobil uygulama tasarlamak istiyorsun?" }).fill("Freelance proje ve gelir yönetimi");
   await page.getByRole("button", { name: "Floriven ile Üret ✦" }).click();
   await expect(page).toHaveURL(/\/app\/projeler\/.*\/studio\?jobId=e2e-job/);
+  await expect(page.locator('[data-runtime-evidence-ready="true"]')).toHaveAttribute('data-runtime-job-id', 'e2e-job');
   await page.getByRole("button", { name: "Inspector'ı kapat" }).click();
 
   const viewport = page.locator('[data-scroll-viewport="true"]').nth(1);
@@ -73,10 +74,12 @@ test("phone content scrolls while bottom navigation stays fixed", async ({ page 
   await mkdir(resolve(evidenceRoot, "runtime"), { recursive: true });
   await mkdir(resolve(evidenceRoot, "screenshots"), { recursive: true });
   const viewportBox = await viewport.boundingBox();
-  const bounds = await page.locator("[data-node-id]").evaluateAll((elements) => elements.map((element) => {
+  const bounds = await page.locator("[data-floriven-node-id]").evaluateAll((elements) => elements.map((element) => {
     const box = element.getBoundingClientRect();
-    return { nodeId: element.getAttribute("data-node-id") ?? "unknown", x: box.x, y: box.y, width: box.width, height: box.height };
+    return { nodeId: element.getAttribute("data-floriven-node-id") ?? "unknown", screenId: element.closest('[data-floriven-screen-id]')?.getAttribute('data-floriven-screen-id') ?? 'unknown', x: box.x, y: box.y, width: box.width, height: box.height };
   }));
+  expect(bounds.length).toBeGreaterThan(0);
+  expect(bounds.every((bound) => bound.screenId !== 'unknown' && bound.width > 0 && bound.height > 0)).toBe(true);
   const geometry = createGeometryReport(bounds, { width: viewportBox?.width ?? 390, height: viewportBox?.height ?? 844 });
   await page.locator('[class*="phone"]').nth(1).screenshot({ path: resolve(evidenceRoot, "screenshots/phone-scroll-runtime.png"), animations: "disabled" });
   await writeFile(resolve(evidenceRoot, "runtime/phone-scroll-evidence.json"), JSON.stringify({ renderVersion: "phone-screen-v2", screenshotPath: "screenshots/phone-scroll-runtime.png", viewport: viewportBox, nodes: bounds, geometry, visualCritic: "pending" }, null, 2));

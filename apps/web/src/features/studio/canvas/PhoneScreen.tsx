@@ -1,5 +1,5 @@
 import type { CSSProperties, MouseEvent } from "react";
-import type { DesignNode, PresentationSpec, Screen } from "@floriven/design-spec";
+import { adaptPresentationV2ToRuntime, isPresentationSpecV2, type DesignNode, type PresentationSpec, type PresentationSpecV2, type Screen } from "@floriven/design-spec";
 import styles from "../StudioPage.module.css";
 import { isComponentType } from "./componentRegistry";
 
@@ -8,6 +8,7 @@ type RendererProps = {
   selectedNodeId: string;
   onSelect: (id: string) => void;
   activeNavItem?: string | undefined;
+  presentation?: PresentationSpec | undefined;
 };
 
 function stringProp(node: DesignNode, key: string, fallback = ""): string {
@@ -40,6 +41,12 @@ function toneClass(node: DesignNode): string {
   return styles[`generatedTone${tone[0]?.toUpperCase() ?? ""}${tone.slice(1)}`] ?? "";
 }
 
+function presetComponentClass(presentation: PresentationSpec | undefined, component: string): string {
+  if (!presentation) return "";
+  const palette = presentation.palette[0]?.toUpperCase() + presentation.palette.slice(1);
+  return styles[`preset${palette}${component}`] ?? "";
+}
+
 function presentationVariables(presentation: PresentationSpec | undefined): CSSProperties {
   if (!presentation) return {};
   const palette = {
@@ -61,16 +68,17 @@ function presentationVariables(presentation: PresentationSpec | undefined): CSSP
   } as CSSProperties;
 }
 
-function selectionProps(node: DesignNode, onSelect: (id: string) => void): { className: string; onClick: (event: MouseEvent) => void; "data-node-id": string } {
+function selectionProps(node: DesignNode, onSelect: (id: string) => void): { className: string; onClick: (event: MouseEvent) => void; "data-node-id": string; "data-floriven-node-id": string } {
   return {
     className: styles.generatedNode ?? "",
     "data-node-id": node.id,
+    "data-floriven-node-id": node.id,
     onClick: (event) => { event.stopPropagation(); onSelect(node.id); },
   };
 }
 
-function children(node: DesignNode, selectedNodeId: string, onSelect: (id: string) => void, activeNavItem?: string) {
-  return node.children?.map((child) => <DesignNodeRenderer key={child.id} node={child} selectedNodeId={selectedNodeId} onSelect={onSelect} activeNavItem={activeNavItem} />);
+function children(node: DesignNode, selectedNodeId: string, onSelect: (id: string) => void, activeNavItem?: string, presentation?: PresentationSpec) {
+  return node.children?.map((child) => <DesignNodeRenderer key={child.id} node={child} selectedNodeId={selectedNodeId} onSelect={onSelect} activeNavItem={activeNavItem} presentation={presentation} />);
 }
 
 function isBottomNavigation(node: DesignNode): boolean {
@@ -88,9 +96,14 @@ function isBottomNavigation(node: DesignNode): boolean {
 export function splitScreenNavigation(root: DesignNode): { contentRoot: DesignNode; navigation?: DesignNode; fab?: DesignNode } {
   const navigation = root.children?.find(isBottomNavigation);
   const fab = root.children?.find((node) => node.type === "FloatingActionButton");
-  if (!navigation && !fab) return { contentRoot: root };
+  const appBar = root.children?.find((node) => node.type === "TopAppBar");
+  const appBarTitle = appBar && typeof appBar.props.title === "string" ? appBar.props.title : undefined;
+  const duplicateTitle = appBarTitle
+    ? root.children?.find((node) => node.type === "Text" && node.props.variant === "title" && node.props.text === appBarTitle)
+    : undefined;
+  if (!navigation && !fab && !duplicateTitle) return { contentRoot: root };
   return {
-    contentRoot: { ...root, children: root.children?.filter((node) => node.id !== navigation?.id && node.id !== fab?.id) ?? [] },
+    contentRoot: { ...root, children: root.children?.filter((node) => node.id !== navigation?.id && node.id !== fab?.id && node.id !== duplicateTitle?.id) ?? [] },
     ...(navigation ? { navigation } : {}),
     ...(fab ? { fab } : {}),
   };
@@ -170,14 +183,14 @@ function layoutStyle(node: DesignNode): CSSProperties {
   return { display: "flex", flexDirection: "column", gap: 12 };
 }
 
-export function DesignNodeRenderer({ node, selectedNodeId, onSelect, activeNavItem }: RendererProps) {
+export function DesignNodeRenderer({ node, selectedNodeId, onSelect, activeNavItem, presentation }: RendererProps) {
   if (!isComponentType(node.type)) {
     return <div role="alert" data-renderer-error="UNSUPPORTED_RENDERER_COMPONENT">Unsupported component: {node.type}</div>;
   }
   const isSelected = node.id === selectedNodeId;
   const selectedClass = isSelected ? styles.phSelected : "";
   const selectable = selectionProps(node, onSelect);
-  const childNodes = children(node, selectedNodeId, onSelect, activeNavItem);
+  const childNodes = children(node, selectedNodeId, onSelect, activeNavItem, presentation);
 
   switch (node.type) {
     case "Screen":
@@ -201,15 +214,16 @@ export function DesignNodeRenderer({ node, selectedNodeId, onSelect, activeNavIt
     case "Card": {
       const variant = stringProp(node, "variant", "elevated");
       const variantClass = styles[`generatedCard${variant[0]?.toUpperCase() ?? ""}${variant.slice(1)}`] ?? "";
-      return <section {...selectable} className={`${styles.generatedCard} ${variantClass} ${toneClass(node)} ${selectedClass}`}>{childNodes}</section>;
+      const family = stringProp(node, "family", presentation?.cardFamilies?.[0] ?? "");
+      return <section {...selectable} data-component-family={family || undefined} className={`${styles.generatedCard} ${variantClass} ${family ? `generatedCardFamily-${family}` : ""} ${toneClass(node)} ${presetComponentClass(presentation, "Card")} ${selectedClass}`}>{childNodes}</section>;
     }
     case "Button":
-      return <button {...selectable} type="button" className={`${styles.generatedButton} ${selectedClass}`}>{stringProp(node, "label", stringProp(node, "icon", "Devam"))}</button>;
+      return <button {...selectable} type="button" className={`${styles.generatedButton} ${presetComponentClass(presentation, "Button")} ${selectedClass}`}>{stringProp(node, "label", stringProp(node, "icon", "Devam"))}</button>;
     case "IconButton":
       return <button {...selectable} type="button" className={`${styles.generatedIconButton} ${selectedClass}`} aria-label={node.a11y?.label ?? "Aksiyon"}><ActionGlyph name={stringProp(node, "icon", "plus")} /></button>;
     case "TextField":
     case "SearchField":
-      return <div {...selectable} className={`${styles.generatedInput} ${selectedClass}`}>{node.type === "SearchField" && <ActionGlyph name="search" />}<span>{stringProp(node, "placeholder")}</span></div>;
+      return <div {...selectable} className={`${styles.generatedInput} ${presetComponentClass(presentation, "Input")} ${selectedClass}`}>{node.type === "SearchField" && <ActionGlyph name="search" />}<span>{stringProp(node, "placeholder")}</span></div>;
     case "ListItem": {
       const title = stringProp(node, "title");
       return <div {...selectable} className={`${styles.generatedListItem} ${toneClass(node)} ${selectedClass}`}>
@@ -222,9 +236,9 @@ export function DesignNodeRenderer({ node, selectedNodeId, onSelect, activeNavIt
     case "Divider":
       return <hr {...selectable} className={`${styles.generatedDivider} ${selectedClass}`} />;
     case "Badge":
-      return <span {...selectable} className={`${styles.generatedBadge} ${toneClass(node)} ${selectedClass}`}>{stringProp(node, "label")}</span>;
+      return <span {...selectable} className={`${styles.generatedBadge} ${toneClass(node)} ${presetComponentClass(presentation, "Badge")} ${selectedClass}`}>{stringProp(node, "label")}</span>;
     case "Avatar":
-      return <div {...selectable} className={`${styles.generatedAvatar} ${selectedClass}`}><span>{stringProp(node, "initials", "•")}</span></div>;
+      return <div {...selectable} className={`${styles.generatedAvatar} ${presetComponentClass(presentation, "Avatar")} ${selectedClass}`}><span>{stringProp(node, "initials", "•")}</span></div>;
     case "Image":
       return <div {...selectable} className={`${styles.generatedImage} ${selectedClass}`} aria-label={stringProp(node, "alt", "Görsel")}><span>{stringProp(node, "alt", "Görsel")}</span></div>;
     case "Icon":
@@ -255,20 +269,24 @@ export function DesignNodeRenderer({ node, selectedNodeId, onSelect, activeNavIt
       const points = values.map((value, index) => `${xAt(index)},${yAt(value)}`).join(" ");
       const areaPoints = `0,56 ${points} 100,56`;
       const gradientId = `chart-fill-${node.id}`;
-      return <figure {...selectable} className={`${styles.generatedChart} ${toneClass(node)} ${selectedClass}`}>
+      const inferredChartType = /dağılım|distribution|kategori|category/i.test(stringProp(node, "label")) ? "bar" : /oran|ratio|pay|share/i.test(stringProp(node, "label")) ? "donut" : undefined;
+      const chartStyle = stringProp(node, "chartType", inferredChartType ?? presentation?.chartTypes?.[0] ?? (presentation?.palette === "terracotta" ? "bar" : presentation?.palette === "serene" ? "area" : presentation?.palette === "electric" ? "radial" : "line"));
+      const barWidth = 100 / Math.max(values.length, 1) * 0.62;
+      return <figure {...selectable} data-chart-type={chartStyle} className={`${styles.generatedChart} ${toneClass(node)} ${selectedClass}`}>
         <figcaption>{stringProp(node, "label")}</figcaption>
         <svg viewBox="0 0 100 60" preserveAspectRatio="none" aria-hidden="true">
           <defs><linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="var(--node-tone)" stopOpacity="0.32" /><stop offset="100%" stopColor="var(--node-tone)" stopOpacity="0" /></linearGradient></defs>
           <path className={styles.generatedChartGrid} d="M0 16H100M0 32H100M0 48H100" />
-          <polygon className={styles.generatedChartArea} points={areaPoints} fill={`url(#${gradientId})`} />
-          <polyline points={points} />
-          {values.map((value, index) => <circle key={`${value}-${index}`} cx={xAt(index)} cy={yAt(value)} r="1.8" />)}
+          {chartStyle === "area" && <polygon className={styles.generatedChartArea} points={areaPoints} fill={`url(#${gradientId})`} />}
+          {chartStyle === "bar" && values.map((value, index) => <rect key={`${value}-${index}`} x={xAt(index) - barWidth / 2} y={yAt(value)} width={barWidth} height={56 - yAt(value)} rx="1.5" />)}
+          {chartStyle !== "bar" && chartStyle !== "donut" && <polyline points={points} />}
+          {chartStyle !== "bar" && chartStyle !== "donut" && values.map((value, index) => <circle key={`${value}-${index}`} cx={xAt(index)} cy={yAt(value)} r={chartStyle === "radial" ? "2.4" : "1.8"} />)}
         </svg>
       </figure>;
     }
     case "SegmentedControl": {
       const items = stringList(node, "items");
-      return <div {...selectable} className={`${styles.generatedSegments} ${selectedClass}`}>{items.map((item, index) => <span className={index === 0 ? styles.generatedSegmentActive : ""} key={item}>{item}</span>)}</div>;
+      return <div {...selectable} className={`${styles.generatedSegments} ${presetComponentClass(presentation, "Segments")} ${selectedClass}`}>{items.map((item, index) => <span className={index === 0 ? styles.generatedSegmentActive : ""} key={item}>{item}</span>)}</div>;
     }
     case "FloatingActionButton":
       return <button {...selectable} type="button" className={`${styles.generatedFab} ${selectedClass}`} aria-label={node.a11y?.label ?? "Aksiyon"}><ActionGlyph name={stringProp(node, "icon", "plus")} /></button>;
@@ -391,15 +409,24 @@ export function DesignNodeRenderer({ node, selectedNodeId, onSelect, activeNavIt
   }
 }
 
-export function PhoneScreen({ screen, presentation, selectedNodeId, active, onSelect }: { screen: Screen; presentation?: PresentationSpec | undefined; selectedNodeId: string; active: boolean; onSelect: (id: string) => void }) {
+export function PhoneScreen({ screen, presentation: inputPresentation, selectedNodeId, active, onSelect }: { screen: Screen; presentation?: PresentationSpec | PresentationSpecV2 | undefined; selectedNodeId: string; active: boolean; onSelect: (id: string) => void }) {
+  const presentation: PresentationSpec | undefined = inputPresentation && isPresentationSpecV2(inputPresentation) ? adaptPresentationV2ToRuntime(inputPresentation) : inputPresentation;
   const theme = stringProp(screen.root, "theme", "ocean");
   const themeClass = styles[`generatedTheme${theme[0]?.toUpperCase() ?? ""}${theme.slice(1)}`] ?? "";
   const presentationStyle = presentationVariables(presentation);
+  const palette = presentation?.palette ?? "";
+  const paletteClass = palette ? styles[`strategyPalette${palette[0]?.toUpperCase() ?? ""}${palette.slice(1)}`] ?? "" : "";
+  const cardClass = presentation?.cardStyle ? styles[`strategyCards${presentation.cardStyle[0]?.toUpperCase() ?? ""}${presentation.cardStyle.slice(1)}`] ?? "" : "";
+  const densityClass = presentation?.density ? styles[`strategyDensity${presentation.density[0]?.toUpperCase() ?? ""}${presentation.density.slice(1)}`] ?? "" : "";
+  const navigationClass = presentation?.navigationStyle ? styles[`strategyNavigation${presentation.navigationStyle[0]?.toUpperCase() ?? ""}${presentation.navigationStyle.slice(1)}`] ?? "" : "";
+  const screenKey = screen.name.toLocaleLowerCase("tr-TR");
+  const composition = screenKey.includes("setting") || screenKey.includes("ayar") ? "settings" : screenKey.includes("form") || screenKey.includes("new") || screenKey.includes("create") ? "form" : screenKey.includes("detail") || screenKey.includes("detay") ? "detail" : screenKey.includes("analytic") || screenKey.includes("analysis") || screenKey.includes("rapor") ? "analytics" : screenKey.includes("list") || screenKey.includes("liste") ? "list" : "dashboard";
+  const compositionClass = styles[`presetComposition${composition[0]?.toUpperCase() ?? ""}${composition.slice(1)}`] ?? "";
   const { contentRoot, navigation, fab } = splitScreenNavigation(screen.root);
-  return <div className={`${styles.phone} ${themeClass} ${active ? styles.phoneActive : ""}`} style={presentationStyle}>
+  return <div className={`${styles.phone} ${themeClass} ${paletteClass} ${cardClass} ${densityClass} ${navigationClass} ${compositionClass} ${active ? styles.phoneActive : ""}`} data-floriven-screen-id={screen.id} data-screen-composition={composition} data-viewport-width="390" data-viewport-height="844" data-renderer-version="phone-screen-v2" style={presentationStyle}>
     <div className={styles.phStatus}><span>9:41</span><span>●●● ◒</span></div>
-    <main className={`${styles.phBody} ${fab ? styles.phBodyReserveFab : ""}`} data-scroll-viewport="true" tabIndex={0} aria-label={`${screen.name} kaydırılabilir içeriği`} onWheel={(event) => event.stopPropagation()}><DesignNodeRenderer node={contentRoot} selectedNodeId={active ? selectedNodeId : ""} onSelect={onSelect} activeNavItem={screen.name} /></main>
-    {fab && <div className={`${styles.generatedFabSlot} ${navigation ? styles.generatedFabSlotAboveNav : ""}`}><DesignNodeRenderer node={fab} selectedNodeId={active ? selectedNodeId : ""} onSelect={onSelect} /></div>}
-    {navigation && <DesignNodeRenderer node={navigation} selectedNodeId={active ? selectedNodeId : ""} onSelect={onSelect} activeNavItem={screen.name} />}
+    <main className={`${styles.phBody} ${fab ? styles.phBodyReserveFab : ""}`} data-scroll-viewport="true" tabIndex={0} aria-label={`${screen.name} kaydırılabilir içeriği`} onWheel={(event) => event.stopPropagation()}><DesignNodeRenderer node={contentRoot} selectedNodeId={active ? selectedNodeId : ""} onSelect={onSelect} activeNavItem={screen.name} presentation={presentation} /></main>
+    {fab && <div className={`${styles.generatedFabSlot} ${navigation ? styles.generatedFabSlotAboveNav : ""}`}><DesignNodeRenderer node={fab} selectedNodeId={active ? selectedNodeId : ""} onSelect={onSelect} presentation={presentation} /></div>}
+    {navigation && <DesignNodeRenderer node={navigation} selectedNodeId={active ? selectedNodeId : ""} onSelect={onSelect} activeNavItem={screen.name} presentation={presentation} />}
   </div>;
 }

@@ -1107,6 +1107,43 @@
 .strategyNavigationGlass .generatedNavigation { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(16px); border-top: 1px solid rgba(255,255,255,.12); box-shadow: 0 -10px 32px rgba(0,0,0,.3); }
 .strategyNavigationMinimal .generatedNavigation { min-height:56px; border-top:1px solid var(--fv-phone-text); box-shadow:none; backdrop-filter:none; }
 .strategyNavigationMinimal .generatedNavigation button { border-radius:0; background:transparent !important; }
+
+/* Preset component grammar: the same semantic node becomes a different visual
+   component family without changing the product contract. */
+.phone.strategyPaletteObsidian .generatedChart svg { height:72px; }
+.phone.strategyPaletteObsidian .generatedChartGrid { stroke:rgba(56,189,248,.2); stroke-dasharray:2 3; }
+.phone.strategyPaletteObsidian .generatedSegments { border:1px solid rgba(56,189,248,.25); border-radius:6px; background:rgba(15,23,42,.8); }
+.phone.strategyPaletteObsidian .generatedSegments span { border-radius:4px; text-transform:uppercase; font-size:8px; letter-spacing:.05em; }
+.phone.strategyPaletteObsidian .generatedInput { border-radius:6px; background:rgba(15,23,42,.7); border-color:rgba(56,189,248,.3); }
+.phone.strategyPaletteObsidian .generatedBadge { border-radius:4px; text-transform:uppercase; letter-spacing:.08em; }
+
+.phone.strategyPaletteSerene .generatedChart svg { height:76px; }
+.phone.strategyPaletteSerene .generatedChartGrid { display:none; }
+.phone.strategyPaletteSerene .generatedSegments { border-radius:999px; padding:5px; }
+.phone.strategyPaletteSerene .generatedSegments span { border-radius:999px; padding:9px 5px; }
+.phone.strategyPaletteSerene .generatedInput { border-radius:18px; min-height:42px; padding-inline:15px; }
+.phone.strategyPaletteSerene .generatedToggle i { width:38px; height:23px; }
+
+.phone.strategyPaletteTerracotta .generatedChart svg { height:82px; }
+.phone.strategyPaletteTerracotta .generatedChartGrid { stroke:#d6b49e; }
+.phone.strategyPaletteTerracotta .generatedSegments { border-radius:8px; background:#f5e7da; }
+.phone.strategyPaletteTerracotta .generatedSegments span { border-radius:4px; font-family:Georgia,serif; }
+.phone.strategyPaletteTerracotta .generatedInput { border-radius:4px; background:#fffaf4; border-color:#d6b49e; }
+.phone.strategyPaletteTerracotta .generatedBadge { border-radius:4px; font-family:Georgia,serif; }
+
+.phone.strategyPaletteElectric .generatedChart svg { height:76px; }
+.phone.strategyPaletteElectric .generatedChartGrid { stroke:rgba(124,58,237,.18); stroke-width:1.4; }
+.phone.strategyPaletteElectric .generatedSegments { border-radius:18px; padding:4px; background:#ede9fe; }
+.phone.strategyPaletteElectric .generatedSegments span { border-radius:14px; font-weight:800; }
+.phone.strategyPaletteElectric .generatedInput { border-radius:18px; border-width:2px; }
+.phone.strategyPaletteElectric .generatedBadge { border-radius:999px; box-shadow:0 3px 0 rgba(124,58,237,.2); }
+
+.phone.strategyPaletteEditorial .generatedChart svg { height:70px; }
+.phone.strategyPaletteEditorial .generatedChartGrid { display:none; }
+.phone.strategyPaletteEditorial .generatedSegments { border-radius:0; border-bottom:1px solid #09090b; background:transparent; padding:0; }
+.phone.strategyPaletteEditorial .generatedSegments span { border-radius:0; text-transform:uppercase; letter-spacing:.08em; font-size:8px; }
+.phone.strategyPaletteEditorial .generatedInput { border-radius:0; border-width:0 0 1px; background:transparent; padding-left:0; }
+.phone.strategyPaletteEditorial .generatedBadge { border-radius:0; background:transparent; border-bottom:1px solid #09090b; text-transform:uppercase; }
 .healthStateNormal { --health-state:#16866f; --health-soft:#e1f5ed; }
 .healthStateAttention { --health-state:#b56a17; --health-soft:#fff1d6; }
 .healthStateCritical { --health-state:#c6414b; --health-soft:#ffe5e7; }
@@ -2601,3 +2638,39 @@ select.inspFld {
   .aiDock { width: calc(100% - 88px); }
   .canvasTool { display: none; }
 }
+.presetObsidianCard { border-radius: 10px; border-style: solid; box-shadow: 0 8px 18px rgba(0,0,0,.18); }
+.presetObsidianButton { border-radius: 8px; letter-spacing: .04em; text-transform: uppercase; }
+.presetObsidianInput { border-radius: 8px; background: #07131d; }
+.presetObsidianBadge { border-radius: 4px; text-transform: uppercase; letter-spacing: .08em; }
+.presetObsidianAvatar { border-radius: 8px; }
+.presetObsidianSegments { border-radius: 8px; }
+.presetSereneCard { border-radius: 26px; box-shadow: 0 14px 34px rgba(15,118,110,.10); }
+.presetSereneButton { border-radius: 999px; }
+.presetSereneInput { border-radius: 18px; min-height: 44px; }
+.presetSereneBadge { border-radius: 999px; }
+.presetSereneAvatar { border-radius: 50%; }
+.presetSereneSegments { border-radius: 999px; }
+.presetTerracottaCard { border-radius: 18px 8px 18px 8px; box-shadow: 0 8px 0 rgba(234,88,12,.14); }
+.presetTerracottaButton { border-radius: 8px; font-family: Georgia, serif; }
+.presetTerracottaInput { border-radius: 4px; background: #fffaf5; }
+.presetTerracottaBadge { border-radius: 3px; text-transform: uppercase; }
+.presetTerracottaAvatar { border-radius: 10px 2px 10px 2px; }
+.presetTerracottaSegments { border-radius: 4px; }
+.presetElectricCard { border-radius: 22px 10px 22px 10px; box-shadow: 0 8px 0 rgba(139,92,246,.18); }
+.presetElectricButton { border-radius: 14px; font-weight: 800; }
+.presetElectricInput { border-radius: 16px; }
+.presetElectricBadge { border-radius: 999px; font-weight: 800; }
+.presetElectricAvatar { border-radius: 50%; }
+.presetElectricSegments { border-radius: 16px; }
+.presetEditorialCard { border-radius: 0; box-shadow: none; border-width: 0 0 1px; }
+.presetEditorialButton { border-radius: 0; background: transparent; color: inherit; border-width: 0 0 1px; }
+.presetEditorialInput { border-radius: 0; border-width: 0 0 1px; background: transparent; }
+.presetEditorialBadge { border-radius: 0; background: transparent; border-width: 0 0 1px; }
+.presetEditorialAvatar { border-radius: 0; }
+.presetEditorialSegments { border-radius: 0; background: transparent; }
+.presetCompositionDashboard .generatedMetric { order: 0; }
+.presetCompositionList .generatedInput, .presetCompositionList .generatedSegments { margin-bottom: 4px; }
+.presetCompositionDetail .generatedCard:first-of-type { margin-top: 8px; }
+.presetCompositionForm .generatedInput { min-height: 42px; }
+.presetCompositionAnalytics .generatedChart { min-height: 112px; }
+.presetCompositionSettings .generatedListItem { border-bottom: 1px solid var(--gen-border, rgba(100,116,139,.16)); }

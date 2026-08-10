@@ -6,6 +6,53 @@ export type DesignPalette = "obsidian" | "serene" | "terracotta" | "electric" | 
 export type CardStyle = "crisp" | "soft" | "layered" | "playful" | "minimal";
 export type DesignDensity = "compact" | "comfortable" | "spacious";
 export type NavigationStyle = "solid" | "floating" | "glass" | "minimal";
+export type CardType = "metric" | "list" | "hero" | "split" | "timeline" | "media" | "glass" | "editorial";
+export type ChartType = "bar" | "line" | "area" | "donut" | "radial" | "sparkline" | "heatmap" | "segmented";
+export type ControlType = "switch" | "checkbox" | "toggle" | "segmented" | "accordion" | "disclosure";
+export type PillType = "status" | "filter" | "category" | "tag" | "notification";
+export type ButtonStyle = "solid" | "outline" | "ghost" | "gradient" | "icon-only" | "floating";
+export type FormFieldStyle = "underline" | "filled" | "outlined" | "soft" | "compact" | "touch-large";
+export type IconStyle = "outline" | "filled" | "duotone" | "geometric" | "hand-drawn" | "minimal";
+export type SurfaceStyle = "flat" | "glass" | "paper" | "neon" | "soft-shadow" | "layered";
+export type LayoutPattern = "grid" | "editorial-asymmetry" | "strict-grid" | "bento" | "stacked";
+export type MotionEasing = "linear" | "standard" | "spring" | "ease-out" | "editorial";
+
+export interface PresetTypography {
+  family: string;
+  displayFamily?: string;
+  weight: number;
+  headingWeight: number;
+  letterSpacing: string;
+  headingSize: string;
+  lineHeight: string;
+  uppercaseLabels: boolean;
+}
+
+export interface PresetGeometry {
+  radius: string;
+  border: string;
+  shadow: string;
+  elevation: string;
+  padding: string;
+  aspectRatio: string;
+}
+
+export interface PresetChartRules {
+  types: readonly ChartType[];
+  grid: "none" | "subtle" | "strong";
+  tooltip: "none" | "compact" | "rich";
+  palette: "single-accent" | "semantic" | "gradient" | "multi-accent" | "monochrome";
+  density: "sparse" | "balanced" | "dense";
+  animation: "none" | "subtle" | "energetic";
+}
+
+export interface PresetMotion {
+  duration: string;
+  easing: MotionEasing;
+  cardOpen: "fade" | "slide" | "scale" | "lift" | "none";
+  chartAnimation: "draw" | "grow" | "pulse" | "none";
+  navigationTransition: "crossfade" | "slide" | "spring" | "none";
+}
 
 export interface DesignStrategy {
   mode: GenerationDesignMode;
@@ -27,6 +74,30 @@ export interface StyleSystemProfile {
   signatureComponents: readonly string[];
   avoid: readonly string[];
   compositionPatterns: readonly [string, string, string, string];
+  /** v3 visual grammar. Optional for v2 fixture compatibility; required by production validation. */
+  cardTypes?: readonly CardType[];
+  cardGeometry?: PresetGeometry;
+  chartRules?: PresetChartRules;
+  controlTypes?: readonly ControlType[];
+  pillTypes?: readonly PillType[];
+  buttonStyles?: readonly ButtonStyle[];
+  formFieldStyles?: readonly FormFieldStyle[];
+  navigationModes?: readonly NavigationStyle[];
+  typographyRules?: PresetTypography;
+  layoutPatterns?: readonly LayoutPattern[];
+  groupingStyle?: "flat-list" | "card-clusters" | "sectioned" | "divider-led" | "timeline" | "nested";
+  iconStyle?: IconStyle;
+  avatarShape?: "circle" | "square" | "masked" | "none";
+  imageTreatment?: "full-bleed" | "editorial-crop" | "gradient-placeholder" | "masked" | "none";
+  surfaceStyle?: SurfaceStyle;
+  dividerStyle?: "invisible" | "thin" | "strong" | "accent" | "ink";
+  statusStyle?: "semantic" | "pill" | "bar" | "stepper" | "timeline";
+  dataPresentation?: "hero-metric" | "comparison" | "trend-delta" | "percentage" | "mini-chart";
+  interactionStyle?: "subtle" | "tactile" | "energetic" | "precise" | "reduced";
+  screenComposition?: Partial<Record<"dashboard" | "list" | "detail" | "form" | "analytics" | "settings", LayoutPattern>>;
+  emptyStateStyle?: "illustrated" | "typographic" | "cta-led" | "minimal";
+  modalStyle?: "bottom-sheet" | "centered" | "side-panel" | "full-screen";
+  motion?: PresetMotion;
 }
 
 /** @deprecated Use StyleSystemProfile. Kept for source compatibility. */
@@ -133,4 +204,27 @@ export const DESIGN_TEMPLATES: readonly DesignTemplate[] = [
   }
 ] as const;
 
-export function findDesignTemplate(id:string|undefined):DesignTemplate|undefined{return DESIGN_TEMPLATES.find((template)=>template.id===id)}
+const V3_PROFILES: Record<DesignTemplateId, Omit<StyleSystemProfile, "typography" | "colorIntent" | "layoutRhythm" | "signatureComponents" | "avoid" | "compositionPatterns">> = {
+  "obsidian-precision": {
+    cardTypes: ["metric", "glass", "split", "timeline"], cardGeometry: { radius: "8px", border: "1px solid translucent", shadow: "0 12px 30px black/40", elevation: "layered", padding: "12px", aspectRatio: "16/10" },
+    chartRules: { types: ["line", "bar", "sparkline", "heatmap"], grid: "subtle", tooltip: "rich", palette: "single-accent", density: "dense", animation: "subtle" }, controlTypes: ["segmented", "toggle", "disclosure"], pillTypes: ["status", "filter", "notification"], buttonStyles: ["solid", "outline", "icon-only"], formFieldStyles: ["outlined", "compact"], navigationModes: ["glass"], typographyRules: { family: "Inter, sans-serif", displayFamily: "IBM Plex Mono, monospace", weight: 500, headingWeight: 750, letterSpacing: "-0.02em", headingSize: "22px", lineHeight: "1.15", uppercaseLabels: true }, layoutPatterns: ["strict-grid", "bento"], groupingStyle: "nested", iconStyle: "geometric", avatarShape: "square", imageTreatment: "masked", surfaceStyle: "glass", dividerStyle: "thin", statusStyle: "pill", dataPresentation: "comparison", interactionStyle: "precise", screenComposition: { dashboard: "bento", list: "strict-grid", detail: "bento", analytics: "strict-grid" }, emptyStateStyle: "minimal", modalStyle: "side-panel", motion: { duration: "160ms", easing: "standard", cardOpen: "lift", chartAnimation: "draw", navigationTransition: "crossfade" }
+  },
+  "serene-health": {
+    cardTypes: ["metric", "hero", "list", "media"], cardGeometry: { radius: "24px", border: "1px solid soft", shadow: "0 14px 34px rgba(15,118,110,.08)", elevation: "soft", padding: "22px", aspectRatio: "4/3" }, chartRules: { types: ["area", "radial", "line", "donut"], grid: "none", tooltip: "compact", palette: "semantic", density: "sparse", animation: "subtle" }, controlTypes: ["switch", "segmented", "accordion"], pillTypes: ["status", "category", "tag"], buttonStyles: ["solid", "ghost", "floating"], formFieldStyles: ["soft", "touch-large"], navigationModes: ["floating"], typographyRules: { family: "Inter, sans-serif", displayFamily: "Nunito Sans, sans-serif", weight: 450, headingWeight: 700, letterSpacing: "-0.01em", headingSize: "23px", lineHeight: "1.3", uppercaseLabels: false }, layoutPatterns: ["stacked", "grid"], groupingStyle: "card-clusters", iconStyle: "minimal", avatarShape: "circle", imageTreatment: "masked", surfaceStyle: "soft-shadow", dividerStyle: "invisible", statusStyle: "semantic", dataPresentation: "trend-delta", interactionStyle: "tactile", screenComposition: { dashboard: "stacked", list: "grid", detail: "stacked", form: "stacked" }, emptyStateStyle: "illustrated", modalStyle: "bottom-sheet", motion: { duration: "280ms", easing: "spring", cardOpen: "scale", chartAnimation: "grow", navigationTransition: "spring" }
+  },
+  "terracotta-market": {
+    cardTypes: ["hero", "editorial", "media", "split"], cardGeometry: { radius: "18px", border: "1px solid warm hairline", shadow: "0 10px 0 #ffedd5, 0 18px 36px rgba(124,45,18,.08)", elevation: "layered", padding: "18px", aspectRatio: "3/2" }, chartRules: { types: ["bar", "area", "segmented"], grid: "subtle", tooltip: "compact", palette: "single-accent", density: "balanced", animation: "subtle" }, controlTypes: ["segmented", "disclosure", "accordion"], pillTypes: ["category", "tag", "status"], buttonStyles: ["solid", "outline", "ghost"], formFieldStyles: ["filled", "soft", "touch-large"], navigationModes: ["solid"], typographyRules: { family: "Inter, sans-serif", displayFamily: "Playfair Display, Georgia, serif", weight: 450, headingWeight: 600, letterSpacing: "-0.03em", headingSize: "26px", lineHeight: "1.1", uppercaseLabels: false }, layoutPatterns: ["editorial-asymmetry", "grid"], groupingStyle: "sectioned", iconStyle: "duotone", avatarShape: "masked", imageTreatment: "editorial-crop", surfaceStyle: "paper", dividerStyle: "accent", statusStyle: "pill", dataPresentation: "hero-metric", interactionStyle: "tactile", screenComposition: { dashboard: "editorial-asymmetry", list: "grid", detail: "editorial-asymmetry", analytics: "editorial-asymmetry" }, emptyStateStyle: "cta-led", modalStyle: "centered", motion: { duration: "240ms", easing: "ease-out", cardOpen: "slide", chartAnimation: "grow", navigationTransition: "slide" }
+  },
+  "electric-learning": {
+    cardTypes: ["hero", "metric", "split", "timeline"], cardGeometry: { radius: "24px 14px 24px 14px", border: "2px solid accent/15", shadow: "0 8px 0 accent/22", elevation: "playful", padding: "16px", aspectRatio: "1/1" }, chartRules: { types: ["radial", "bar", "donut", "sparkline"], grid: "none", tooltip: "rich", palette: "gradient", density: "balanced", animation: "energetic" }, controlTypes: ["toggle", "segmented", "switch", "accordion"], pillTypes: ["status", "notification", "category", "filter"], buttonStyles: ["gradient", "solid", "floating"], formFieldStyles: ["filled", "touch-large"], navigationModes: ["floating"], typographyRules: { family: "Inter, sans-serif", displayFamily: "Inter, sans-serif", weight: 600, headingWeight: 850, letterSpacing: "-0.04em", headingSize: "25px", lineHeight: "1.05", uppercaseLabels: true }, layoutPatterns: ["bento", "editorial-asymmetry"], groupingStyle: "card-clusters", iconStyle: "filled", avatarShape: "circle", imageTreatment: "gradient-placeholder", surfaceStyle: "neon", dividerStyle: "invisible", statusStyle: "bar", dataPresentation: "percentage", interactionStyle: "energetic", screenComposition: { dashboard: "bento", list: "bento", detail: "stacked", analytics: "bento" }, emptyStateStyle: "illustrated", modalStyle: "bottom-sheet", motion: { duration: "360ms", easing: "spring", cardOpen: "scale", chartAnimation: "pulse", navigationTransition: "spring" }
+  },
+  "editorial-culture": {
+    cardTypes: ["editorial", "list", "timeline", "media"], cardGeometry: { radius: "0", border: "0 0 1.5px", shadow: "none", elevation: "flat", padding: "0 0 16px", aspectRatio: "auto" }, chartRules: { types: ["line", "sparkline", "segmented"], grid: "none", tooltip: "none", palette: "monochrome", density: "sparse", animation: "none" }, controlTypes: ["segmented", "disclosure"], pillTypes: ["tag", "category"], buttonStyles: ["ghost", "outline", "solid"], formFieldStyles: ["underline", "compact"], navigationModes: ["minimal"], typographyRules: { family: "Inter, sans-serif", displayFamily: "Playfair Display, Georgia, serif", weight: 400, headingWeight: 600, letterSpacing: "-0.04em", headingSize: "28px", lineHeight: "1.04", uppercaseLabels: true }, layoutPatterns: ["editorial-asymmetry", "strict-grid"], groupingStyle: "divider-led", iconStyle: "minimal", avatarShape: "none", imageTreatment: "editorial-crop", surfaceStyle: "flat", dividerStyle: "ink", statusStyle: "timeline", dataPresentation: "mini-chart", interactionStyle: "reduced", screenComposition: { dashboard: "editorial-asymmetry", list: "editorial-asymmetry", detail: "editorial-asymmetry", analytics: "strict-grid" }, emptyStateStyle: "typographic", modalStyle: "full-screen", motion: { duration: "0ms", easing: "editorial", cardOpen: "none", chartAnimation: "none", navigationTransition: "none" }
+  }
+};
+
+export function findDesignTemplate(id: string | undefined): DesignTemplate | undefined {
+  const template = DESIGN_TEMPLATES.find((candidate) => candidate.id === id);
+  if (!template) return undefined;
+  return { ...template, system: { ...template.system, ...V3_PROFILES[template.id] } };
+}

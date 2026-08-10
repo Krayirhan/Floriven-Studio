@@ -1,0 +1,22 @@
+{
+  "program": "Floriven Visual Engine V4",
+  "version": "1.0",
+  "generated": "2026-08-10",
+  "sprintCount": 18,
+  "releaseHardGates": [
+    "semantic_passed",
+    "structural_passed",
+    "presentation_passed",
+    "geometry_passed",
+    "visual_passed",
+    "cross_screen_passed",
+    "accessibility_passed",
+    "runtime_evidence_present"
+  ],
+  "canonicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "presetStructuralDistanceMin": 0.4,
+  "crossArchetypeDistanceMin": 0.45
+}

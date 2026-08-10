@@ -1,4 +1,5 @@
 import type { ProductBlueprint, ProductScreenPlan } from "./product-blueprint";
+import { createScreenIntent, type ScreenIntent } from "./screen-intent";
 
 export type NavigationMode = "root" | "focused" | "modal" | "wizard";
 export type ContentDensity = "low" | "medium" | "high";
@@ -15,7 +16,7 @@ export type UXScreenSpec = {
 export type UXSpec = {
   version: "1.0.0";
   blueprint: Pick<ProductBlueprint, "productDomain" | "audience" | "entities" | "capabilities" | "contentVocabulary" | "navigation" | "screenPolicy">;
-  screens: UXScreenSpec[];
+  screens: ScreenIntent[];
 };
 
 export function createUXSpec(blueprint: ProductBlueprint): UXSpec {
@@ -30,7 +31,7 @@ export function createUXSpec(blueprint: ProductBlueprint): UXSpec {
       navigation: blueprint.navigation,
       screenPolicy: blueprint.screenPolicy,
     },
-    screens: blueprint.screens.map(toUXScreen),
+    screens: blueprint.screens.map(toUXScreen).map(createScreenIntent),
   };
 }
 

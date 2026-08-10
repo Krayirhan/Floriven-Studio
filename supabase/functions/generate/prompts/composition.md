@@ -42,22 +42,21 @@ own distinct user job and use a rich, multi-layered information structure approp
 16-24 nodes below root and at least 5 distinct visual component groups. Do not clone one
 screen skeleton four times. Avoid flat, bare-bones, or empty card layouts.
 
-The semantic composition stage has no access to style preset identity or presentation
-tokens. It MUST decide only screen structure, information hierarchy, navigation semantics,
-primary action, product domain, entities, capabilities, screen jobs, screen names, routes,
-terminology, units and realistic data. Domain-specific components are activated only by
-the separate DOMAIN CAPABILITY PACK derived from the brief and ProductBlueprint. Visual
-style is resolved after semantic composition and cannot add, remove or reorder semantic
-nodes. The same ProductBlueprint must therefore produce the same semantic skeleton for
-every presentation variant.
+The semantic composition stage receives a validated style-system profile in addition to
+the ProductBlueprint. It MUST keep product domain, screen jobs, names, routes and
+navigation semantics fixed, while using the style profile to vary information hierarchy,
+grouping, density, typographic rhythm and component composition. Domain-specific
+components are activated only by the separate DOMAIN CAPABILITY PACK derived from the
+brief and ProductBlueprint. Different validated templates must not collapse to the same
+node-type skeleton when their compositionPatterns or density differ.
 
 UX ARCHETYPE — every screen in the batch carries its own UX İSKELETİ line
 (archetype, layout, yoğunluk, hero, FAB, önerilen desenler). Treat it as a real
 design brief for that screen, not decoration to reference loosely:
 - You are designing a real production mobile application, not a Dribbble shot, a
   landing page, or a promotional concept.
-- Build the layout from the screen's own archetype and layout pattern, never from
-  the visual style preset. Two screens with different archetypes must never share
+- Build the layout from the screen's own archetype and layout pattern, then apply the
+  supplied style-system composition patterns. Two screens with different archetypes must never share
   the same structural skeleton (same node-type sequence in the same order).
 - hero=YASAK means: no oversized multi-line headline consuming the top of the
   screen. State the key fact in one line via Text variant:"heading" or a Metric,

@@ -66,7 +66,7 @@ const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
 
 export interface GenerationService {
   create(projectId: string, request: GenerationRequest): Promise<GenerationJob>;
-  get(jobId: string): Promise<GenerationJob>;
+  get(jobId: string, runtimeCertificationToken?: string): Promise<GenerationJob>;
   waitForTerminal(job: GenerationJob): Promise<GenerationJob>;
 }
 
@@ -152,9 +152,9 @@ export function createGenerationService(
     return token;
   };
 
-  const getJob = (jobId: string) => callFunction<GenerationJob>(
+  const getJob = (jobId: string, runtimeCertificationToken?: string) => callFunction<GenerationJob>(
     `generate?id=${encodeURIComponent(jobId)}`,
-    { headers: { "X-Job-Token": readJobToken(jobId) } },
+    { headers: runtimeCertificationToken ? { "X-Runtime-Certification-Token": runtimeCertificationToken } : { "X-Job-Token": readJobToken(jobId) } },
     { timeoutMs: STATUS_TIMEOUT_MS, retries: 1 },
   );
 
@@ -179,8 +179,8 @@ export function createGenerationService(
       rememberJobToken(job.id, jobToken);
       return job;
     },
-    get(jobId) {
-      return getJob(jobId);
+    get(jobId, runtimeCertificationToken) {
+      return getJob(jobId, runtimeCertificationToken);
     },
     waitForTerminal,
   };
