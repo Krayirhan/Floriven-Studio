@@ -22,6 +22,9 @@ describe('deterministic compositor', () => {
     expect(text).toContain('futbol fantezi ligi')
     expect(text).not.toContain('₺124.500')
     expect(text).not.toContain('Fatura')
+    const report = evaluateGenerationQuality(screens, blueprint)
+    expect(report.passed, report.issues.join('\n')).toBe(true)
+    expect(report.metrics.vocabularyCoverage).toBeGreaterThanOrEqual(0.25)
   })
   it('reports the real deterministic quality baseline', () => {
     const blueprint = resolvePlanningIntent(fallbackPlanningIntent('fatura gelir gider vergi'), 'finance')

@@ -52,24 +52,82 @@ function baseChildren(screen: ProductScreenSpec, nav: string[], blueprint: Produ
 
 function genericContent(screen: ProductScreenSpec, blueprint: ProductBlueprint, brief: string): Node[] {
   const subject = brief.trim().replace(/[.!?].*$/, '').slice(0, 72) || blueprint.productDomain || 'ürün';
+  const vocabulary = [...blueprint.entities, ...blueprint.contentVocabulary].filter(Boolean)
+  const term = (index: number, fallback: string) => vocabulary[index % Math.max(1, vocabulary.length)] || fallback
   if (screen.archetype === 'form') return [
-    node(`${screen.id}_search`, 'SearchField', { placeholder: `${subject} içinde ara` }),
+    node(`${screen.id}_intro`, 'Text', { text: `${subject} için yeni kayıt oluştur`, variant: 'body' }),
     node(`${screen.id}_field_one`, 'TextField', { label: 'Başlık', placeholder: 'Bir başlık girin' }),
     node(`${screen.id}_field_two`, 'TextField', { label: 'Açıklama', placeholder: 'Detayları yazın' }),
+    node(`${screen.id}_field_three`, 'TextField', { label: term(0, 'Kategori'), placeholder: `${term(0, 'Kategori')} seçin` }),
+    node(`${screen.id}_field_four`, 'TextField', { label: term(1, 'Konum'), placeholder: `${term(1, 'Konum')} girin` }),
+    node(`${screen.id}_date`, 'TextField', { label: 'Tarih', placeholder: 'GG.AA.YYYY' }),
     node(`${screen.id}_options`, 'SegmentedControl', { items: ['Genel', 'Önemli', 'Daha sonra'] }),
+    node(`${screen.id}_visibility`, 'SegmentedControl', { items: ['Kişisel', 'Ekip', 'Herkes'] }),
+    node(`${screen.id}_notice`, 'Alert', { title: 'Kontrol et', message: `${subject} bilgilerini kaydetmeden önce doğrula` }),
+    node(`${screen.id}_cancel`, 'Button', { label: 'Vazgeç', variant: 'secondary' }),
     node(`${screen.id}_save`, 'Button', { label: 'Kaydet' }),
   ];
   if (screen.archetype === 'settings') return [
     node(`${screen.id}_profile`, 'ListItem', { title: 'Profil ve tercihler', subtitle: `${subject} ayarlarını yönet` }),
     node(`${screen.id}_notifications`, 'Switch', { label: 'Bildirimler', checked: true }),
+    node(`${screen.id}_reminders`, 'Switch', { label: 'Hatırlatmalar', checked: true }),
+    node(`${screen.id}_updates`, 'Switch', { label: `${term(0, 'İçerik')} güncellemeleri`, checked: false }),
     node(`${screen.id}_privacy`, 'ListItem', { title: 'Gizlilik ve erişim', subtitle: 'Hesap ve paylaşım ayarları' }),
+    node(`${screen.id}_language`, 'ListItem', { title: 'Dil ve bölge', subtitle: 'Türkçe · Türkiye' }),
+    node(`${screen.id}_team`, 'ListItem', { title: 'Ekip ve paylaşım', subtitle: `${subject} erişimlerini yönet` }),
+    node(`${screen.id}_appearance`, 'SegmentedControl', { items: ['Sistem', 'Açık', 'Koyu'] }),
+    node(`${screen.id}_security`, 'ListItem', { title: 'Güvenlik', subtitle: 'Oturum ve hesap güvenliği' }),
     node(`${screen.id}_export`, 'Button', { label: 'Verileri dışa aktar' }),
+  ];
+  if (screen.archetype === 'detail') return [
+    node(`${screen.id}_hero`, 'Metric', { label: term(0, 'Ana değer'), value: '68', trend: `${subject} durumu` }),
+    node(`${screen.id}_status`, 'Badge', { label: 'Aktif' }),
+    node(`${screen.id}_progress`, 'Progress', { label: 'İlerleme', value: 68 }),
+    ...rows(screen, [
+      ['summary', term(1, 'Özet'), `${subject} için temel bilgiler`],
+      ['context', term(2, 'Bağlam'), 'İlgili ayrıntılar ve güncel durum'],
+      ['activity', 'Son hareket', 'Bugün güncellendi'],
+      ['next', 'Sıradaki adım', `${term(3, 'Plan')} için devam et`],
+      ['owner', 'Sorumlu', 'Ekip üyesi'],
+    ]),
+    node(`${screen.id}_secondary`, 'Button', { label: 'Paylaş', variant: 'secondary' }),
+    node(`${screen.id}_action`, 'Button', { label: 'Güncelle' }),
+  ];
+  if (screen.archetype === 'list') return [
+    node(`${screen.id}_search`, 'SearchField', { placeholder: `${subject} içinde ara` }),
+    node(`${screen.id}_filter`, 'SegmentedControl', { items: ['Tümü', 'Yeni', 'Takipte'] }),
+    node(`${screen.id}_sort`, 'Button', { label: 'Sırala ve filtrele', variant: 'secondary' }),
+    ...rows(screen, Array.from({ length: 7 }, (_, index) => [
+      `item_${index}`,
+      term(index, `${subject} kaydı ${index + 1}`),
+      `${subject} · ${index % 2 === 0 ? 'Güncel' : 'Planlandı'}`,
+    ] as [string, string, string])),
+    node(`${screen.id}_action`, 'Button', { label: `Yeni ${term(0, 'kayıt')} ekle` }),
+  ];
+  if (screen.archetype === 'analytics') return [
+    node(`${screen.id}_period`, 'SegmentedControl', { items: ['Hafta', 'Ay', 'Yıl'] }),
+    node(`${screen.id}_metric_one`, 'Metric', { label: term(0, 'Toplam'), value: '68', trend: '+12%' }),
+    node(`${screen.id}_metric_two`, 'Metric', { label: term(1, 'Aktif'), value: '24', trend: '+4' }),
+    node(`${screen.id}_metric_three`, 'Metric', { label: term(2, 'Başarı'), value: '%91', trend: '+3 puan' }),
+    node(`${screen.id}_line`, 'Chart', { label: `${term(0, subject)} trendi`, chartType: 'line', values: [18, 24, 21, 31, 28, 36] }),
+    node(`${screen.id}_bar`, 'Chart', { label: `${term(1, 'Dağılım')} karşılaştırması`, chartType: 'bar', values: [38, 24, 18, 20] }),
+    ...rows(screen, [
+      ['insight', 'Öne çıkan içgörü', `${subject} için anlamlı değişim tespit edildi`],
+      ['comparison', 'Dönem karşılaştırması', `${term(2, 'Hedef')} önceki dönemin üzerinde`],
+      ['recommendation', 'Önerilen adım', `${term(3, 'Plan')} ayrıntılarını incele`],
+    ]),
   ];
   return [
     node(`${screen.id}_metric_one`, 'Metric', { label: 'Ana gösterge', value: '68', trend: '+12 bu dönem' }),
     node(`${screen.id}_metric_two`, 'Metric', { label: 'Aktif içerik', value: '24', trend: '+4 yeni' }),
+    node(`${screen.id}_metric_three`, 'Metric', { label: term(0, 'Tamamlanan'), value: '91', trend: '+8' }),
     node(`${screen.id}_chart`, 'Chart', { label: `${subject} trendi`, chartType: 'line', values: [18, 24, 21, 31, 28, 36] }),
-    ...rows(screen, [['primary', 'Öne çıkan içerik', `${subject} için ilk önemli gelişme`], ['next', 'Sıradaki adım', 'Bağlamı inceleyip karar ver']]),
+    ...rows(screen, [
+      ['primary', term(0, 'Öne çıkan içerik'), `${subject} için ilk önemli gelişme`],
+      ['secondary', term(1, 'Güncel kayıt'), `${subject} bağlamındaki son değişiklik`],
+      ['activity', 'Son hareket', `${term(2, 'İçerik')} bugün güncellendi`],
+      ['next', 'Sıradaki adım', `${term(3, 'Plan')} bağlamını inceleyip karar ver`],
+    ]),
     node(`${screen.id}_action`, 'Button', { label: 'Yeni içerik ekle' }),
   ];
 }

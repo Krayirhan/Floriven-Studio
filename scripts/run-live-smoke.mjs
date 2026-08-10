@@ -7,7 +7,8 @@ const localEnv = Object.fromEntries((await readFile(new URL("../apps/web/.env.lo
 
 const generateUrl = `${(process.env.VITE_SUPABASE_URL ?? localEnv.VITE_SUPABASE_URL).replace(/\/$/, "")}/functions/v1/generate`;
 const anonKey = process.env.VITE_SUPABASE_ANON_KEY ?? localEnv.VITE_SUPABASE_ANON_KEY;
-const idempotencyKey = `live-smoke-finance-auto-${crypto.randomUUID()}`;
+const smokeBrief = process.env.SMOKE_BRIEF ?? "Freelancerlar ve bağımsız çalışanlar için kişisel finans ve fatura yönetimi mobil uygulaması tasarla.";
+const idempotencyKey = `live-smoke-auto-${crypto.randomUUID()}`;
 const jobToken = `${crypto.randomUUID()}${crypto.randomUUID()}`;
 const headers = {
   apikey: anonKey,
@@ -21,8 +22,8 @@ const created = await fetch(generateUrl, {
   method: "POST",
   headers,
   body: JSON.stringify({
-    projectId: `live-smoke-finance-auto-${crypto.randomUUID()}`,
-    brief: "Freelancerlar ve bağımsız çalışanlar için kişisel finans ve fatura yönetimi mobil uygulaması tasarla.\n\nKullanıcı bu ayki gelirini, giderini, toplam bakiyesini, ödenmemiş faturalarını ve vergi için ayırması gereken miktarı görebilmeli.\n\nİşlemler ekranında çok sayıda gelir ve gider kaydını tarayabilmeli, arayabilmeli ve filtreleyebilmeli.\n\nFaturalar taslak, gönderildi, gecikti ve ödendi durumlarını desteklemeli.\n\nYeni fatura oluşturma ekranında müşteri, hizmet kalemleri, miktar, fiyat, vergi, son ödeme tarihi ve not alanları bulunmalı.\n\nAnaliz ekranı yalnızca dekoratif grafik değil, gelir-gider trendleri ve karar vermeye yardımcı insight'lar sunmalı.\n\nProfil ve ayarlar bölümü para birimi, bildirim ve hesap tercihlerini içermeli.",
+    projectId: `live-smoke-auto-${crypto.randomUUID()}`,
+    brief: smokeBrief,
     platform: "ios",
     designMode: "auto",
   }),
@@ -46,6 +47,14 @@ for (let attempt = 0; attempt < 120; attempt += 1) {
     providerOperation: current.providerOperation ?? null,
     providerDurationMs: current.providerDurationMs ?? null,
     providerDiagnostics: current.providerDiagnostics ?? null,
+    errorMessage: current.errorMessage ?? null,
+    qualityReport: current.qualityReport ?? null,
+    screenSummary: Array.isArray(current.resultScreens) ? current.resultScreens.map((screen) => ({
+      id: screen.id,
+      name: screen.name,
+      route: screen.route,
+      preview: JSON.stringify(screen).slice(0, 240),
+    })) : null,
   }));
   if (current.status === "completed" || current.status === "failed") process.exit(0);
 }

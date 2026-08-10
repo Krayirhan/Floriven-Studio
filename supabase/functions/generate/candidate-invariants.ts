@@ -30,21 +30,19 @@ export function validateArchetypeMinimumContent(screens: Node[], blueprint: Prod
     if (!planned) continue
     const nodes = flatten(asRecord(screen.root))
     const types = new Set(nodes.map((node) => String(node.type)))
-    const text = JSON.stringify(screen).toLocaleLowerCase('tr-TR')
-    const has = (...terms: string[]) => terms.every((term) => text.includes(term))
     const enoughNodes = nodes.length - 1 >= 12
-    const valid = planned.id === 'overview'
-      ? types.has('Metric') && types.has('Chart') && has('bakiye', 'gelir', 'gider', 'vergi')
-      : planned.id === 'transactions'
-        ? types.has('SearchField') && types.has('SegmentedControl') && types.has('ListItem') && has('gelir', 'gider')
-        : planned.id === 'invoices'
-          ? types.has('SearchField') && types.has('ListItem') && has('taslak', 'gönderildi', 'gecikmiş', 'ödendi')
-          : planned.id === 'invoice_form'
-            ? types.has('TextField') && types.has('Button') && has('müşteri', 'miktar', 'birim fiyat', 'vade', 'notlar')
-            : planned.id === 'analytics'
-              ? types.has('Metric') && types.has('Chart') && has('içgörü')
-              : planned.id === 'settings'
-                ? types.has('ListItem') && types.has('Switch') && has('para birimi', 'bildirim', 'hesap')
+    const valid = planned.archetype === 'dashboard'
+      ? types.has('Metric') && types.has('Chart') && types.has('ListItem')
+      : planned.archetype === 'list'
+        ? types.has('SearchField') && types.has('SegmentedControl') && types.has('ListItem')
+        : planned.archetype === 'form'
+          ? types.has('TextField') && types.has('Button') && types.has('SegmentedControl')
+          : planned.archetype === 'analytics'
+            ? types.has('Metric') && types.has('Chart') && types.has('ListItem')
+            : planned.archetype === 'settings' || planned.archetype === 'profile'
+              ? types.has('ListItem') && types.has('Switch') && types.has('Button')
+              : planned.archetype === 'detail'
+                ? types.has('Metric') && types.has('Progress') && types.has('Button')
                 : true
     if (!valid || !enoughNodes) issues.push(`${planned.id}: archetype minimum content missing`)
   }

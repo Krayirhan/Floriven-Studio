@@ -325,7 +325,7 @@ async function processGenerationJob(options: ProcessGenerationJobOptions): Promi
     const enhancedScreens = normalizeScreens(result.raw, result.blueprint, forcedStrategy, result.domainPackId)
     const enhancedQuality = applyIdentityGate(enhancedScreens)
     const baselineScreens = !editScreens
-      ? normalizeScreens(composeDeterministicBaseScreens(result.blueprint), result.blueprint, forcedStrategy, result.domainPackId)
+      ? normalizeScreens(composeDeterministicBaseScreens(result.blueprint, brief), result.blueprint, forcedStrategy, result.domainPackId)
       : undefined
     const baselineQuality = baselineScreens ? applyIdentityGate(baselineScreens) : undefined
     // An AI candidate that cannot clear static quality is never a shippable
