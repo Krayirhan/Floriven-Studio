@@ -1,0 +1,179 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "strict-grid",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 42.99996601122745,
+  "sections": [
+    {
+      "role": "section-group",
+      "order": 0,
+      "span": 12,
+      "emphasis": "tertiary",
+      "family": "nested-settings-section-group",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9994419642857,
+      "height": 25.29687116302658
+    },
+    {
+      "role": "rows-controls",
+      "order": 1,
+      "span": 12,
+      "emphasis": "primary",
+      "family": "nested-settings-rows-controls",
+      "x": 21.000279017857146,
+      "y": 97.29688572964338,
+      "width": 347.9994419642857,
+      "height": 173.99998615654857
+    },
+    {
+      "role": "divider",
+      "order": 2,
+      "span": 12,
+      "emphasis": "tertiary",
+      "family": "nested-settings-divider",
+      "x": 21.000279017857146,
+      "y": 285.2968983333827,
+      "width": 347.9994419642857,
+      "height": 0.9999738627372202
+    },
+    {
+      "role": "next-section-group",
+      "order": 3,
+      "span": 12,
+      "emphasis": "secondary",
+      "family": "nested-settings-next-section-group",
+      "x": 21.000279017857146,
+      "y": 300.2968986433108,
+      "width": 347.9994419642857,
+      "height": 54.4999488102225
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "obsidian-settings-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "section-group",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9994419642857,
+      "height": 25.29687116302658,
+      "fontSize": "22px",
+      "lineHeight": "25.3px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-settings-profile",
+      "component": "div",
+      "role": null,
+      "sectionRole": "rows-controls",
+      "x": 21.000279017857146,
+      "y": 97.29688572964338,
+      "width": 347.9994419642857,
+      "height": 54.49999240676358,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-settings-currency",
+      "component": "div",
+      "role": null,
+      "sectionRole": "rows-controls",
+      "x": 21.000279017857146,
+      "y": 159.79688702101012,
+      "width": 347.9994419642857,
+      "height": 55.50000986604188,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-settings-notify",
+      "component": "label",
+      "role": null,
+      "sectionRole": "rows-controls",
+      "x": 21.000279017857146,
+      "y": 223.2968621751141,
+      "width": 347.9994419642857,
+      "height": 20.000000413237355,
+      "fontSize": "12px",
+      "lineHeight": "18px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-settings-weekly",
+      "component": "label",
+      "role": null,
+      "sectionRole": "rows-controls",
+      "x": 21.000279017857146,
+      "y": 251.2968714729546,
+      "width": 347.9994419642857,
+      "height": 20.000000413237355,
+      "fontSize": "12px",
+      "lineHeight": "18px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-settings-divider",
+      "component": "hr",
+      "role": null,
+      "sectionRole": "divider",
+      "x": 21.000279017857146,
+      "y": 285.2968983333827,
+      "width": 347.9994419642857,
+      "height": 0.9999738627372202,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "hidden",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-settings-security",
+      "component": "div",
+      "role": null,
+      "sectionRole": "next-section-group",
+      "x": 21.000279017857146,
+      "y": 300.2968986433108,
+      "width": 347.9994419642857,
+      "height": 54.4999488102225,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-settings-nav",
+      "component": "nav",
+      "role": null,
+      "x": 5,
+      "y": 772.9999810943909,
+      "width": 380,
+      "height": 66.0000188022997,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

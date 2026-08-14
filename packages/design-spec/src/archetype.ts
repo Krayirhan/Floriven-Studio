@@ -2,6 +2,7 @@ import type { UXScreenSpec } from "./ux-spec";
 
 export const ARCHETYPE_POLICIES = {
   dashboard: { heroAllowed: true, fabAllowed: false, bottomNavigationAllowed: true },
+  analytics: { heroAllowed: false, fabAllowed: false, bottomNavigationAllowed: true },
   management_list: { heroAllowed: false, fabAllowed: true, bottomNavigationAllowed: true },
   settings: { heroAllowed: false, fabAllowed: false, bottomNavigationAllowed: true },
   form: { heroAllowed: false, fabAllowed: false, bottomNavigationAllowed: false },

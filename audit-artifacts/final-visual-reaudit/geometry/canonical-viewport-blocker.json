@@ -1,0 +1,10 @@
+{
+  "status": "FAIL",
+  "code": "NON_CANONICAL_PRODUCTION_DOM_VIEWPORT",
+  "requirement": { "width": 390, "height": 844, "unit": "logical CSS px" },
+  "productionCss": { "source": "apps/web/src/features/studio/StudioPage.module.css:.phone", "width": 280, "height": 590, "transform": "none in production rule" },
+  "runtimeEvidence": { "source": "docs/certification/evidence/RC1/runtime/phone-scroll-evidence.json", "scrollViewport": { "width": 240, "height": 417 }, "renderer": "phone-screen-v4" },
+  "metadataOnly": { "dataViewportWidth": 390, "dataViewportHeight": 844, "acceptedAsGeometryEvidence": false },
+  "impact": "A 42-screen run would create screenshots from a non-canonical DOM layout. Such screenshots cannot be counted as valid 390x844 runtime evidence.",
+  "auditAction": "BLOCKED_BEFORE_MATRIX"
+}

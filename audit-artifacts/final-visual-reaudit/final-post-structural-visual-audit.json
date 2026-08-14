@@ -1,0 +1,23 @@
+{
+  "revision": "dadf574dd38c81734a3d7590b501f33eb684b60c",
+  "validScreens": 42,
+  "oldOverall": 58,
+  "newOverall": 62,
+  "delta": 4,
+  "oldNamedAverage": 58.6,
+  "newNamedAverage": 60.6,
+  "oldDeterministic": 56,
+  "newDeterministic": 56,
+  "crossArchetype": "0/105 PASS",
+  "crossPreset": "10/60 PASS",
+  "grayscale": "30 captures generated; visual verdict requires review",
+  "geometry": "PASS",
+  "a11yCritical": 0,
+  "a11yWarnings": 35,
+  "verdict": "BETA_READY",
+  "formula": "overall = named preset average * 0.70 + auto * 0.15 + deterministic * 0.15",
+  "notes": [
+    "Score is evidence-based and conservative; no production remediation was performed during audit.",
+    "Official score is not claimed as EXCELLENT or PRODUCTION READY because form, analytics and grayscale identity remain weak."
+  ]
+}

@@ -1,0 +1,1328 @@
+{
+  "crossArchetype": [
+    {
+      "mode": "obsidian",
+      "left": "dashboard",
+      "right": "management-list",
+      "distance": 0.6106,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "obsidian",
+      "left": "dashboard",
+      "right": "detail",
+      "distance": 0.3231,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "obsidian",
+      "left": "dashboard",
+      "right": "form",
+      "distance": 0.5801,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "obsidian",
+      "left": "dashboard",
+      "right": "analytics",
+      "distance": 0.5773,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "obsidian",
+      "left": "dashboard",
+      "right": "settings",
+      "distance": 0.5852,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "obsidian",
+      "left": "management-list",
+      "right": "detail",
+      "distance": 0.6777,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "obsidian",
+      "left": "management-list",
+      "right": "form",
+      "distance": 0.3957,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "obsidian",
+      "left": "management-list",
+      "right": "analytics",
+      "distance": 0.3058,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "obsidian",
+      "left": "management-list",
+      "right": "settings",
+      "distance": 0.2259,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "obsidian",
+      "left": "detail",
+      "right": "form",
+      "distance": 0.5268,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "obsidian",
+      "left": "detail",
+      "right": "analytics",
+      "distance": 0.6504,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "obsidian",
+      "left": "detail",
+      "right": "settings",
+      "distance": 0.6483,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "obsidian",
+      "left": "form",
+      "right": "analytics",
+      "distance": 0.421,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "obsidian",
+      "left": "form",
+      "right": "settings",
+      "distance": 0.3696,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "obsidian",
+      "left": "analytics",
+      "right": "settings",
+      "distance": 0.3276,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "serene",
+      "left": "dashboard",
+      "right": "management-list",
+      "distance": 0.3625,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "serene",
+      "left": "dashboard",
+      "right": "detail",
+      "distance": 0.3229,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "serene",
+      "left": "dashboard",
+      "right": "form",
+      "distance": 0.332,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "serene",
+      "left": "dashboard",
+      "right": "analytics",
+      "distance": 0.3285,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "serene",
+      "left": "dashboard",
+      "right": "settings",
+      "distance": 0.3392,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "serene",
+      "left": "management-list",
+      "right": "detail",
+      "distance": 0.4299,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "serene",
+      "left": "management-list",
+      "right": "form",
+      "distance": 0.399,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "serene",
+      "left": "management-list",
+      "right": "analytics",
+      "distance": 0.3049,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "serene",
+      "left": "management-list",
+      "right": "settings",
+      "distance": 0.2268,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "serene",
+      "left": "detail",
+      "right": "form",
+      "distance": 0.2762,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "serene",
+      "left": "detail",
+      "right": "analytics",
+      "distance": 0.3984,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "serene",
+      "left": "detail",
+      "right": "settings",
+      "distance": 0.4022,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "serene",
+      "left": "form",
+      "right": "analytics",
+      "distance": 0.4207,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "serene",
+      "left": "form",
+      "right": "settings",
+      "distance": 0.3752,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "serene",
+      "left": "analytics",
+      "right": "settings",
+      "distance": 0.3286,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "terracotta",
+      "left": "dashboard",
+      "right": "management-list",
+      "distance": 0.6112,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "terracotta",
+      "left": "dashboard",
+      "right": "detail",
+      "distance": 0.3236,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "terracotta",
+      "left": "dashboard",
+      "right": "form",
+      "distance": 0.5808,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "terracotta",
+      "left": "dashboard",
+      "right": "analytics",
+      "distance": 0.3273,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "terracotta",
+      "left": "dashboard",
+      "right": "settings",
+      "distance": 0.5858,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "terracotta",
+      "left": "management-list",
+      "right": "detail",
+      "distance": 0.6778,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "terracotta",
+      "left": "management-list",
+      "right": "form",
+      "distance": 0.3957,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "terracotta",
+      "left": "management-list",
+      "right": "analytics",
+      "distance": 0.5547,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "terracotta",
+      "left": "management-list",
+      "right": "settings",
+      "distance": 0.2259,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "terracotta",
+      "left": "detail",
+      "right": "form",
+      "distance": 0.5266,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "terracotta",
+      "left": "detail",
+      "right": "analytics",
+      "distance": 0.3994,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "terracotta",
+      "left": "detail",
+      "right": "settings",
+      "distance": 0.6482,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "terracotta",
+      "left": "form",
+      "right": "analytics",
+      "distance": 0.6701,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "terracotta",
+      "left": "form",
+      "right": "settings",
+      "distance": 0.3696,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "terracotta",
+      "left": "analytics",
+      "right": "settings",
+      "distance": 0.5764,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "electric",
+      "left": "dashboard",
+      "right": "management-list",
+      "distance": 0.3629,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "electric",
+      "left": "dashboard",
+      "right": "detail",
+      "distance": 0.5741,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "electric",
+      "left": "dashboard",
+      "right": "form",
+      "distance": 0.583,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "electric",
+      "left": "dashboard",
+      "right": "analytics",
+      "distance": 0.3287,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "electric",
+      "left": "dashboard",
+      "right": "settings",
+      "distance": 0.5897,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "electric",
+      "left": "management-list",
+      "right": "detail",
+      "distance": 0.6797,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "electric",
+      "left": "management-list",
+      "right": "form",
+      "distance": 0.6487,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "electric",
+      "left": "management-list",
+      "right": "analytics",
+      "distance": 0.306,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "electric",
+      "left": "management-list",
+      "right": "settings",
+      "distance": 0.4769,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "electric",
+      "left": "detail",
+      "right": "form",
+      "distance": 0.2758,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "electric",
+      "left": "detail",
+      "right": "analytics",
+      "distance": 0.6497,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "electric",
+      "left": "detail",
+      "right": "settings",
+      "distance": 0.4019,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "electric",
+      "left": "form",
+      "right": "analytics",
+      "distance": 0.6716,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "electric",
+      "left": "form",
+      "right": "settings",
+      "distance": 0.3749,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "electric",
+      "left": "analytics",
+      "right": "settings",
+      "distance": 0.5797,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "editorial",
+      "left": "dashboard",
+      "right": "management-list",
+      "distance": 0.3619,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "editorial",
+      "left": "dashboard",
+      "right": "detail",
+      "distance": 0.3229,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "editorial",
+      "left": "dashboard",
+      "right": "form",
+      "distance": 0.5805,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "editorial",
+      "left": "dashboard",
+      "right": "analytics",
+      "distance": 0.5782,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "editorial",
+      "left": "dashboard",
+      "right": "settings",
+      "distance": 0.5882,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "editorial",
+      "left": "management-list",
+      "right": "detail",
+      "distance": 0.4291,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "editorial",
+      "left": "management-list",
+      "right": "form",
+      "distance": 0.6473,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "editorial",
+      "left": "management-list",
+      "right": "analytics",
+      "distance": 0.5544,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "editorial",
+      "left": "management-list",
+      "right": "settings",
+      "distance": 0.4766,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "editorial",
+      "left": "detail",
+      "right": "form",
+      "distance": 0.5271,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "editorial",
+      "left": "detail",
+      "right": "analytics",
+      "distance": 0.6484,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "editorial",
+      "left": "detail",
+      "right": "settings",
+      "distance": 0.6509,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "editorial",
+      "left": "form",
+      "right": "analytics",
+      "distance": 0.4195,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "editorial",
+      "left": "form",
+      "right": "settings",
+      "distance": 0.373,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "editorial",
+      "left": "analytics",
+      "right": "settings",
+      "distance": 0.3276,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "auto",
+      "left": "dashboard",
+      "right": "management-list",
+      "distance": 0.3598,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "auto",
+      "left": "dashboard",
+      "right": "detail",
+      "distance": 0.3215,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "auto",
+      "left": "dashboard",
+      "right": "form",
+      "distance": 0.329,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "auto",
+      "left": "dashboard",
+      "right": "analytics",
+      "distance": 0.3266,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "auto",
+      "left": "dashboard",
+      "right": "settings",
+      "distance": 0.3343,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "auto",
+      "left": "management-list",
+      "right": "detail",
+      "distance": 0.4281,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "auto",
+      "left": "management-list",
+      "right": "form",
+      "distance": 0.3956,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "auto",
+      "left": "management-list",
+      "right": "analytics",
+      "distance": 0.3038,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "auto",
+      "left": "management-list",
+      "right": "settings",
+      "distance": 0.2258,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "auto",
+      "left": "detail",
+      "right": "form",
+      "distance": 0.2766,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "auto",
+      "left": "detail",
+      "right": "analytics",
+      "distance": 0.3988,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "auto",
+      "left": "detail",
+      "right": "settings",
+      "distance": 0.3986,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "auto",
+      "left": "form",
+      "right": "analytics",
+      "distance": 0.4195,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "auto",
+      "left": "form",
+      "right": "settings",
+      "distance": 0.3695,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "auto",
+      "left": "analytics",
+      "right": "settings",
+      "distance": 0.3255,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "deterministic",
+      "left": "dashboard",
+      "right": "management-list",
+      "distance": 0.3598,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "deterministic",
+      "left": "dashboard",
+      "right": "detail",
+      "distance": 0.3215,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "deterministic",
+      "left": "dashboard",
+      "right": "form",
+      "distance": 0.329,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "deterministic",
+      "left": "dashboard",
+      "right": "analytics",
+      "distance": 0.3266,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "deterministic",
+      "left": "dashboard",
+      "right": "settings",
+      "distance": 0.3343,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "deterministic",
+      "left": "management-list",
+      "right": "detail",
+      "distance": 0.4281,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "deterministic",
+      "left": "management-list",
+      "right": "form",
+      "distance": 0.3956,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "deterministic",
+      "left": "management-list",
+      "right": "analytics",
+      "distance": 0.3038,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "deterministic",
+      "left": "management-list",
+      "right": "settings",
+      "distance": 0.2258,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "deterministic",
+      "left": "detail",
+      "right": "form",
+      "distance": 0.2766,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "deterministic",
+      "left": "detail",
+      "right": "analytics",
+      "distance": 0.3988,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "deterministic",
+      "left": "detail",
+      "right": "settings",
+      "distance": 0.3986,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "deterministic",
+      "left": "form",
+      "right": "analytics",
+      "distance": 0.4195,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "deterministic",
+      "left": "form",
+      "right": "settings",
+      "distance": 0.3695,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    },
+    {
+      "mode": "deterministic",
+      "left": "analytics",
+      "right": "settings",
+      "distance": 0.3255,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION"
+    }
+  ],
+  "crossPreset": [
+    {
+      "archetype": "dashboard",
+      "left": "obsidian",
+      "right": "serene",
+      "distance": 0.2676,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "dashboard",
+      "left": "obsidian",
+      "right": "terracotta",
+      "distance": 0.2513,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "dashboard",
+      "left": "obsidian",
+      "right": "electric",
+      "distance": 0.0176,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "dashboard",
+      "left": "obsidian",
+      "right": "editorial",
+      "distance": 0.2543,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "dashboard",
+      "left": "serene",
+      "right": "terracotta",
+      "distance": 0.2669,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "dashboard",
+      "left": "serene",
+      "right": "electric",
+      "distance": 0.2506,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "dashboard",
+      "left": "serene",
+      "right": "editorial",
+      "distance": 0.2633,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "dashboard",
+      "left": "terracotta",
+      "right": "electric",
+      "distance": 0.2669,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "dashboard",
+      "left": "terracotta",
+      "right": "editorial",
+      "distance": 0.0036,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "dashboard",
+      "left": "electric",
+      "right": "editorial",
+      "distance": 0.2636,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "management-list",
+      "left": "obsidian",
+      "right": "serene",
+      "distance": 0.0152,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "management-list",
+      "left": "obsidian",
+      "right": "terracotta",
+      "distance": 0.0,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "management-list",
+      "left": "obsidian",
+      "right": "electric",
+      "distance": 0.2651,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "management-list",
+      "left": "obsidian",
+      "right": "editorial",
+      "distance": 0.2523,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "management-list",
+      "left": "serene",
+      "right": "terracotta",
+      "distance": 0.0152,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "management-list",
+      "left": "serene",
+      "right": "electric",
+      "distance": 0.2501,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "management-list",
+      "left": "serene",
+      "right": "editorial",
+      "distance": 0.2629,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "management-list",
+      "left": "terracotta",
+      "right": "electric",
+      "distance": 0.2651,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "management-list",
+      "left": "terracotta",
+      "right": "editorial",
+      "distance": 0.2523,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "management-list",
+      "left": "electric",
+      "right": "editorial",
+      "distance": 0.2628,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "detail",
+      "left": "obsidian",
+      "right": "serene",
+      "distance": 0.2677,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "detail",
+      "left": "obsidian",
+      "right": "terracotta",
+      "distance": 0.2501,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "detail",
+      "left": "obsidian",
+      "right": "electric",
+      "distance": 0.2671,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "detail",
+      "left": "obsidian",
+      "right": "editorial",
+      "distance": 0.2536,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "detail",
+      "left": "serene",
+      "right": "terracotta",
+      "distance": 0.2676,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "detail",
+      "left": "serene",
+      "right": "electric",
+      "distance": 0.0006,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "detail",
+      "left": "serene",
+      "right": "editorial",
+      "distance": 0.2641,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "detail",
+      "left": "terracotta",
+      "right": "electric",
+      "distance": 0.267,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "detail",
+      "left": "terracotta",
+      "right": "editorial",
+      "distance": 0.0034,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "detail",
+      "left": "electric",
+      "right": "editorial",
+      "distance": 0.2636,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "form",
+      "left": "obsidian",
+      "right": "serene",
+      "distance": 0.0191,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "form",
+      "left": "obsidian",
+      "right": "terracotta",
+      "distance": 0.0,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "form",
+      "left": "obsidian",
+      "right": "electric",
+      "distance": 0.0184,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "form",
+      "left": "obsidian",
+      "right": "editorial",
+      "distance": 0.0039,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "form",
+      "left": "serene",
+      "right": "terracotta",
+      "distance": 0.0191,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "form",
+      "left": "serene",
+      "right": "electric",
+      "distance": 0.0007,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "form",
+      "left": "serene",
+      "right": "editorial",
+      "distance": 0.0153,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "form",
+      "left": "terracotta",
+      "right": "electric",
+      "distance": 0.0184,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "form",
+      "left": "terracotta",
+      "right": "editorial",
+      "distance": 0.0039,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "form",
+      "left": "electric",
+      "right": "editorial",
+      "distance": 0.0146,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "analytics",
+      "left": "obsidian",
+      "right": "serene",
+      "distance": 0.0159,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "analytics",
+      "left": "obsidian",
+      "right": "terracotta",
+      "distance": 0.2522,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "analytics",
+      "left": "obsidian",
+      "right": "electric",
+      "distance": 0.2661,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "analytics",
+      "left": "obsidian",
+      "right": "editorial",
+      "distance": 0.0026,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "analytics",
+      "left": "serene",
+      "right": "terracotta",
+      "distance": 0.2659,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "analytics",
+      "left": "serene",
+      "right": "electric",
+      "distance": 0.2512,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "analytics",
+      "left": "serene",
+      "right": "editorial",
+      "distance": 0.0132,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "analytics",
+      "left": "terracotta",
+      "right": "electric",
+      "distance": 0.2661,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "analytics",
+      "left": "terracotta",
+      "right": "editorial",
+      "distance": 0.2529,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "analytics",
+      "left": "electric",
+      "right": "editorial",
+      "distance": 0.2642,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "settings",
+      "left": "obsidian",
+      "right": "serene",
+      "distance": 0.0126,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "settings",
+      "left": "obsidian",
+      "right": "terracotta",
+      "distance": 0.0,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "settings",
+      "left": "obsidian",
+      "right": "electric",
+      "distance": 0.0125,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "settings",
+      "left": "obsidian",
+      "right": "editorial",
+      "distance": 0.0004,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "settings",
+      "left": "serene",
+      "right": "terracotta",
+      "distance": 0.0126,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "settings",
+      "left": "serene",
+      "right": "electric",
+      "distance": 0.0001,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "settings",
+      "left": "serene",
+      "right": "editorial",
+      "distance": 0.0122,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "settings",
+      "left": "terracotta",
+      "right": "electric",
+      "distance": 0.0125,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "settings",
+      "left": "terracotta",
+      "right": "editorial",
+      "distance": 0.0004,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "settings",
+      "left": "electric",
+      "right": "editorial",
+      "distance": 0.0121,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    }
+  ],
+  "crossArchetypePassed": false,
+  "crossPresetPassed": false
+}

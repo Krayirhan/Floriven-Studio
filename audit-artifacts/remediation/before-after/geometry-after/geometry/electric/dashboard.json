@@ -1,0 +1,165 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "bento",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 42.99996601122745,
+  "sections": [
+    {
+      "role": "primary-summary",
+      "order": 0,
+      "span": 8,
+      "emphasis": "primary",
+      "family": "hero",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 227.3277064732143,
+      "height": 172.89058497570215
+    },
+    {
+      "role": "secondary-metrics",
+      "order": 1,
+      "span": 4,
+      "emphasis": "secondary",
+      "family": "metric",
+      "x": 262.32840401785717,
+      "y": 58.000009917696545,
+      "width": 106.65597098214286,
+      "height": 172.89058497570215
+    },
+    {
+      "role": "trend-progress",
+      "order": 2,
+      "span": 12,
+      "emphasis": "secondary",
+      "family": "radial",
+      "x": 21.000279017857146,
+      "y": 244.8906213405895,
+      "width": 347.9840959821429,
+      "height": 127.74998520093718
+    },
+    {
+      "role": "actionable-content",
+      "order": 3,
+      "span": 12,
+      "emphasis": "secondary",
+      "family": "actionable-content",
+      "x": 21.000279017857146,
+      "y": 386.64063298871747,
+      "width": 347.9840959821429,
+      "height": 78.0000103309339
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "electric-dashboard-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "primary-summary",
+      "x": 36.99986049107143,
+      "y": 74.00000588863233,
+      "width": 195.32854352678572,
+      "height": 52.49997928647752,
+      "fontSize": "25px",
+      "lineHeight": "26.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-dashboard-balance",
+      "component": "article",
+      "role": null,
+      "sectionRole": "primary-summary",
+      "x": 36.99986049107143,
+      "y": 134.499994059713,
+      "width": 195.32854352678572,
+      "height": 80.39062666102046,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-dashboard-income",
+      "component": "article",
+      "role": null,
+      "sectionRole": "secondary-metrics",
+      "x": 278.32798549107144,
+      "y": 74.00000588863233,
+      "width": 33.32798549107143,
+      "height": 93.14063128411338,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-dashboard-expense",
+      "component": "article",
+      "role": null,
+      "sectionRole": "secondary-metrics",
+      "x": 319.65611049107144,
+      "y": 74.00000588863233,
+      "width": 33.32798549107143,
+      "height": 93.14063128411338,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-dashboard-trend",
+      "component": "figure",
+      "role": null,
+      "sectionRole": "trend-progress",
+      "x": 36.99986049107143,
+      "y": 260.8905955132547,
+      "width": 315.98423549107144,
+      "height": 95.75003685560671,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-dashboard-cta",
+      "component": "button",
+      "role": null,
+      "sectionRole": "actionable-content",
+      "x": 36.99986049107143,
+      "y": 402.6406071613827,
+      "width": 315.98423549107144,
+      "height": 46.00001838906235,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-dashboard-nav",
+      "component": "nav",
+      "role": null,
+      "x": 5,
+      "y": 772.9999810943909,
+      "width": 380,
+      "height": 66.0000188022997,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

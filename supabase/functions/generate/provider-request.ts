@@ -11,7 +11,6 @@ export function buildGoogleGenerateRequest(messages: ProviderRequestMessage[], m
       maxOutputTokens,
       temperature,
       responseMimeType: 'application/json',
-      ...(operation === 'planning' ? { thinkingConfig: { thinkingBudget: 0 } } : {}),
     },
   }
 }

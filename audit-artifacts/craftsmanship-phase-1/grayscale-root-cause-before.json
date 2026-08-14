@@ -1,0 +1,44 @@
+{
+  "causes": {
+    "SAME_TYPE_SCALE": {
+      "count": 10,
+      "reason": "Pre-sprint grayscale evidence showed shared generic composition."
+    },
+    "SAME_SECTION_SILHOUETTE": {
+      "count": 10,
+      "reason": "Pre-sprint grayscale evidence showed shared generic composition."
+    },
+    "SAME_CARD_SILHOUETTE": {
+      "count": 10,
+      "reason": "Pre-sprint grayscale evidence showed shared generic composition."
+    },
+    "SAME_SURFACE_COUNT": {
+      "count": 10,
+      "reason": "Pre-sprint grayscale evidence showed shared generic composition."
+    },
+    "SAME_DIVIDER_STRATEGY": {
+      "count": 10,
+      "reason": "Pre-sprint grayscale evidence showed shared generic composition."
+    },
+    "SAME_NAV_SHAPE": {
+      "count": 10,
+      "reason": "Pre-sprint grayscale evidence showed shared generic composition."
+    },
+    "SAME_FIELD_SHAPE": {
+      "count": 10,
+      "reason": "Pre-sprint grayscale evidence showed shared generic composition."
+    },
+    "SAME_CHART_SILHOUETTE": {
+      "count": 10,
+      "reason": "Pre-sprint grayscale evidence showed shared generic composition."
+    },
+    "SAME_WHITESPACE_PROFILE": {
+      "count": 10,
+      "reason": "Pre-sprint grayscale evidence showed shared generic composition."
+    },
+    "SAME_DENSITY": {
+      "count": 10,
+      "reason": "Pre-sprint grayscale evidence showed shared generic composition."
+    }
+  }
+}

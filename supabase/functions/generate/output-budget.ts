@@ -2,7 +2,12 @@ export type OutputBudgetClass = 'SMALL' | 'MEDIUM' | 'LARGE'
 
 export const GOOGLE_MODEL_OUTPUT_LIMIT = 65_536
 export const GOOGLE_COMPOSITION_MAX_OUTPUT_TOKENS = 24_000
-export const GOOGLE_PLAN_MAX_OUTPUT_TOKENS = 256
+// Was 256, tuned for a planning model called with thinkingConfig.thinkingBudget: 0
+// (no reasoning tokens). That override isn't supported by every model — see
+// provider-request.ts — so without it, a model's own reasoning tokens are
+// drawn from this same budget before it writes the JSON answer, and 256 was
+// too tight to leave room for both.
+export const GOOGLE_PLAN_MAX_OUTPUT_TOKENS = 4_096
 export const GOOGLE_EDIT_MAX_OUTPUT_TOKENS = 24_000
 
 export type BudgetEstimate = {

@@ -13,6 +13,11 @@ export interface GenerationJob {
   providerAttempt?: number;
   providerDurationMs?: number;
   providerMetadata?: Record<string, unknown>;
+  compositionMode?: "ai_enhanced" | "deterministic_fallback";
+  degraded?: boolean;
+  fallbackReason?: string;
+  aiQualityScore?: number;
+  baselineQualityScore?: number;
   failedStage?: string;
   finalEligible?: boolean;
   finalDecisionReason?: string;
@@ -29,8 +34,8 @@ export interface GenerationJob {
     metrics: Record<string, number>;
   };
   runtimeQualityReport?: {
-    gates: { geometry: boolean; visual: boolean; crossScreen: boolean };
-    pendingGates: Array<"visual" | "crossScreen">;
+    gates: { geometry: boolean; visual: boolean; crossScreen: boolean; layoutIdentity?: boolean; visualHierarchy?: boolean };
+    pendingGates: Array<"visual" | "crossScreen" | "layoutIdentity" | "visualHierarchy">;
     finalEligible: boolean;
     recordedAt?: string;
   };
@@ -39,6 +44,16 @@ export interface GenerationJob {
 /** A completed job can be previewed, but only this flag permits final delivery. */
 export function isFinalEligibleGeneration(job: GenerationJob): boolean {
   return job.status === "completed" && job.runtimeQualityReport?.finalEligible === true;
+}
+
+export function generationProvenanceMessage(job: GenerationJob): string {
+  if (job.degraded || job.compositionMode === "deterministic_fallback") {
+    const reason = job.fallbackReason === "AI_STATIC_QUALITY_REJECTED"
+      ? "AI çıktısı statik kalite kontrolünü geçmedi."
+      : "AI composition aşaması tamamlanamadı."
+    return `Güvenli otomatik taslak gösteriliyor. ${reason} Prompt ayrıntıları sınırlı uygulanmış olabilir.`;
+  }
+  return "AI tarafından özelleştirilmiş tasarım adayı gösteriliyor.";
 }
 
 export interface GenerationRequest {

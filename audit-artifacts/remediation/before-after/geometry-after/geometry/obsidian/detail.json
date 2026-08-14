@@ -1,0 +1,166 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "bento",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 45.99997479252127,
+  "sections": [
+    {
+      "role": "identity",
+      "order": 0,
+      "span": 12,
+      "emphasis": "primary",
+      "family": "entity-identity",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9840959821429,
+      "height": 71.99999276834626
+    },
+    {
+      "role": "primary-state",
+      "order": 1,
+      "span": 8,
+      "emphasis": "primary",
+      "family": "metric",
+      "x": 21.000279017857146,
+      "y": 143.99998553669252,
+      "width": 227.3277064732143,
+      "height": 147.5156106093319
+    },
+    {
+      "role": "metadata",
+      "order": 2,
+      "span": 4,
+      "emphasis": "secondary",
+      "family": "technical-metadata",
+      "x": 262.32840401785717,
+      "y": 143.99998553669252,
+      "width": 106.65597098214286,
+      "height": 147.5156106093319
+    },
+    {
+      "role": "actions",
+      "order": 3,
+      "span": 12,
+      "emphasis": "tertiary",
+      "family": "detail-actions",
+      "x": 21.000279017857146,
+      "y": 305.51562259321526,
+      "width": 347.9840959821429,
+      "height": 45.99997479252127
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "obsidian-detail-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "identity",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9840959821429,
+      "height": 25.29687116302658,
+      "fontSize": "22px",
+      "lineHeight": "25.3px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-detail-avatar",
+      "component": "div",
+      "role": null,
+      "sectionRole": "identity",
+      "x": 21.000279017857146,
+      "y": 91.29686816705575,
+      "width": 35.999581473214285,
+      "height": 36.000018182443675,
+      "fontSize": "11px",
+      "lineHeight": "16.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-detail-status",
+      "component": "span",
+      "role": null,
+      "sectionRole": "primary-state",
+      "x": 21.000279017857146,
+      "y": 143.99998553669252,
+      "width": 227.3277064732143,
+      "height": 23.000009194531174,
+      "fontSize": "10px",
+      "lineHeight": "15px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-detail-amount",
+      "component": "article",
+      "role": null,
+      "sectionRole": "primary-state",
+      "x": 21.000279017857146,
+      "y": 175.00000361582687,
+      "width": 227.3277064732143,
+      "height": 80.39062666102046,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-detail-progress",
+      "component": "div",
+      "role": null,
+      "sectionRole": "primary-state",
+      "x": 21.000279017857146,
+      "y": 263.3905955649094,
+      "width": 227.3277064732143,
+      "height": 28.12500058111503,
+      "fontSize": "10.5px",
+      "lineHeight": "15.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-detail-meta",
+      "component": "div",
+      "role": null,
+      "sectionRole": "metadata",
+      "x": 262.32840401785717,
+      "y": 143.99998553669252,
+      "width": 106.65597098214286,
+      "height": 104.75001960294708,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-detail-cta",
+      "component": "button",
+      "role": null,
+      "sectionRole": "actions",
+      "x": 21.000279017857146,
+      "y": 305.51562259321526,
+      "width": 347.9840959821429,
+      "height": 45.99997479252127,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

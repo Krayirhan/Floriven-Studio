@@ -14,20 +14,20 @@ describe("core archetype composers", () => {
   it("forms use fields and exactly one completion action without nav", () => {
     const intent = createScreenIntent({ screenId: "form", archetype: "form", navigationMode: "focused", contentDensity: "medium" });
     const plan = composeForm({ intent, presentation, screen: screen("form", [{ id: "field", type: "TextField" }, { id: "save", type: "Button" }]) });
-    expect(plan.sections.map((item) => item.role)).toEqual(["primary-content", "actions"]);
+    expect(plan.sections.map((item) => item.role)).toEqual(["field-group", "actions"]);
     expect(validateRenderPlan(plan)).toEqual([]);
   });
 
   it("detail separates identity, state and timeline", () => {
     const intent = createScreenIntent({ screenId: "detail", archetype: "detail", navigationMode: "focused", contentDensity: "medium" });
     const plan = composeDetail({ intent, presentation, screen: screen("detail", [{ id: "title", type: "Text" }, { id: "state", type: "Progress" }, { id: "event", type: "ListItem" }]) });
-    expect(plan.sections.map((item) => item.role)).toEqual(["hero", "summary", "primary-content"]);
+    expect(plan.sections.map((item) => item.role)).toEqual(["identity", "primary-state", "metadata"]);
   });
 
   it("analytics requires and emphasizes a chart", () => {
-    const intent = createScreenIntent({ screenId: "analytics", archetype: "dashboard", navigationMode: "root", contentDensity: "medium" });
-    const plan = composeAnalytics({ intent, presentation, screen: screen("analytics", [{ id: "kpi", type: "Metric" }, { id: "chart", type: "Chart" }, { id: "insight", type: "Text" }]) });
-    expect(plan.sections.find((item) => item.role === "primary-content")?.emphasis).toBe("primary");
+    const intent = createScreenIntent({ screenId: "analytics", archetype: "analytics", navigationMode: "root", contentDensity: "medium" });
+    const plan = composeAnalytics({ intent, presentation, screen: screen("analytics", [{ id: "kpi", type: "Metric" }, { id: "period", type: "SegmentedControl" }, { id: "chart", type: "Chart" }, { id: "breakdown", type: "Chart" }, { id: "insight", type: "ListItem" }]) });
+    expect(plan.sections.find((item) => item.role === "dominant-chart")?.emphasis).toBe("primary");
   });
 
   it("settings rejects global dashboard context", () => {

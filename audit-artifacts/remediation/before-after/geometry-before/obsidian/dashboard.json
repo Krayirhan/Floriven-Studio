@@ -1,0 +1,119 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "bento",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 42.99996601122745,
+  "nodes": [
+    {
+      "nodeId": "obsidian-dashboard-balance",
+      "component": "article",
+      "role": null,
+      "sectionRole": "hero",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9994419642857,
+      "height": 80.39062666102046,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-dashboard-income",
+      "component": "article",
+      "role": null,
+      "sectionRole": "summary",
+      "x": 21.000279017857146,
+      "y": 152.39061942936672,
+      "width": 347.9994419642857,
+      "height": 67.640600239657,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-dashboard-expense",
+      "component": "article",
+      "role": null,
+      "sectionRole": "summary",
+      "x": 21.000279017857146,
+      "y": 228.03127215016798,
+      "width": 347.9994419642857,
+      "height": 67.640600239657,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-dashboard-trend",
+      "component": "figure",
+      "role": null,
+      "sectionRole": "insight",
+      "x": 21.000279017857146,
+      "y": 309.67189883701576,
+      "width": 347.9994419642857,
+      "height": 111.74996743173087,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-dashboard-cta",
+      "component": "button",
+      "role": null,
+      "sectionRole": "actions",
+      "x": 21.000279017857146,
+      "y": 435.4218927159374,
+      "width": 347.9994419642857,
+      "height": 45.99997479252127,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-dashboard-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "primary-content",
+      "x": 21.000279017857146,
+      "y": 495.4218939556495,
+      "width": 347.9994419642857,
+      "height": 25.29684936475604,
+      "fontSize": "22px",
+      "lineHeight": "25.3px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-dashboard-nav",
+      "component": "nav",
+      "role": null,
+      "x": 5,
+      "y": 772.9999810943909,
+      "width": 380,
+      "height": 66.0000188022997,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

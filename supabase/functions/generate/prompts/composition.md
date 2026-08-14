@@ -42,6 +42,12 @@ own distinct user job and use a rich, multi-layered information structure approp
 16-24 nodes below root and at least 5 distinct visual component groups. Do not clone one
 screen skeleton four times. Avoid flat, bare-bones, or empty card layouts.
 
+SCREEN CONTRACT — each screen carries a mandatory contract. Render its `job`, every
+`requiredSection`, its `primaryAction`, its meaningful `secondaryActions`, and visible
+domain-specific values for every `requiredData` entry. Use `navigationTargetIds` only
+for real transitions to those planned screens. A title or section label alone does not
+satisfy an action or data obligation.
+
 The semantic composition stage receives a validated style-system profile in addition to
 the ProductBlueprint. It MUST keep product domain, screen jobs, names, routes and
 navigation semantics fixed, while using the style profile to vary information hierarchy,

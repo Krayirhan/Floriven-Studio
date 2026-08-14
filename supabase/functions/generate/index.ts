@@ -1,6 +1,6 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2'
 import { jsonrepair } from 'npm:jsonrepair@3.14.1'
-import { buildSyntheticBlueprint, deriveArchetype, meetsScreenPolicy, parseModelJson, requiresSettingsScreen, resolveDomainPack, resolveScreenPolicy, type DomainPackId, type ProductBlueprint, type ProductScreenSpec, type ScreenCountOptions } from './domain.ts'
+import { buildSyntheticBlueprint, deriveArchetype, deriveExperiencePattern, meetsScreenPolicy, parseModelJson, requiresSettingsScreen, resolveDomainPack, resolveScreenPolicy, type DomainPackId, type ExperiencePattern, type ProductBlueprint, type ProductScreenSpec, type ScreenCountOptions } from './domain.ts'
 import { detectDomainFromScreens, evaluateGenerationQuality } from './quality.ts'
 // Compiled from prompts/*.md by scripts/build-prompts.mjs. Edit the markdown,
 // then `pnpm prompts:build` — never edit prompts.generated.ts.
@@ -13,11 +13,14 @@ import { classifyProviderFailure } from './provider-contract.ts'
 import { GeminiAdapterError, parseGeminiGenerateContentResponse } from './gemini-adapter.ts'
 import { assertOutputBudgetWithinModelLimit, estimateCompositionBudget, GOOGLE_COMPOSITION_MAX_OUTPUT_TOKENS, GOOGLE_EDIT_MAX_OUTPUT_TOKENS, GOOGLE_MODEL_OUTPUT_LIMIT, GOOGLE_PLAN_MAX_OUTPUT_TOKENS } from './output-budget.ts'
 import { buildGoogleGenerateRequest } from './provider-request.ts'
-import { fallbackPlanningIntent, resolvePlanningIntent, validatePlanningIntent } from './planning-intent.ts'
 import { composeDeterministicBaseScreens } from './deterministic-compositor.ts'
 import { appendProviderEvent, type ProviderEvent } from './provider-events.ts'
-import { selectCompositionMode } from './composition-selection.ts'
+import { resolveCompositionOutcome } from './composition-selection.ts'
 import { validateArchetypeMinimumContent, validateCanonicalNavigation } from './candidate-invariants.ts'
+import { validateScreenContracts, type ScreenContract } from './screen-contract.ts'
+import { repairScreenContract } from './candidate-contract-repair.ts'
+import { repairIdentityIntent } from './identity-intent-repair.ts'
+import { assignSectionMembers, assignSectionOwnership, evaluateSectionMembers, materializeSectionContainers, SECTION_TOPOLOGY_ROLES, validateSectionTopology, type SectionTopologyRole } from './section-topology.ts'
 import { createRuntimeCandidateHash } from '../_shared/runtime-hash.ts'
 import { resolveAutoStrategy } from './auto-strategy.ts'
 
@@ -302,7 +305,14 @@ async function processGenerationJob(options: ProcessGenerationJobOptions): Promi
     const result = editScreens
       ? await runEditGeneration(brief, editScreens, jobId, supabase, setProviderPhase)
       : await runFreshGeneration(brief, platform, screenScope, countOptions, templateStrategy, selectedStyleId, jobId, supabase, setProviderPhase)
-    await updateStage('provider_complete', 70, { provider_http_status: 200, provider_duration_ms: Date.now() - providerStartedAt, provider_metadata: { attempts: [{ provider: 'google', status: 200 }] } })
+    await updateStage('provider_complete', 70, {
+      provider_http_status: 200,
+      provider_duration_ms: Date.now() - providerStartedAt,
+      provider_metadata: {
+        attempts: [{ provider: 'google', status: 200 }],
+        ...(result.providerFallbackReason ? { providerFallbackReason: result.providerFallbackReason } : {}),
+      },
+    })
     if (result.raw.length === 0) throw new GenerationPipelineError('PROVIDER_BAD_RESPONSE', 'Provider returned no screens')
 
     await updateStage('validating', 75)
@@ -333,12 +343,26 @@ async function processGenerationJob(options: ProcessGenerationJobOptions): Promi
     // composition mode.  Prefer the deterministic candidate whenever enhanced
     // composition fails, including the (terminal) case where the baseline also
     // fails, so persisted state cannot claim an invalid AI enhancement won.
-    const selectedCompositionMode = selectCompositionMode({ hasBaseline: !!baselineScreens, enhancedPassed: enhancedQuality.passed })
-    const useBaseline = selectedCompositionMode === 'deterministic_baseline'
+    const compositionOutcome = resolveCompositionOutcome({
+      hasBaseline: !!baselineScreens,
+      enhancedPassed: enhancedQuality.passed,
+      ...(result.providerFallbackReason ? { providerFallbackReason: result.providerFallbackReason } : {}),
+    })
+    const useBaseline = compositionOutcome.selectedCompositionMode === 'deterministic_baseline'
     const screens = useBaseline ? baselineScreens : enhancedScreens
     const qualityReport = useBaseline ? baselineQuality! : enhancedQuality
     if (useBaseline) providerEvents = appendProviderEvent(providerEvents, { operation: 'composition_quality_gate', status: 'fallback', fallbackUsed: true, errorCode: 'QUALITY_REGRESSION' })
-    await updateStage('static_quality', 85, { quality_report: qualityReport, quality_version: 'v2', provider_events: providerEvents, provider_metadata: { selectedCompositionMode, baselineQualityScore: baselineQuality?.score, baselineQualityPassed: baselineQuality?.passed } })
+    await updateStage('static_quality', 85, {
+      quality_report: qualityReport,
+      quality_version: 'v2',
+      provider_events: providerEvents,
+      provider_metadata: {
+        ...compositionOutcome,
+        aiQualityScore: enhancedQuality.score,
+        baselineQualityScore: baselineQuality?.score,
+        baselineQualityPassed: baselineQuality?.passed,
+      },
+    })
     if (!qualityReport.passed) {
       const qualityMessage = `Static quality rejected candidate (${qualityReport.score}/100): ${qualityReport.issues.join(' ')}`
       const { error } = await supabase.from('generation_jobs').update({ status: 'failed', stage: 'QUALITY_REJECTED', progress: 100, result_screens: screens, error_code: 'QUALITY_REJECTED', error_message: qualityMessage, final_eligible: false, final_decision_reason: 'STATIC_QUALITY_REJECTED' }).eq('id', jobId)
@@ -370,7 +394,7 @@ async function runFreshGeneration(
   jobId: string,
   supabase: SupabaseClient,
   setProviderPhase: (phase: string) => Promise<void>,
-): Promise<{ blueprint: ProductBlueprint; domainPackId: DomainPackId | undefined; raw: unknown[] }> {
+): Promise<{ blueprint: ProductBlueprint; domainPackId: DomainPackId | undefined; raw: unknown[]; providerFallbackReason?: string }> {
   // Phase 1 — cheap plan call. Anchors the screens to the pillars actually
   // named in the brief, so a three-pillar app never loses one to a generic screen.
   await setProviderPhase('planning')
@@ -388,6 +412,7 @@ async function runFreshGeneration(
     : SYSTEM_PROMPT
 
   const raw: unknown[] = []
+  let providerFallbackReason: string | undefined
   const budget = estimateCompositionBudget(plan.length, plan.some((screen) => screen.contentDensity === 'high') ? 'high' : 'medium')
   const batches = chunk(plan, budget.batchSize)
   for (let batchIndex = 0; batchIndex < batches.length; batchIndex += 1) {
@@ -405,7 +430,8 @@ async function runFreshGeneration(
       ...batch.map((p, i) => [
         `${i + 1}. "${p.name}" (${p.route}, ${p.role}) — ${p.purpose}`,
         `   Bölümler: ${p.sections.join(' → ')}`,
-        `   UX İSKELETİ (zorunlu): archetype=${p.archetype} | layout=${p.layoutPattern ?? p.archetype} | yoğunluk=${p.contentDensity} | hero=${p.heroAllowed ? 'izinli' : 'YASAK'} | FAB=${p.fabAllowed ? 'izinli' : 'YASAK'}`,
+        `   SCREEN CONTRACT (eksiksiz uygula): ${JSON.stringify(p.contract)}`,
+        `   UX İSKELETİ (zorunlu): archetype=${p.archetype} | experience=${p.experiencePattern ?? 'standard'} | layout=${p.layoutPattern ?? p.archetype} | yoğunluk=${p.contentDensity} | hero=${p.heroAllowed ? 'izinli' : 'YASAK'} | FAB=${p.fabAllowed ? 'izinli' : 'YASAK'}`,
         p.patterns?.length ? `   Önerilen desenler: ${p.patterns.join(', ')} — bunları Card yığınına indirgeme.` : '',
       ].filter(Boolean).join('\n')),
       '',
@@ -420,13 +446,14 @@ async function runFreshGeneration(
     } catch (error) {
       if (error instanceof ProviderError && error.code === 'PROVIDER_AUTH_FAILED') throw error
       batchScreens = composeDeterministicBaseScreens({ ...blueprint, screens: batch }, brief).map((screen) => screen)
-      await supabase.from('generation_jobs').update({ provider_metadata: { compositionMode: 'brief_aware_fallback', fallbackReason: error instanceof Error ? error.message : String(error), generationPhase: 'composition', batchIndex } }).eq('id', jobId)
+      providerFallbackReason = error instanceof ProviderError ? error.code : 'COMPOSITION_FAILED'
+      await supabase.from('generation_jobs').update({ provider_metadata: { compositionMode: 'deterministic_fallback', degraded: true, fallbackReason: providerFallbackReason, generationPhase: 'composition', batchIndex } }).eq('id', jobId)
     }
     if (batchScreens.length !== batch.length) throw new Error(`${batchIndex + 1}. ekran grubunda ${batch.length} yerine ${batchScreens.length} ekran üretildi`)
     raw.push(...batchScreens)
     await supabase.from('generation_jobs').update({ progress: 35 + Math.round(((batchIndex + 1) / batches.length) * 35) }).eq('id', jobId)
   }
-  return { blueprint, domainPackId, raw }
+  return { blueprint, domainPackId, raw, ...(providerFallbackReason ? { providerFallbackReason } : {}) }
 }
 
 async function runEditGeneration(
@@ -435,7 +462,7 @@ async function runEditGeneration(
   jobId: string,
   supabase: SupabaseClient,
   setProviderPhase: (phase: string) => Promise<void>,
-): Promise<{ blueprint: ProductBlueprint; domainPackId: DomainPackId | undefined; raw: unknown[] }> {
+): Promise<{ blueprint: ProductBlueprint; domainPackId: DomainPackId | undefined; raw: unknown[]; providerFallbackReason?: string }> {
   const blueprint = buildSyntheticBlueprint(editScreens)
   const domainPackId = detectDomainFromScreens(editScreens) ?? resolveDomainPack(blueprint, instruction)
   const { error: contextErr } = await supabase
@@ -483,29 +510,83 @@ async function planProduct(brief: string, scope?: string, options: ScreenCountOp
     { role: 'system', content: PLAN_PROMPT },
     { role: 'user', content: `Uygulama: ${brief}${scope ? `\nEkran kapsamı: ${scope}` : ''}\nZORUNLU EKRAN POLİTİKASI: ${JSON.stringify(policy)}` },
   ]
+  // A plan-call failure or a shorthand (plain-string) screens array must never
+  // silently degrade into the fixed generic English screen taxonomy from
+  // planning-intent.ts — that produces "overview/list/detail/form" screens
+  // regardless of what the user actually asked for. Both are treated as an
+  // invalid plan and corrected via retry; if it still can't be fixed, the job
+  // fails loudly instead of masking the brief with a canned template.
   let parsed: Record<string, unknown>
   try {
     parsed = await completeJson(planMessages, PLAN_TOKENS, 0.1, 'planning')
-    if (Array.isArray(parsed.screens) && parsed.screens.every((screen) => typeof screen === 'string')) return resolvePlanningIntent(validatePlanningIntent(parsed), brief, options)
   } catch (error) {
     if (error instanceof ProviderError && error.code === 'PROVIDER_AUTH_FAILED') throw error
-    return resolvePlanningIntent(fallbackPlanningIntent(brief), brief, options)
+    throw new Error(`Akış planı üretilemedi: ${error instanceof Error ? error.message : String(error)}`)
   }
   let list = Array.isArray(parsed.screens) ? parsed.screens : []
+  const isShorthandPlan = () => list.length > 0 && list.every((screen) => typeof screen === 'string')
   const planRequiresSettings = () => requiresSettingsScreen(
     Array.isArray(parsed.capabilities) ? parsed.capabilities.filter((item): item is string => typeof item === 'string') : [],
     Array.isArray(parsed.contentVocabulary) ? parsed.contentVocabulary.filter((item): item is string => typeof item === 'string') : [],
   )
   const planHasSettings = () => list.some((item) => asProps(item).role === 'settings')
+  const planHasCompleteContracts = () => list.every((item) => {
+    const screen = asProps(item)
+    const contract = asProps(screen.contract)
+    return typeof screen.purpose === 'string' && screen.purpose.trim().length > 0
+      && typeof contract.job === 'string' && contract.job.trim() === screen.purpose.trim()
+      && typeof contract.primaryAction === 'string' && contract.primaryAction.trim().length > 0
+      && Array.isArray(contract.requiredSections) && contract.requiredSections.length >= 2
+      && Array.isArray(contract.requiredData) && contract.requiredData.length >= 2
+      && Array.isArray(contract.secondaryActions)
+      && Array.isArray(contract.navigationTargetIds)
+      && Array.isArray(contract.sectionRoles) && contract.sectionRoles.length === (Array.isArray(screen.sections) ? screen.sections.length : 0)
+      && typeof asProps(contract.identityIntent).dominantRole === 'string'
+      && typeof asProps(contract.identityIntent).supportingRole === 'string'
+      && ['focused', 'balanced', 'dense'].includes(String(asProps(contract.identityIntent).densityProfile))
+      && asProps(contract.identityIntent).dominantRole !== asProps(contract.identityIntent).supportingRole
+      && contract.sectionRoles.some((item) => asProps(item).role === asProps(contract.identityIntent).dominantRole)
+      && contract.sectionRoles.some((item) => asProps(item).role === asProps(contract.identityIntent).supportingRole)
+      && contract.sectionRoles.every((item) => {
+        const entry = asProps(item)
+        return typeof entry.section === 'string' && Array.isArray(screen.sections) && screen.sections.includes(entry.section)
+          && typeof entry.role === 'string' && (SECTION_TOPOLOGY_ROLES as readonly string[]).includes(entry.role)
+      })
+      && new Set(contract.sectionRoles.map((item) => asProps(item).role)).size >= Math.min(2, contract.sectionRoles.length)
+      && typeof screen.archetype === 'string' && ['dashboard', 'management_list', 'settings', 'form', 'detail', 'profile', 'analytics'].includes(screen.archetype)
+      && validateSectionTopology(
+        typeof screen.archetype === 'string' && ['dashboard', 'management_list', 'settings', 'form', 'detail', 'profile', 'analytics'].includes(screen.archetype)
+          ? screen.archetype as ReturnType<typeof deriveArchetype>
+          : undefined,
+        Array.isArray(screen.sections) ? screen.sections.filter((item): item is string => typeof item === 'string') : [],
+        contract.sectionRoles.map((item) => ({ section: String(asProps(item).section), role: String(asProps(item).role) as SectionTopologyRole })),
+      ).length === 0
+  })
+  const planHasDistinctIdentityIntents = () => {
+    const keys = list.map((item) => {
+      const screen = asProps(item)
+      const intent = asProps(asProps(screen.contract).identityIntent)
+      return `${String(screen.archetype)}:${String(intent.dominantRole)}:${String(intent.supportingRole)}:${String(intent.densityProfile)}`
+    })
+    return new Set(keys).size === keys.length
+  }
   for (let correctionAttempt = 0; correctionAttempt < 2; correctionAttempt += 1) {
-    const countInvalid = !meetsScreenPolicy(list.length, policy)
-    const settingsMissing = planRequiresSettings() && !planHasSettings()
-    if (!countInvalid && !settingsMissing) break
+    const shorthand = isShorthandPlan()
+    const countInvalid = !shorthand && !meetsScreenPolicy(list.length, policy)
+    const settingsMissing = !shorthand && planRequiresSettings() && !planHasSettings()
+    const contractsMissing = !shorthand && (!planHasCompleteContracts() || !planHasDistinctIdentityIntents())
+    if (!shorthand && !countInvalid && !settingsMissing && !contractsMissing) break
     const requirement = policy.requestedCount !== undefined
       ? `tam ${policy.requestedCount}`
       : `${policy.minCount} ile ${policy.maxCount} arasında`
     const settingsInstruction = settingsMissing
       ? ' Ürün tercihleri gerektirdiği için screens dizisinde role="settings", priority="secondary" ve navigationPlacement="utility" olan somut bir ayarlar ekranı bulunması ZORUNLUDUR. Bu ekranın id, name, route, purpose ve 4-6 sections alanlarını doldur; id değerini navigation.utilityScreenIds listesine de ekle. Açık ekran sayısı sabitse en düşük öncelikli destek ekranını ayarlar ekranıyla değiştir.'
+      : ''
+    const schemaInstruction = shorthand
+      ? ' screens alanını yalnızca ekran adı dizisi olarak DEĞİL, şemadaki TAM nesne biçiminde döndür: her ekran id, name, route, role, archetype, purpose, primaryAction, navigationTargetIds alanlarının tümünü taşımalı; name ve purpose brief\'teki gerçek bir kullanıcı görevini brief\'in kendi diliyle ve kendi terimleriyle yansıtmalı — genel/şablon isim (overview, list, detail, form vb.) kullanma.'
+      : ''
+    const contractInstruction = contractsMissing
+      ? ' Her screen.contract nesnesini eksiksiz doldur: job purpose ile birebir aynı olmalı; requiredSections screens.sections içinden en az 2 değer, primaryAction tek somut kullanıcı eylemi, secondaryActions somut yardımcı eylemler, requiredData ekranda görünmesi gereken en az 2 alan ve navigationTargetIds yalnız başka screen id değerleri olmalıdır. sectionRoles her section için tam bir {section,role} kaydı taşımalı; role yalnız summary|filters|entity-list|form-fields|actions|analytics|details|settings olabilir ve ekran en az iki farklı rol kullanmalıdır.'
       : ''
     const previousPlan = JSON.stringify(parsed)
     parsed = await completeJson(
@@ -514,7 +595,7 @@ async function planProduct(brief: string, scope?: string, options: ScreenCountOp
         { role: 'assistant', content: previousPlan },
         {
           role: 'user',
-          content: `Yukarıdaki JSON planı düzelt. JSON şemasını bozmadan ${requirement} ekran döndür. Her ekran briefteki farklı bir kullanıcı görevini çözsün; alan dışı veya şablona ait içerik ekleme.${settingsInstruction} Düzeltilmiş JSON nesnesinin tamamını döndür.`,
+          content: `Yukarıdaki JSON planı düzelt. JSON şemasını bozmadan ${requirement} ekran döndür. Her ekran briefteki farklı bir kullanıcı görevini çözsün; alan dışı veya şablona ait içerik ekleme.${settingsInstruction}${schemaInstruction}${contractInstruction} Düzeltilmiş JSON nesnesinin tamamını döndür.`,
         },
       ],
       PLAN_TOKENS,
@@ -523,10 +604,13 @@ async function planProduct(brief: string, scope?: string, options: ScreenCountOp
     list = Array.isArray(parsed.screens) ? parsed.screens : []
   }
   if (list.length === 0) throw new Error('Akış planı üretilemedi')
+  if (isShorthandPlan()) throw new Error('Akış planı brief\'e özgü ekran şeması yerine genel bir ekran listesi döndürdü')
   if (planRequiresSettings() && !planHasSettings()) throw new Error('Akış planı gerekli ayarlar ekranını üretmedi')
+  if (!planHasCompleteContracts() || !planHasDistinctIdentityIntents()) throw new Error('Akış planı zorunlu ScreenContract alanlarını üretmedi')
 
   const targetCount = policy.requestedCount ?? Math.min(policy.maxCount, Math.max(policy.minCount, list.length))
-  const archetypes = new Set(['dashboard', 'management_list', 'settings', 'form', 'detail', 'profile'])
+  const archetypes = new Set(['dashboard', 'management_list', 'settings', 'form', 'detail', 'profile', 'analytics'])
+  const strings = (value:unknown) => Array.isArray(value) ? value.filter((item):item is string=>typeof item==='string').slice(0,12) : []
   const screens = list.slice(0, targetCount).map((raw, i) => {
     const s = (raw ?? {}) as Node
     const id = slugify(typeof s.id === 'string' ? s.id : typeof s.name === 'string' ? s.name : '') || `screen-${i + 1}`
@@ -538,14 +622,34 @@ async function planProduct(brief: string, scope?: string, options: ScreenCountOp
     const fabAllowed = role === 'settings' || archetype === 'settings' || archetype === 'profile'
       ? false
       : typeof s.fabAllowed === 'boolean' ? s.fabAllowed : true
+    const contractRaw = asProps(s.contract)
+    const sections = Array.isArray(s.sections)
+      ? s.sections.filter((x): x is string => typeof x === 'string')
+      : []
+    const contract: ScreenContract = {
+      version: '1.0.0',
+      job: String(contractRaw.job),
+      requiredSections: strings(contractRaw.requiredSections).filter((section) => sections.includes(section)),
+      primaryAction: String(contractRaw.primaryAction),
+      secondaryActions: strings(contractRaw.secondaryActions),
+      requiredData: strings(contractRaw.requiredData),
+      navigationTargetIds: strings(contractRaw.navigationTargetIds).map(slugify),
+      sectionRoles: Array.isArray(contractRaw.sectionRoles) ? contractRaw.sectionRoles.map((item) => {
+        const entry = asProps(item)
+        return { section: String(entry.section), role: String(entry.role) as SectionTopologyRole }
+      }) : [],
+      identityIntent: {
+        dominantRole: String(asProps(contractRaw.identityIntent).dominantRole) as SectionTopologyRole,
+        supportingRole: String(asProps(contractRaw.identityIntent).supportingRole) as SectionTopologyRole,
+        densityProfile: String(asProps(contractRaw.identityIntent).densityProfile) as 'focused' | 'balanced' | 'dense',
+      },
+    }
     return {
       id,
       name: typeof s.name === 'string' && s.name ? s.name : `Ekran ${i + 1}`,
       route: typeof s.route === 'string' && s.route.startsWith('/') ? s.route : `/ekran-${i + 1}`,
       purpose: typeof s.purpose === 'string' ? s.purpose : '',
-      sections: Array.isArray(s.sections)
-        ? s.sections.filter((x): x is string => typeof x === 'string')
-        : [],
+      sections,
       role,
       priority: s.priority === 'secondary' || s.priority === 'tertiary' ? s.priority : 'primary',
       ...(typeof s.parentId === 'string' && s.parentId ? { parentId:slugify(s.parentId) } : {}),
@@ -556,6 +660,8 @@ async function planProduct(brief: string, scope?: string, options: ScreenCountOp
       heroAllowed: typeof s.heroAllowed === 'boolean' ? s.heroAllowed : archetype === 'dashboard' || role === 'onboarding',
       fabAllowed,
       patterns: Array.isArray(s.patterns) ? s.patterns.filter((x): x is string => typeof x === 'string').slice(0, 4) : [],
+      experiencePattern: pickExperiencePattern(s.experiencePattern, [String(s.name ?? ''), String(s.purpose ?? ''), ...sections, String(contractRaw.job ?? '')].join(' ')),
+      contract,
     }
   })
   const overviewId = screens[0]?.id
@@ -567,7 +673,8 @@ async function planProduct(brief: string, scope?: string, options: ScreenCountOp
   if (!meetsScreenPolicy(screens.length, policy)) {
     throw new Error(`Akış planı ${targetCount} ekran yerine ${screens.length} ekran döndürdü`)
   }
-  const strings = (value:unknown) => Array.isArray(value) ? value.filter((item):item is string=>typeof item==='string').slice(0,12) : []
+  const contractIssues = validateScreenContracts(screens)
+  if (contractIssues.length) throw new Error(`ScreenContract doğrulaması başarısız: ${contractIssues.join('; ')}`)
   const parsedNavigation = asProps(parsed.navigation)
   const screenIds = new Set(screens.map((screen) => screen.id))
   const eligiblePrimaryIds = new Set(screens.filter((screen) => ['overview', 'core'].includes(screen.role)).map((screen) => screen.id))
@@ -604,6 +711,12 @@ function pickNavigationPlacement(value: unknown, role: ProductScreenSpec['role']
   return index < 5 ? 'primary' : 'hierarchical'
 }
 
+function pickExperiencePattern(value: unknown, semanticContext: string): ExperiencePattern {
+  const patterns: ExperiencePattern[] = ['standard', 'calendar', 'timeline', 'gallery', 'board', 'map']
+  const inferred = deriveExperiencePattern(semanticContext)
+  return inferred !== 'standard' ? inferred : typeof value === 'string' && patterns.includes(value as ExperiencePattern) ? value as ExperiencePattern : 'standard'
+}
+
 function chunk<T>(items: T[], size: number): T[][] {
   return Array.from({ length: Math.ceil(items.length / size) }, (_, index) => items.slice(index * size, (index + 1) * size))
 }
@@ -631,10 +744,14 @@ async function complete(messages: ChatMessage[], maxTokens: number, temperature:
       const providerMaxTokens = provider === PROVIDERS.groq ? Math.min(maxTokens, 6500) : maxTokens
       if (provider === PROVIDERS.google) assertOutputBudgetWithinModelLimit(providerMaxTokens, GOOGLE_MODEL_OUTPUT_LIMIT)
     let res: Response
+    // Declared outside the try block: parseGeminiGenerateContentResponse() below
+    // (in the res.ok branch) reads this after the try/catch has already exited,
+    // so a try-scoped `const` here would throw "providerModel is not defined"
+    // on every successful Google response.
+    const providerModel = provider === PROVIDERS.google && operation === 'planning'
+      ? (Deno.env.get('GOOGLE_PLANNING_MODEL') ?? PROVIDERS.google.model)
+      : provider.model
     try {
-      const providerModel = provider === PROVIDERS.google && operation === 'planning'
-        ? (Deno.env.get('GOOGLE_PLANNING_MODEL') ?? 'gemini-2.5-flash-lite')
-        : provider.model
       const requestBody = provider === PROVIDERS.google
         ? buildGoogleGenerateRequest(messages, providerMaxTokens, temperature, operation)
         : {
@@ -747,6 +864,7 @@ const LEAVES = new Set([
   'Text', 'Image', 'Icon', 'Button', 'IconButton', 'TextField', 'SearchField', 'Checkbox',
   'Switch', 'ListItem', 'Divider', 'Badge', 'Avatar', 'TabBar', 'BottomNavigation', 'TopAppBar', 'Progress',
   'Metric', 'Chart', 'SegmentedControl', 'FloatingActionButton',
+  'Calendar', 'Timeline', 'Gallery', 'KanbanBoard', 'MapView',
   'CareSummary', 'MedicationTimeline', 'MedicationDoseRow', 'HealthMetric', 'UnitInput',
   'RangeChart', 'TargetRange', 'StatusAlert', 'SafetyNotice', 'SuccessFeedback',
   'EditorialHero', 'FeatureStory', 'StoryCard', 'Byline', 'MetadataStrip',
@@ -790,7 +908,19 @@ function normalizeScreens(raw: unknown[], blueprint: ProductBlueprint, forcedStr
 
     const root = (screen.root ?? {}) as Node
     if (root.type !== 'Screen') throw new Error(`"${screen.name}" ekranının kökü Screen değil`)
-    root.props = { ...asProps(root.props), theme: projectTheme, strategy }
+    const plannedScreen = blueprint.screens[index]
+    const plannedArchetype = plannedScreen?.archetype ?? deriveArchetype(plannedScreen?.role ?? 'core')
+    const focusedIntent = plannedArchetype === 'form' || plannedArchetype === 'detail'
+    root.props = {
+      ...asProps(root.props),
+      theme: projectTheme,
+      strategy,
+      screenIntent: {
+        archetype: plannedArchetype,
+        navigationMode: focusedIntent ? 'focused' : 'root',
+        contentDensity: plannedScreen?.contentDensity ?? 'medium',
+      },
+    }
     root.layout = { mode: 'column', gap: 'space.4' }
     root.a11y = asA11y(root.a11y, 'main', String(screen.name))
 
@@ -801,55 +931,134 @@ function normalizeScreens(raw: unknown[], blueprint: ProductBlueprint, forcedStr
       .filter((child): child is Node => child !== null)
 
     if (domainPackId === 'health-care') {
-      normalizeSereneHealthComponents(root, String(screen.name), slug, seenIds)
+      normalizeSereneHealthComponents(root, String(screen.name), slug, seenIds, blueprint)
     }
     if (domainPackId === 'publishing') {
-      normalizeEditorialCultureComponents(root, String(screen.name), slug, seenIds)
+      normalizeEditorialCultureComponents(root, String(screen.name), slug, seenIds, blueprint)
     }
     if (domainPackId === 'commerce') {
-      normalizeTerracottaMarketComponents(root, String(screen.name), slug, seenIds)
+      normalizeTerracottaMarketComponents(root, String(screen.name), slug, seenIds, blueprint)
     }
     if (domainPackId === 'learning') {
-      normalizeElectricLearningComponents(root, String(screen.name), slug, seenIds)
+      normalizeElectricLearningComponents(root, String(screen.name), slug, seenIds, blueprint)
     }
     if (domainPackId === 'operations') {
-      normalizeObsidianPrecisionComponents(root, String(screen.name), slug, seenIds)
+      normalizeObsidianPrecisionComponents(root, String(screen.name), slug, seenIds, blueprint)
     }
 
-    ensureDomainSignature(root, domainPackId, slug, String(screen.name), seenIds, index === 0)
+    ensureDomainSignature(root, domainPackId, slug, String(screen.name), seenIds, index === 0, blueprint)
+    if (plannedScreen) ensureExperienceSignature(root, plannedScreen, slug, seenIds)
 
     // Enforced regardless of whether the model honored the plan's fabAllowed
     // instruction — a settings/profile screen never ships a FAB the UX plan
     // explicitly forbade.
-    const plannedScreen = blueprint.screens[index]
     const focusedFlow = plannedScreen?.archetype === 'form' || plannedScreen?.archetype === 'detail'
     if (plannedScreen?.fabAllowed === false || focusedFlow) {
       removeComponents(root, new Set(['FloatingActionButton']))
     }
     repairStructure(root, slug, String(screen.name), navItems, seenIds, true)
+    screen.root = root
+    if (plannedScreen) {
+      const sectionRequirements = plannedScreen.contract.sectionRoles ?? []
+      const reservedSectionNodes = sectionRequirements.length * 2
+      const availableContractNodes = Math.max(0, MAX_NODES - (flatten(root).length - 1) - reservedSectionNodes)
+      repairScreenContract(screen, plannedScreen, blueprint, { maxOperations: availableContractNodes })
+      const ownership = assignSectionOwnership(root, plannedArchetype, sectionRequirements)
+      const availableSectionNodes = Math.max(0, MAX_NODES - (flatten(root).length - 1))
+      const containers = materializeSectionContainers(root, sectionRequirements, { maxAddedNodes: availableSectionNodes })
+      let members = assignSectionMembers(root, sectionRequirements, {
+        job: plannedScreen.contract.job,
+        primaryAction: plannedScreen.contract.primaryAction,
+        secondaryActions: plannedScreen.contract.secondaryActions,
+        requiredData: plannedScreen.contract.requiredData,
+      })
+      const availableIdentityNodes = Math.max(0, MAX_NODES - (flatten(root).length - 1))
+      const identityRepair = repairIdentityIntent(root, plannedScreen.contract, { maxAddedNodes: availableIdentityNodes })
+      if (identityRepair.addedNodeCount > 0) members = evaluateSectionMembers(root, sectionRequirements)
+      root.props = {
+        ...asProps(root.props),
+        sectionOwnership: {
+          version: '1.0.0',
+          ownedSectionCount: ownership.ownedNodeIds.length,
+          requiredSectionCount: plannedScreen.contract.sectionRoles?.length ?? 0,
+          orderingValid: ownership.orderingValid,
+        },
+        sectionContainers: {
+          version: '1.0.0',
+          materializedContainerCount: containers.materializedContainerCount,
+          requiredContainerCount: sectionRequirements.length,
+          orphanOwnedNodeCount: containers.orphanOwnedNodeCount,
+        },
+        sectionMembers: {
+          version: '1.0.0',
+          memberCoverage: members.memberCoverage,
+          orphanSemanticNodeCount: members.orphanSemanticNodeCount,
+          crossSectionViolationCount: members.crossSectionViolationCount,
+          semanticAssignmentConfidence: members.semanticAssignmentConfidence,
+          lowConfidenceMemberCount: members.lowConfidenceMemberCount,
+          averageAssignmentMargin: members.averageAssignmentMargin,
+          ambiguousMemberCount: members.ambiguousMemberCount,
+          contractEvidenceAssignmentCount: members.contractEvidenceAssignmentCount,
+          emptyContainerCount: members.emptyContainerCount,
+          maxMemberConcentration: members.maxMemberConcentration,
+          distributionBalanced: members.distributionBalanced,
+          rolePurity: members.rolePurity,
+          crossRoleMemberCount: members.crossRoleMemberCount,
+        },
+        identityIntent: plannedScreen.contract.identityIntent,
+        identityIntentRepair: { version: '1.0.0', ...identityRepair },
+      }
+    }
 
     const count = flatten(root).length - 1
-    if (false && count < MIN_NODES) {
+    if (count < MIN_NODES) {
       throw new Error(`"${screen.name}" ekranı yeterince detaylı değil (${count} bileşen)`)
     }
     if (count > MAX_NODES) {
       root.children = (root.children as Node[]).slice(0, 20)
     }
 
-    screen.root = root
     return screen
   })
 
   return result
 }
 
+// ---------------------------------------------------------------------------
+// Domain normalizers are additive-only: they retype a generic node into a
+// domain-specific component (Chart -> RangeChart, Image -> ProductCard, ...)
+// so it renders correctly, but they must never discard text the model already
+// produced. Any prop the model supplied (title/label/value/subtitle/alt/...)
+// wins; a hardcoded string is used only when the model left the field empty,
+// and even then it is derived from the actual product blueprint (domain,
+// entities, capabilities, vocabulary) instead of invented persona/brand copy
+// that has nothing to do with what the user asked for.
+// ---------------------------------------------------------------------------
+
+function pickBlueprintText(list: string[], index: number, fallback: string): string {
+  const clean = list.map((value) => value.trim()).filter(Boolean)
+  return clean.length ? clean[index % clean.length] : fallback
+}
+
+function blueprintTopic(blueprint: ProductBlueprint, index = 0): string {
+  return pickBlueprintText(blueprint.capabilities, index, pickBlueprintText(blueprint.entities, index, blueprint.productDomain || 'Bu ekran'))
+}
+
+function blueprintVocabularyList(blueprint: ProductBlueprint, count: number, fallback: string[]): string[] {
+  const clean = [...blueprint.contentVocabulary, ...blueprint.capabilities, ...blueprint.entities].map((v) => v.trim()).filter(Boolean)
+  const unique = Array.from(new Set(clean))
+  return unique.length >= count ? unique.slice(0, count) : fallback
+}
+
 /**
  * Serene Health never falls back to ambiguous generic data primitives. The
  * planner may reorder screens, so this repair is intentionally semantic rather
  * than index based: charts become unit-aware range charts and generic rows
- * become explicit medication or health-metric records.
+ * become explicit medication or health-metric records. All fallback text is
+ * additive — it only fills gaps the model left empty, sourced from the
+ * product blueprint rather than invented values.
  */
-function normalizeSereneHealthComponents(root: Node, screenName: string, slug: string, seen: Set<string>): void {
+function normalizeSereneHealthComponents(root: Node, screenName: string, slug: string, seen: Set<string>, blueprint: ProductBlueprint): void {
   const medicationContext = /ila[cç]|doz|hatırlat/i.test(screenName)
 
   for (const node of flatten(root)) {
@@ -910,19 +1119,23 @@ function normalizeSereneHealthComponents(root: Node, screenName: string, slug: s
 
   const children = root.children as Node[]
   const types = new Set(flatten(root).map((node) => node.type))
-  if (types.has('RangeChart') && !types.has('TargetRange')) {
+  const rangeChart = flatten(root).find((node) => node.type === 'RangeChart')
+  if (rangeChart && !types.has('TargetRange')) {
+    const chartProps = asProps(rangeChart.props)
+    const values = Array.isArray(chartProps.values) ? (chartProps.values as number[]) : [102]
+    const unit = typeof chartProps.unit === 'string' && chartProps.unit ? chartProps.unit : 'mg/dL'
     children.push({
       id: uniqueId(`${slug}_target_range`, seen),
       type: 'TargetRange',
-      props: { label: 'Kişisel hedef aralığı', value: 102, minimum: 70, maximum: 140, unit: 'mg/dL' },
-      a11y: { role: 'group', label: 'Kişisel hedef aralığı 70 ile 140 miligram/desilitre' },
+      props: { label: 'Kişisel hedef aralığı', value: Math.round(values.reduce((a, b) => a + b, 0) / values.length), minimum: chartProps.targetMinimum ?? 70, maximum: chartProps.targetMaximum ?? 140, unit },
+      a11y: { role: 'group', label: `Kişisel hedef aralığı, birim ${unit}` },
     })
   }
   if (types.has('MedicationTimeline') && !types.has('MedicationDoseRow')) {
     children.push({
       id: uniqueId(`${slug}_medication_dose`, seen),
       type: 'MedicationDoseRow',
-      props: { name: 'Sıradaki ilaç', dose: 'Planlanan doz', time: '08:00', instruction: 'Bakım planına göre kullan', status: 'scheduled' },
+      props: { name: blueprintTopic(blueprint), dose: 'Planlanan doz', time: '08:00', instruction: 'Bakım planına göre kullan', status: 'scheduled' },
       a11y: { role: 'listitem', label: 'Sıradaki planlanan ilaç dozu saat 08:00' },
     })
   }
@@ -936,87 +1149,143 @@ function normalizeSereneHealthComponents(root: Node, screenName: string, slug: s
   }
 }
 
-function normalizeEditorialCultureComponents(root: Node, screenName: string, slug: string, seen: Set<string>): void {
+function normalizeEditorialCultureComponents(root: Node, screenName: string, slug: string, seen: Set<string>, blueprint: ProductBlueprint): void {
   const archiveContext = /arşiv|geçmiş|sayı/i.test(screenName)
+  let storyIndex = 0
   for (const node of flatten(root)) {
     const props = asProps(node.props)
     if (node.type === 'Image' || node.type === 'Chart') {
+      const title = typeof props.label === 'string' && props.label ? props.label : typeof props.alt === 'string' && props.alt ? props.alt : screenName
       node.type = 'FeatureStory'
-      node.props = { category: 'Kültür dosyası', title: typeof props.label === 'string' ? props.label : typeof props.alt === 'string' ? props.alt : screenName, summary: 'Güncel kültür üretimini bağlamı, aktörleri ve etkileriyle ele alan küratöryel seçki.' }
+      node.props = { category: blueprintTopic(blueprint), title, summary: typeof props.caption === 'string' && props.caption ? props.caption : `${blueprintTopic(blueprint, 1)} üzerine güncel bir seçki.` }
     } else if (node.type === 'ListItem') {
-      const title = typeof props.title === 'string' ? props.title : 'Editoryal seçki'
+      const title = typeof props.title === 'string' && props.title ? props.title : blueprintTopic(blueprint, storyIndex)
+      const index = String(storyIndex + 1).padStart(2, '0')
+      storyIndex += 1
       if (archiveContext) {
-        node.type = 'ArchiveEntry'; node.props = { number: typeof props.trailing === 'string' ? props.trailing : '01', date: typeof props.subtitle === 'string' ? props.subtitle : 'Ağustos 2026', title, theme: 'Kültür ve yaratıcı pratikler' }
+        node.type = 'ArchiveEntry'; node.props = { number: typeof props.trailing === 'string' && props.trailing ? props.trailing : index, date: typeof props.subtitle === 'string' && props.subtitle ? props.subtitle : blueprint.productDomain, title, theme: blueprintTopic(blueprint, storyIndex) }
       } else {
-        node.type = 'StoryCard'; node.props = { index: typeof props.trailing === 'string' ? props.trailing : '01', category: 'Seçki', title, summary: typeof props.subtitle === 'string' ? props.subtitle : 'Editörlerin seçtiği güncel anlatı.' }
+        node.type = 'StoryCard'; node.props = { index: typeof props.trailing === 'string' && props.trailing ? props.trailing : index, category: blueprintTopic(blueprint, storyIndex), title, summary: typeof props.subtitle === 'string' && props.subtitle ? props.subtitle : blueprintTopic(blueprint, storyIndex + 1) }
       }
     } else if (node.type === 'Metric') {
-      node.type = 'MetadataStrip'; node.props = { date: typeof props.caption === 'string' ? props.caption : '08 Ağustos 2026', readingTime: typeof props.value === 'string' ? props.value : '6 dk okuma', edition: typeof props.label === 'string' ? props.label : 'Sayı 24' }
+      node.type = 'MetadataStrip'; node.props = { date: typeof props.caption === 'string' && props.caption ? props.caption : blueprint.productDomain, readingTime: typeof props.value === 'string' && props.value ? props.value : '6 dk okuma', edition: typeof props.label === 'string' && props.label ? props.label : screenName }
     }
   }
 
   const children = root.children as Node[]
   const types = new Set(flatten(root).map((node) => node.type))
-  if (!types.has('MetadataStrip')) children.push({ id:uniqueId(`${slug}_meta`,seen), type:'MetadataStrip', props:{date:'08 Ağustos 2026',readingTime:'6 dk okuma',edition:'Sayı 24'}, a11y:{role:'group',label:'Yayın tarihi, okuma süresi ve sayı bilgisi'} })
-  if ((archiveContext || /keşfet|kategori/i.test(screenName)) && !types.has('SectionIndex')) children.push({ id:uniqueId(`${slug}_sections`,seen), type:'SectionIndex', props:{items:['Mimarlık','Görsel kültür','Tasarım','Edebiyat']}, a11y:{role:'navigation',label:'Yayın bölümleri'} })
-  if (/okuma|detay|hikâye|yazı/i.test(screenName) && !types.has('Byline')) children.push({ id:uniqueId(`${slug}_byline`,seen), type:'Byline', props:{author:'Deniz Erdem',role:'Kültür yazarı'}, a11y:{role:'group',label:'Yazar Deniz Erdem'} })
-  if (/okuma|detay|hikâye|yazı/i.test(screenName) && !types.has('PullQuote')) children.push({ id:uniqueId(`${slug}_quote`,seen), type:'PullQuote', props:{quote:'Bir kentin hafızası, yalnız yapılarında değil gündelik ritminde de saklıdır.',attribution:'Deniz Erdem'}, a11y:{role:'blockquote',label:'Yazıdan öne çıkan alıntı'} })
+  if (!types.has('MetadataStrip')) children.push({ id:uniqueId(`${slug}_meta`,seen), type:'MetadataStrip', props:{date:blueprint.productDomain,readingTime:'6 dk okuma',edition:screenName}, a11y:{role:'group',label:'Yayın tarihi, okuma süresi ve sayı bilgisi'} })
+  if ((archiveContext || /keşfet|kategori/i.test(screenName)) && !types.has('SectionIndex')) children.push({ id:uniqueId(`${slug}_sections`,seen), type:'SectionIndex', props:{items:blueprintVocabularyList(blueprint, 4, [blueprint.productDomain, screenName])}, a11y:{role:'navigation',label:'Yayın bölümleri'} })
+  if (/okuma|detay|hikâye|yazı/i.test(screenName) && !types.has('Byline')) children.push({ id:uniqueId(`${slug}_byline`,seen), type:'Byline', props:{author:blueprint.audience || 'Editör ekibi',role:blueprintTopic(blueprint)}, a11y:{role:'group',label:'Yazar bilgisi'} })
+  if (/okuma|detay|hikâye|yazı/i.test(screenName) && !types.has('PullQuote')) children.push({ id:uniqueId(`${slug}_quote`,seen), type:'PullQuote', props:{quote:`${blueprintTopic(blueprint)} hakkında güncel bir bakış.`,attribution:blueprint.audience || 'Editör ekibi'}, a11y:{role:'blockquote',label:'Yazıdan öne çıkan alıntı'} })
 }
 
-function normalizeTerracottaMarketComponents(root: Node, screenName: string, slug: string, seen: Set<string>): void {
+function normalizeTerracottaMarketComponents(root: Node, screenName: string, slug: string, seen: Set<string>, blueprint: ProductBlueprint): void {
   const cartContext=/sepet|sipariş|ödeme/i.test(screenName); const productContext=/ürün|detay/i.test(screenName)
+  let productIndex = 0
   for(const node of flatten(root)){const props=asProps(node.props)
-    if(node.type==='Image'){node.type=productContext?'ProductGallery':'ProductCard';node.props=productContext?{alt:typeof props.alt==='string'?props.alt:screenName,current:1,total:4}:{maker:'Yerel üretici',name:typeof props.alt==='string'?props.alt:'El yapımı seçki',description:'Doğal malzemelerle küçük partiler hâlinde üretildi.',price:'₺1.290',status:'Stokta',badge:'Yeni'}}
-    else if(node.type==='ListItem'){const title=typeof props.title==='string'?props.title:'El yapımı ürün';if(cartContext){node.type='CartLine';node.props={name:title,variant:typeof props.subtitle==='string'?props.subtitle:'Doğal / Standart',quantity:1,price:typeof props.trailing==='string'?props.trailing:'₺1.290'}}else{node.type='ProductCard';node.props={maker:'Bağımsız atölye',name:title,description:typeof props.subtitle==='string'?props.subtitle:'Özenle seçilmiş yaşam ürünü.',price:typeof props.trailing==='string'?props.trailing:'₺1.290',status:'Stokta',badge:'Seçki'}}}
-    else if(node.type==='Metric'){node.type='PriceBlock';node.props={label:typeof props.label==='string'?props.label:'Ürün fiyatı',price:typeof props.value==='string'?props.value:'₺1.290',compareAt:'',taxNote:typeof props.caption==='string'?props.caption:'Vergiler dâhil'}}
+    if(node.type==='Image'){
+      node.type=productContext?'ProductGallery':'ProductCard'
+      node.props=productContext
+        ?{alt:typeof props.alt==='string'&&props.alt?props.alt:screenName,current:1,total:4}
+        :{maker:blueprintTopic(blueprint, productIndex),name:typeof props.alt==='string'&&props.alt?props.alt:blueprintTopic(blueprint, productIndex+1),description:typeof props.caption==='string'&&props.caption?props.caption:blueprintTopic(blueprint, productIndex+2),price:'₺1.290',status:'Stokta',badge:'Yeni'}
+      productIndex+=1
+    }
+    else if(node.type==='ListItem'){
+      const title=typeof props.title==='string'&&props.title?props.title:blueprintTopic(blueprint, productIndex)
+      if(cartContext){node.type='CartLine';node.props={name:title,variant:typeof props.subtitle==='string'&&props.subtitle?props.subtitle:'Standart',quantity:1,price:typeof props.trailing==='string'&&props.trailing?props.trailing:'₺1.290'}}
+      else{node.type='ProductCard';node.props={maker:blueprintTopic(blueprint, productIndex+1),name:title,description:typeof props.subtitle==='string'&&props.subtitle?props.subtitle:blueprintTopic(blueprint, productIndex+2),price:typeof props.trailing==='string'&&props.trailing?props.trailing:'₺1.290',status:'Stokta',badge:'Seçki'}}
+      productIndex+=1
+    }
+    else if(node.type==='Metric'){node.type='PriceBlock';node.props={label:typeof props.label==='string'&&props.label?props.label:'Ürün fiyatı',price:typeof props.value==='string'&&props.value?props.value:'₺1.290',compareAt:'',taxNote:typeof props.caption==='string'&&props.caption?props.caption:'Vergiler dâhil'}}
   }
   const children=root.children as Node[];const types=new Set(flatten(root).map(n=>n.type))
-  if(productContext&&!types.has('VariantSelector'))children.push({id:uniqueId(`${slug}_variants`,seen),type:'VariantSelector',props:{label:'Varyant seç',options:['Doğal','Kiremit','Kömür']},a11y:{role:'group',label:'Ürün varyantları'}})
-  if(cartContext&&!types.has('OrderSummary'))children.push({id:uniqueId(`${slug}_summary`,seen),type:'OrderSummary',props:{title:'Sipariş özeti',subtotal:'₺2.580',shipping:'Ücretsiz',total:'₺2.580'},a11y:{role:'region',label:'Sipariş toplamı 2 bin 580 lira'}})
-  if(!types.has('DeliveryPromise'))children.push({id:uniqueId(`${slug}_delivery`,seen),type:'DeliveryPromise',props:{title:'Özenle paketlenir',detail:'2–4 iş gününde takipli teslimat'},a11y:{role:'note',label:'Teslimat bilgisi'}})
+  if(productContext&&!types.has('VariantSelector'))children.push({id:uniqueId(`${slug}_variants`,seen),type:'VariantSelector',props:{label:'Varyant seç',options:blueprintVocabularyList(blueprint, 3, ['Standart','Büyük','Küçük'])},a11y:{role:'group',label:'Ürün varyantları'}})
+  if(cartContext&&!types.has('OrderSummary')){
+    const cartLines=flatten(root).filter((n)=>n.type==='CartLine')
+    const total=cartLines.length?`${cartLines.length} ürün`:'—'
+    children.push({id:uniqueId(`${slug}_summary`,seen),type:'OrderSummary',props:{title:'Sipariş özeti',subtotal:total,shipping:'Ücretsiz',total},a11y:{role:'region',label:'Sipariş özeti'}})
+  }
+  if(!types.has('DeliveryPromise'))children.push({id:uniqueId(`${slug}_delivery`,seen),type:'DeliveryPromise',props:{title:'Siparişin hazırlanıyor',detail:'2–4 iş gününde takipli teslimat'},a11y:{role:'note',label:'Teslimat bilgisi'}})
 }
 
-function normalizeElectricLearningComponents(root: Node, screenName: string, slug: string, seen: Set<string>): void {
+function normalizeElectricLearningComponents(root: Node, screenName: string, slug: string, seen: Set<string>, blueprint: ProductBlueprint): void {
   const practice=/pratik|soru|quiz|alıştırma/i.test(screenName);const roadmap=/yol|seviye|harita/i.test(screenName);const achievement=/başarı|rozet|profil/i.test(screenName)
+  let stepIndex = 0
   for(const node of flatten(root)){const props=asProps(node.props)
-    if(node.type==='Progress'){node.type='XpProgress';node.props={label:typeof props.label==='string'?props.label:'Seviye ilerlemesi',current:String(Math.round(Number(props.value)||64)*10),target:'1000',value:Number(props.value)||64,nextReward:'Sonraki ödüle 360 XP'}}
-    else if(node.type==='ListItem'){const title=typeof props.title==='string'?props.title:'Yeni ders';if(roadmap){node.type='RoadmapStep';node.props={order:typeof props.trailing==='string'?props.trailing:'01',title,description:typeof props.subtitle==='string'?props.subtitle:'Temel becerileri tamamla',state:'open'}}else{node.type='LessonCard';node.props={level:'L2',topic:'Bugünkü görev',title,duration:typeof props.trailing==='string'?props.trailing:'8 dk',status:typeof props.subtitle==='string'?props.subtitle:'Başlamaya hazır'}}}
-    else if(node.type==='Badge'){node.type=achievement?'AchievementBadge':'StreakBadge';node.props=achievement?{icon:'★',title:typeof props.label==='string'?props.label:'Yeni başarı',description:'Öğrenme hedefi tamamlandı',earnedAt:'Bugün'}:{days:7,message:typeof props.label==='string'?props.label:'Seriyi sürdür'}}
-    else if(node.type==='Chart'){node.type='XpProgress';node.props={label:'Beceri ilerlemesi',current:'640',target:'1000',value:64,nextReward:'Sonraki seviyeye 360 XP'}}
+    if(node.type==='Progress'){const value=Number(props.value)||64;node.type='XpProgress';node.props={label:typeof props.label==='string'&&props.label?props.label:'Seviye ilerlemesi',current:String(Math.round(value)*10),target:'1000',value,nextReward:`Sonraki ödüle ${1000-Math.round(value)*10} XP`}}
+    else if(node.type==='ListItem'){
+      const title=typeof props.title==='string'&&props.title?props.title:blueprintTopic(blueprint, stepIndex)
+      if(roadmap){node.type='RoadmapStep';node.props={order:typeof props.trailing==='string'&&props.trailing?props.trailing:String(stepIndex+1).padStart(2,'0'),title,description:typeof props.subtitle==='string'&&props.subtitle?props.subtitle:blueprintTopic(blueprint, stepIndex+1),state:'open'}}
+      else{node.type='LessonCard';node.props={level:'L2',topic:blueprintTopic(blueprint, stepIndex+1),title,duration:typeof props.trailing==='string'&&props.trailing?props.trailing:'8 dk',status:typeof props.subtitle==='string'&&props.subtitle?props.subtitle:'Başlamaya hazır'}}
+      stepIndex+=1
+    }
+    else if(node.type==='Badge'){node.type=achievement?'AchievementBadge':'StreakBadge';node.props=achievement?{icon:'★',title:typeof props.label==='string'&&props.label?props.label:'Yeni başarı',description:blueprintTopic(blueprint),earnedAt:'Bugün'}:{days:7,message:typeof props.label==='string'&&props.label?props.label:'Seriyi sürdür'}}
+    else if(node.type==='Chart'){
+      const values=Array.isArray(props.values)?(props.values as number[]):undefined
+      const value=values?.length?Math.round(values.reduce((a,b)=>a+b,0)/values.length):64
+      node.type='XpProgress';node.props={label:typeof props.label==='string'&&props.label?props.label:'Beceri ilerlemesi',current:String(value*10),target:'1000',value,nextReward:`Sonraki seviyeye ${1000-value*10} XP`}
+    }
   }
   const children=root.children as Node[];const types=new Set(flatten(root).map(n=>n.type))
-  if(practice&&!types.has('QuizChoice'))children.push({id:uniqueId(`${slug}_choice`,seen),type:'QuizChoice',props:{key:'A',label:'Bağlama en uygun yanıt',state:'selected'},a11y:{role:'button',label:'A seçeneği'}})
-  if(practice&&!types.has('AnswerFeedback'))children.push({id:uniqueId(`${slug}_feedback`,seen),type:'AnswerFeedback',props:{result:'correct',title:'Doğru seçim',explanation:'Yanıtın temel kavramı doğru bağlamda uyguluyor.'},a11y:{role:'status',label:'Doğru yanıt geri bildirimi'}})
-  if(achievement&&!types.has('AchievementBadge'))children.push({id:uniqueId(`${slug}_achievement`,seen),type:'AchievementBadge',props:{icon:'★',title:'Odak ustası',description:'Yedi günlük öğrenme serisini tamamladın',earnedAt:'Bugün'},a11y:{role:'group',label:'Odak ustası başarımı'}})
+  if(practice&&!types.has('QuizChoice'))children.push({id:uniqueId(`${slug}_choice`,seen),type:'QuizChoice',props:{key:'A',label:blueprintTopic(blueprint),state:'selected'},a11y:{role:'button',label:'A seçeneği'}})
+  if(practice&&!types.has('AnswerFeedback'))children.push({id:uniqueId(`${slug}_feedback`,seen),type:'AnswerFeedback',props:{result:'correct',title:'Doğru seçim',explanation:`${blueprintTopic(blueprint)} ile ilgili temel kavramı doğru bağlamda uyguluyor.`},a11y:{role:'status',label:'Doğru yanıt geri bildirimi'}})
+  if(achievement&&!types.has('AchievementBadge'))children.push({id:uniqueId(`${slug}_achievement`,seen),type:'AchievementBadge',props:{icon:'★',title:`${blueprintTopic(blueprint)} ustası`,description:'Öğrenme hedefini tamamladın',earnedAt:'Bugün'},a11y:{role:'group',label:'Öğrenme başarımı'}})
 }
 
-function normalizeObsidianPrecisionComponents(root: Node, screenName: string, slug: string, seen: Set<string>): void {
+function normalizeObsidianPrecisionComponents(root: Node, screenName: string, slug: string, seen: Set<string>, blueprint: ProductBlueprint): void {
   const control=/kontrol|ayar|yetki/i.test(screenName);const analysis=/analiz|sinyal|rapor/i.test(screenName)
   for(const node of flatten(root)){const props=asProps(node.props)
-    if(node.type==='Chart'){node.type='SignalChart';node.props={label:typeof props.label==='string'?props.label:'Ana sistem sinyali',values:Array.isArray(props.values)?props.values:[42,58,53,71,68,82,88],window:'Son 24 saat',unit:'ms',annotation:'14:20 anomali eşiği aşıldı'}}
-    else if(node.type==='Metric'){node.type='CommandSummary';node.props={eyebrow:typeof props.label==='string'?props.label:'Sistem durumu',title:'Operasyon özeti',value:typeof props.value==='string'?props.value:'99.98%',status:'NOMINAL',detail:typeof props.caption==='string'?props.caption:'Tüm kritik servisler izleniyor'}}
-    else if(node.type==='ListItem'){const title=typeof props.title==='string'?props.title:'Operasyon kaydı';if(control){node.type='AuditEntry';node.props={time:'14:32',actor:'Emre Y.',action:title,target:typeof props.subtitle==='string'?props.subtitle:'Üretim kontrolü'}}else{node.type='OperationRow';node.props={name:title,owner:typeof props.subtitle==='string'?props.subtitle:'Platform ekibi',updatedAt:'2 dk önce',status:'Çalışıyor',metric:typeof props.trailing==='string'?props.trailing:'124 ms'}}}
-    else if(node.type==='Badge'){node.type='RiskIndicator';node.props={label:'Risk seviyesi',value:typeof props.label==='string'?props.label:'Düşük',severity:'low',explanation:'Aktif eşikler içinde'}}
-    else if(node.type==='Switch'){node.type='ControlToggle';node.props={label:typeof props.label==='string'?props.label:'Otomatik koruma',description:'Kritik eşiğin üzerinde koruma uygula',state:'AÇIK',guard:'Değişiklik onay ve denetim kaydı gerektirir'}}
+    if(node.type==='Chart'){node.type='SignalChart';node.props={label:typeof props.label==='string'&&props.label?props.label:blueprintTopic(blueprint),values:Array.isArray(props.values)?props.values:[42,58,53,71,68,82,88],window:'Son 24 saat',unit:'ms',annotation:'Eşik değerleri izleniyor'}}
+    else if(node.type==='Metric'){node.type='CommandSummary';node.props={eyebrow:typeof props.label==='string'&&props.label?props.label:blueprintTopic(blueprint),title:screenName,value:typeof props.value==='string'&&props.value?props.value:'—',status:'NOMINAL',detail:typeof props.caption==='string'&&props.caption?props.caption:'Kritik servisler izleniyor'}}
+    else if(node.type==='ListItem'){const title=typeof props.title==='string'&&props.title?props.title:blueprintTopic(blueprint);if(control){node.type='AuditEntry';node.props={time:'14:32',actor:blueprint.audience||'Ekip',action:title,target:typeof props.subtitle==='string'&&props.subtitle?props.subtitle:blueprintTopic(blueprint, 1)}}else{node.type='OperationRow';node.props={name:title,owner:typeof props.subtitle==='string'&&props.subtitle?props.subtitle:blueprint.audience||'Ekip',updatedAt:'2 dk önce',status:'Çalışıyor',metric:typeof props.trailing==='string'&&props.trailing?props.trailing:'—'}}}
+    else if(node.type==='Badge'){node.type='RiskIndicator';node.props={label:'Risk seviyesi',value:typeof props.label==='string'&&props.label?props.label:'Düşük',severity:'low',explanation:'Aktif eşikler içinde'}}
+    else if(node.type==='Switch'){node.type='ControlToggle';node.props={label:typeof props.label==='string'&&props.label?props.label:'Otomatik koruma',description:typeof props.caption==='string'&&props.caption?props.caption:'Kritik eşiğin üzerinde koruma uygula',state:'AÇIK',guard:'Değişiklik onay ve denetim kaydı gerektirir'}}
   }
   const children=root.children as Node[];const types=new Set(flatten(root).map(n=>n.type))
-  if(analysis&&!types.has('DataMatrix'))children.push({id:uniqueId(`${slug}_matrix`,seen),type:'DataMatrix',props:{columns:['Sinyal','Değer','Durum'],rows:['API gecikmesi · 124 ms','Hata oranı · %0,12','Kuyruk · 38 iş']},a11y:{role:'table',label:'Sistem sinyal matrisi'}})
+  if(analysis&&!types.has('DataMatrix')){
+    const rows=flatten(root).filter((n)=>n.type==='OperationRow').map((n)=>{const p=asProps(n.props);return `${p.name} · ${p.metric}`})
+    children.push({id:uniqueId(`${slug}_matrix`,seen),type:'DataMatrix',props:{columns:['Sinyal','Değer','Durum'],rows:rows.length?rows:[blueprintTopic(blueprint),blueprintTopic(blueprint,1),blueprintTopic(blueprint,2)]},a11y:{role:'table',label:'Sistem sinyal matrisi'}})
+  }
   if(control&&!types.has('ControlToggle'))children.push({id:uniqueId(`${slug}_control`,seen),type:'ControlToggle',props:{label:'Otomatik koruma',description:'Kritik eşikte koruma uygula',state:'AÇIK',guard:'Onay ve denetim kaydı gerekir'},a11y:{role:'switch',label:'Otomatik koruma açık'}})
-  if(!types.has('IncidentTimeline'))children.push({id:uniqueId(`${slug}_timeline`,seen),type:'IncidentTimeline',props:{label:'Canlı olay akışı',events:['14:32 Eşik politikası doğrulandı','14:20 Gecikme uyarısı izlendi','14:08 Dağıtım tamamlandı']},a11y:{role:'log',label:'Canlı operasyon olayları'}})
+  if(!types.has('IncidentTimeline'))children.push({id:uniqueId(`${slug}_timeline`,seen),type:'IncidentTimeline',props:{label:'Canlı olay akışı',events:[`14:32 ${blueprintTopic(blueprint)} doğrulandı`,`14:20 ${blueprintTopic(blueprint,1)} izlendi`,'14:08 Dağıtım tamamlandı']},a11y:{role:'log',label:'Canlı operasyon olayları'}})
 }
 
-function ensureDomainSignature(root: Node, domainPackId: DomainPackId | undefined, slug: string, screenName: string, seen: Set<string>, isOverview: boolean) {
+function ensureDomainSignature(root: Node, domainPackId: DomainPackId | undefined, slug: string, screenName: string, seen: Set<string>, isOverview: boolean, blueprint: ProductBlueprint) {
   if (!domainPackId || !isOverview) return
   const children = root.children as Node[]
   const types = new Set(flatten(root).map((node) => node.type))
   const titleIndex = children.findIndex((node) => node.type === 'Text' && asProps(node.props).variant === 'title')
   const insertAt = Math.max(1, titleIndex + 1)
   const add = (node: Node) => children.splice(insertAt, 0, node)
-  if (domainPackId === 'commerce' && !types.has('CommerceHero')) add({ id:uniqueId(`${slug}_hero`,seen),type:'CommerceHero',props:{eyebrow:'Yeni koleksiyon',title:screenName,subtitle:'Bağımsız üreticilerden zamansız ve dokunsal yaşam seçkisi.',cta:'Koleksiyonu keşfet'},a11y:{role:'region',label:`${screenName} koleksiyon kapağı`} })
-  if (domainPackId === 'publishing' && !types.has('EditorialHero')) add({ id: uniqueId(`${slug}_hero`, seen), type: 'EditorialHero', props: { kicker:'Yeni sayı',headline:screenName,dek:'Bugünün kültür üretimini farklı disiplinler ve özgün seslerle yeniden okuyan küratöryel dosya.',issue:'Sayı 24',date:'08 Ağustos 2026' }, a11y: { role: 'article', label: `${screenName} kapak dosyası` } })
-  if (domainPackId === 'operations' && !types.has('SignalChart')) add({ id:uniqueId(`${slug}_signal`,seen),type:'SignalChart',props:{label:`${screenName} ana sinyali`,values:[42,58,53,71,68,82,88],window:'Son 24 saat',unit:'ms',annotation:'14:20 anomali eşiği aşıldı'},a11y:{role:'img',label:`${screenName} operasyon sinyali`} })
-  if (domainPackId === 'health-care' && !types.has('CareSummary')) add({ id: uniqueId(`${slug}_care_summary`, seen), type: 'CareSummary', props: { title:'Bugünkü bakım planın hazır',subtitle:'Sıradaki adımı zamanında tamamlayabilirsin',status:'normal',progress:72 },a11y:{role:'region',label:'Bugünkü bakım planı yüzde 72 tamamlandı'} })
-  if (domainPackId === 'learning' && !types.has('XpProgress')) add({ id:uniqueId(`${slug}_xp`,seen),type:'XpProgress',props:{label:`${screenName} ilerlemesi`,current:'640',target:'1000',value:64,nextReward:'Sonraki ödüle 360 XP'},a11y:{role:'progressbar',label:`${screenName} ilerlemesi yüzde 64`} })
+  // Additive only: this fills a screen that has none of the domain's signature
+  // components at all (an empty overview) — it never replaces content the
+  // model already produced, and its copy is always derived from the actual
+  // product blueprint rather than an invented brand/persona.
+  if (domainPackId === 'commerce' && !types.has('CommerceHero')) add({ id:uniqueId(`${slug}_hero`,seen),type:'CommerceHero',props:{eyebrow:blueprintTopic(blueprint),title:screenName,subtitle:blueprintTopic(blueprint, 1),cta:'Keşfet'},a11y:{role:'region',label:`${screenName} kapak`} })
+  if (domainPackId === 'publishing' && !types.has('EditorialHero')) add({ id: uniqueId(`${slug}_hero`, seen), type: 'EditorialHero', props: { kicker:blueprintTopic(blueprint),headline:screenName,dek:blueprintTopic(blueprint, 1),issue:blueprint.productDomain,date:'' }, a11y: { role: 'article', label: `${screenName} kapak dosyası` } })
+  if (domainPackId === 'operations' && !types.has('SignalChart')) add({ id:uniqueId(`${slug}_signal`,seen),type:'SignalChart',props:{label:`${screenName} ana sinyali`,values:[42,58,53,71,68,82,88],window:'Son 24 saat',unit:'ms',annotation:'Eşik değerleri izleniyor'},a11y:{role:'img',label:`${screenName} operasyon sinyali`} })
+  if (domainPackId === 'health-care' && !types.has('CareSummary')) add({ id: uniqueId(`${slug}_care_summary`, seen), type: 'CareSummary', props: { title:blueprintTopic(blueprint),subtitle:blueprintTopic(blueprint, 1),status:'normal',progress:0 },a11y:{role:'region',label:`${screenName} bakım planı`} })
+  if (domainPackId === 'learning' && !types.has('XpProgress')) add({ id:uniqueId(`${slug}_xp`,seen),type:'XpProgress',props:{label:`${screenName} ilerlemesi`,current:'0',target:'1000',value:0,nextReward:blueprintTopic(blueprint)},a11y:{role:'progressbar',label:`${screenName} ilerlemesi`} })
+}
+
+function ensureExperienceSignature(root: Node, screen: ProductScreenSpec, slug: string, seen: Set<string>) {
+  const pattern = screen.experiencePattern ?? 'standard'
+  const expected: Partial<Record<ExperiencePattern, string>> = { calendar: 'Calendar', timeline: 'Timeline', gallery: 'Gallery', board: 'KanbanBoard', map: 'MapView' }
+  const type = expected[pattern]
+  if (!type || flatten(root).some((node) => node.type === type)) return
+  const children = root.children as Node[]
+  const insertAt = Math.max(1, children.findIndex((node) => node.type === 'BottomNavigation' || node.type === 'TabBar'))
+  const props = pattern === 'calendar'
+    ? { label: screen.name, days: ['Pzt 12', 'Sal 13', 'Çar 14', 'Per 15', 'Cum 16'], events: screen.contract.requiredData.slice(0, 5) }
+    : pattern === 'timeline'
+      ? { label: screen.name, events: screen.contract.requiredData.slice(0, 5) }
+      : pattern === 'gallery'
+        ? { label: screen.name, items: screen.contract.requiredData.slice(0, 6) }
+        : pattern === 'board'
+          ? { label: screen.name, columns: screen.sections.slice(0, 3), cards: screen.contract.requiredData.slice(0, 6) }
+          : { label: screen.name, markers: screen.contract.requiredData.slice(0, 5) }
+  children.splice(insertAt, 0, { id: uniqueId(`${slug}_${pattern}`, seen), type, props, a11y: { role: 'region', label: `${screen.name} ${pattern}` } })
 }
 
 function normalizeNode(node: Node, slug: string, seen: Set<string>): Node | null {
@@ -1238,9 +1507,64 @@ function mapJob(raw: Node) {
       nestedCardCount: raw.quality_report.metrics.nestedCardCount,
       invalidFabCount: raw.quality_report.metrics.invalidFabCount,
       focusedFlowBottomNavViolations: raw.quality_report.metrics.focusedFlowBottomNavViolations,
+      genericContentCount: raw.quality_report.metrics.genericContentCount,
+      placeholderContentCount: raw.quality_report.metrics.placeholderContentCount,
+      repeatedContentCount: raw.quality_report.metrics.repeatedContentCount,
+      fallbackMetricFingerprint: raw.quality_report.metrics.fallbackMetricFingerprint,
+      screenPurposeCoverage: raw.quality_report.metrics.screenPurposeCoverage,
+      screenSectionCoverage: raw.quality_report.metrics.screenSectionCoverage,
+      capabilityCoverage: raw.quality_report.metrics.capabilityCoverage,
+      underCoveredScreenCount: raw.quality_report.metrics.underCoveredScreenCount,
+      primaryActionCoverage: raw.quality_report.metrics.primaryActionCoverage,
+      requiredDataCoverage: raw.quality_report.metrics.requiredDataCoverage,
+      underFulfilledContractCount: raw.quality_report.metrics.underFulfilledContractCount,
+      contractRepairOperationCount: raw.quality_report.metrics.contractRepairOperationCount,
+      sectionTopologyCoverage: raw.quality_report.metrics.sectionTopologyCoverage,
+      underCoveredTopologyScreenCount: raw.quality_report.metrics.underCoveredTopologyScreenCount,
+      sectionOwnershipCoverage: raw.quality_report.metrics.sectionOwnershipCoverage,
+      invalidSectionOrderCount: raw.quality_report.metrics.invalidSectionOrderCount,
+      sectionContainerCoverage: raw.quality_report.metrics.sectionContainerCoverage,
+      orphanSectionOwnerCount: raw.quality_report.metrics.orphanSectionOwnerCount,
+      missingSectionHeadingCount: raw.quality_report.metrics.missingSectionHeadingCount,
+      sectionMemberCoverage: raw.quality_report.metrics.sectionMemberCoverage,
+      orphanSemanticNodeCount: raw.quality_report.metrics.orphanSemanticNodeCount,
+      crossSectionMemberViolationCount: raw.quality_report.metrics.crossSectionMemberViolationCount,
+      semanticMemberAssignmentConfidence: raw.quality_report.metrics.semanticMemberAssignmentConfidence,
+      lowConfidenceSectionMemberCount: raw.quality_report.metrics.lowConfidenceSectionMemberCount,
+      averageSectionAssignmentMargin: raw.quality_report.metrics.averageSectionAssignmentMargin,
+      ambiguousSectionMemberCount: raw.quality_report.metrics.ambiguousSectionMemberCount,
+      contractEvidenceAssignmentCount: raw.quality_report.metrics.contractEvidenceAssignmentCount,
+      emptySectionContainerCount: raw.quality_report.metrics.emptySectionContainerCount,
+      maxSectionMemberConcentration: raw.quality_report.metrics.maxSectionMemberConcentration,
+      imbalancedSectionScreenCount: raw.quality_report.metrics.imbalancedSectionScreenCount,
+      sectionRolePurity: raw.quality_report.metrics.sectionRolePurity,
+      crossRoleSectionMemberCount: raw.quality_report.metrics.crossRoleSectionMemberCount,
+      sameArchetypeDifferentiation: raw.quality_report.metrics.sameArchetypeDifferentiation,
+      sameArchetypePairCount: raw.quality_report.metrics.sameArchetypePairCount,
+      sameArchetypeCollisionCount: raw.quality_report.metrics.sameArchetypeCollisionCount,
+      maxSameArchetypeSimilarity: raw.quality_report.metrics.maxSameArchetypeSimilarity,
+      structuralIdentityPairCount: raw.quality_report.metrics.structuralIdentityPairCount,
+      structuralIdentityCollisionCount: raw.quality_report.metrics.structuralIdentityCollisionCount,
+      maxStructuralIdentitySimilarity: raw.quality_report.metrics.maxStructuralIdentitySimilarity,
+      structuralIdentityDifferentiation: raw.quality_report.metrics.structuralIdentityDifferentiation,
+      identityIntentCoverage: raw.quality_report.metrics.identityIntentCoverage,
+      underFulfilledIdentityIntentCount: raw.quality_report.metrics.underFulfilledIdentityIntentCount,
+      identityRoleViolationCount: raw.quality_report.metrics.identityRoleViolationCount,
+      identityDensityViolationCount: raw.quality_report.metrics.identityDensityViolationCount,
+      identityIntentRepairOperationCount: raw.quality_report.metrics.identityIntentRepairOperationCount,
+      identityRepairAttemptCount: raw.quality_report.metrics.identityRepairAttemptCount,
+      ineffectiveIdentityRepairCount: raw.quality_report.metrics.ineffectiveIdentityRepairCount,
+      exhaustedIdentityRepairCount: raw.quality_report.metrics.exhaustedIdentityRepairCount,
+      unnecessaryIdentityRepairCount: raw.quality_report.metrics.unnecessaryIdentityRepairCount,
+      averageIdentityRepairGain: raw.quality_report.metrics.averageIdentityRepairGain,
     } : undefined,
     generatedScreenCount: Array.isArray(raw.result_screens) ? raw.result_screens.length : undefined,
     selectedCompositionMode: raw.provider_metadata?.selectedCompositionMode ?? undefined,
+    compositionMode: raw.provider_metadata?.compositionMode ?? undefined,
+    degraded: raw.provider_metadata?.degraded ?? false,
+    fallbackReason: raw.provider_metadata?.fallbackReason ?? undefined,
+    aiQualityScore: raw.provider_metadata?.aiQualityScore ?? undefined,
+    baselineQualityScore: raw.provider_metadata?.baselineQualityScore ?? undefined,
     runtimeQualityReport: raw.runtime_quality_report ?? undefined,
   }
 }

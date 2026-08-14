@@ -1,0 +1,147 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "editorial-asymmetry",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 42.99996601122745,
+  "nodes": [
+    {
+      "nodeId": "editorial-management-list-search",
+      "component": "div",
+      "role": null,
+      "sectionRole": "toolbar",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9994419642857,
+      "height": 43.24999217431757,
+      "fontSize": "11.5px",
+      "lineHeight": "17.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-management-list-filter",
+      "component": "div",
+      "role": null,
+      "sectionRole": "toolbar",
+      "x": 21.000279017857146,
+      "y": 109.25001097661728,
+      "width": 347.9994419642857,
+      "height": 34.24998762870665,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-management-list-row-0",
+      "component": "div",
+      "role": null,
+      "sectionRole": "primary-content",
+      "x": 21.000279017857146,
+      "y": 182.50000377079087,
+      "width": 347.9994419642857,
+      "height": 54.49999240676358,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-management-list-row-1",
+      "component": "div",
+      "role": null,
+      "sectionRole": "primary-content",
+      "x": 21.000279017857146,
+      "y": 245.0000050621576,
+      "width": 347.9994419642857,
+      "height": 55.499966269500796,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-management-list-row-2",
+      "component": "div",
+      "role": null,
+      "sectionRole": "primary-content",
+      "x": 21.000279017857146,
+      "y": 308.5000238128026,
+      "width": 347.9994419642857,
+      "height": 55.499966269500796,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-management-list-row-3",
+      "component": "div",
+      "role": null,
+      "sectionRole": "primary-content",
+      "x": 21.000279017857146,
+      "y": 371.9999989669066,
+      "width": 347.9994419642857,
+      "height": 55.50000986604188,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-management-list-row-4",
+      "component": "div",
+      "role": null,
+      "sectionRole": "primary-content",
+      "x": 21.000279017857146,
+      "y": 435.50001771755166,
+      "width": 347.9994419642857,
+      "height": 55.499966269500796,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-management-list-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "primary-content",
+      "x": 21.000279017857146,
+      "y": 530.0000109507899,
+      "width": 347.9994419642857,
+      "height": 29.109366882145842,
+      "fontSize": "28px",
+      "lineHeight": "29.12px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-management-list-nav",
+      "component": "nav",
+      "role": null,
+      "x": 5,
+      "y": 772.9999810943909,
+      "width": 380,
+      "height": 66.0000188022997,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

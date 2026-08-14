@@ -15,20 +15,23 @@ describe("AI component registry", () => {
   it("keeps the complete Serene Health domain set renderable", () => {
     const healthTypes = ["CareSummary", "MedicationTimeline", "MedicationDoseRow", "HealthMetric", "UnitInput", "RangeChart", "TargetRange", "StatusAlert", "SafetyNotice", "SuccessFeedback"];
     expect(healthTypes.every(isComponentType)).toBe(true);
-    expect(COMPONENT_TYPES).toHaveLength(72);
+    expect(COMPONENT_TYPES).toHaveLength(77);
   });
 
   it("keeps the complete Editorial Culture domain set renderable", () => {
     const editorialTypes = ["EditorialHero", "FeatureStory", "StoryCard", "Byline", "MetadataStrip", "PullQuote", "SectionIndex", "ArchiveEntry"];
     expect(editorialTypes.every(isComponentType)).toBe(true);
-    expect(COMPONENT_TYPES).toHaveLength(72);
+    expect(COMPONENT_TYPES).toHaveLength(77);
   });
 
   it("keeps the complete Terracotta Market domain set renderable", () => {
     const commerceTypes = ["CommerceHero","ProductCard","PriceBlock","ProductGallery","VariantSelector","CartLine","OrderSummary","DeliveryPromise"];
     expect(commerceTypes.every(isComponentType)).toBe(true);
-    expect(COMPONENT_TYPES).toHaveLength(72);
+    expect(COMPONENT_TYPES).toHaveLength(77);
   });
-  it("keeps the complete Electric Learning domain set renderable",()=>{const types=["LearningHero","XpProgress","StreakBadge","LessonCard","RoadmapStep","QuizChoice","AnswerFeedback","AchievementBadge"];expect(types.every(isComponentType)).toBe(true);expect(COMPONENT_TYPES).toHaveLength(72)});
-  it("keeps the complete Obsidian Precision domain set renderable",()=>{const types=["CommandSummary","SignalChart","RiskIndicator","OperationRow","IncidentTimeline","DataMatrix","ControlToggle","AuditEntry"];expect(types.every(isComponentType)).toBe(true);expect(COMPONENT_TYPES).toHaveLength(72)});
+  it("keeps the complete Electric Learning domain set renderable",()=>{const types=["LearningHero","XpProgress","StreakBadge","LessonCard","RoadmapStep","QuizChoice","AnswerFeedback","AchievementBadge"];expect(types.every(isComponentType)).toBe(true);expect(COMPONENT_TYPES).toHaveLength(77)});
+  it("keeps the complete Obsidian Precision domain set renderable",()=>{const types=["CommandSummary","SignalChart","RiskIndicator","OperationRow","IncidentTimeline","DataMatrix","ControlToggle","AuditEntry"];expect(types.every(isComponentType)).toBe(true);expect(COMPONENT_TYPES).toHaveLength(77)});
+  it("keeps defining experience components renderable", () => {
+    expect(["Calendar", "Timeline", "Gallery", "KanbanBoard", "MapView"].every(isComponentType)).toBe(true);
+  });
 });

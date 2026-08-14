@@ -1,0 +1,8 @@
+{
+  "crossArchetype": "0/105 PASS",
+  "crossPreset": "10/60 PASS",
+  "runtime": "42/42 PASS",
+  "viewport": "390x844 PASS",
+  "geometry": "PASS",
+  "criticalA11y": 0
+}

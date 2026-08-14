@@ -1,0 +1,260 @@
+{
+  "baselineRevision": "6e65c9f5872d3c594692c0ee147146d68e65130c",
+  "generatedAt": "2026-08-10T17:31:04.223Z",
+  "collisionCount": 14,
+  "counts": {
+    "SAME_SECTION_ORDER": 11,
+    "SAME_LAYOUT_PATTERN": 13,
+    "SAME_COLUMN_STRUCTURE": 0,
+    "SAME_COMPONENT_FAMILY": 11,
+    "SAME_CARD_DENSITY": 11,
+    "SAME_TYPOGRAPHY_HIERARCHY": 0,
+    "SAME_CHART_FAMILY": 14,
+    "SAME_NAV_GEOMETRY": 14,
+    "SAME_FORM_GEOMETRY": 2,
+    "SAME_SURFACE_GROUPING": 11
+  },
+  "collisions": [
+    {
+      "kind": "cross-archetype",
+      "mode": "electric",
+      "left": "management-list",
+      "right": "settings",
+      "distance": 0.4419,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION",
+      "rootCauses": [
+        "SAME_LAYOUT_PATTERN",
+        "SAME_CHART_FAMILY",
+        "SAME_NAV_GEOMETRY"
+      ]
+    },
+    {
+      "kind": "cross-archetype",
+      "mode": "auto",
+      "left": "management-list",
+      "right": "settings",
+      "distance": 0.4374,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION",
+      "rootCauses": [
+        "SAME_LAYOUT_PATTERN",
+        "SAME_CHART_FAMILY",
+        "SAME_NAV_GEOMETRY"
+      ]
+    },
+    {
+      "kind": "cross-archetype",
+      "mode": "deterministic",
+      "left": "management-list",
+      "right": "settings",
+      "distance": 0.4374,
+      "threshold": 0.45,
+      "verdict": "CROSS_ARCHETYPE_COLLISION",
+      "rootCauses": [
+        "SAME_LAYOUT_PATTERN",
+        "SAME_CHART_FAMILY",
+        "SAME_NAV_GEOMETRY"
+      ]
+    },
+    {
+      "kind": "cross-preset",
+      "archetype": "management-list",
+      "left": "obsidian",
+      "right": "serene",
+      "distance": 0.3593,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION",
+      "rootCauses": [
+        "SAME_SECTION_ORDER",
+        "SAME_LAYOUT_PATTERN",
+        "SAME_COMPONENT_FAMILY",
+        "SAME_CARD_DENSITY",
+        "SAME_CHART_FAMILY",
+        "SAME_NAV_GEOMETRY",
+        "SAME_SURFACE_GROUPING"
+      ]
+    },
+    {
+      "kind": "cross-preset",
+      "archetype": "management-list",
+      "left": "terracotta",
+      "right": "editorial",
+      "distance": 0.3567,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION",
+      "rootCauses": [
+        "SAME_SECTION_ORDER",
+        "SAME_LAYOUT_PATTERN",
+        "SAME_COMPONENT_FAMILY",
+        "SAME_CARD_DENSITY",
+        "SAME_CHART_FAMILY",
+        "SAME_NAV_GEOMETRY",
+        "SAME_SURFACE_GROUPING"
+      ]
+    },
+    {
+      "kind": "cross-preset",
+      "archetype": "detail",
+      "left": "obsidian",
+      "right": "serene",
+      "distance": 0.354,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION",
+      "rootCauses": [
+        "SAME_SECTION_ORDER",
+        "SAME_LAYOUT_PATTERN",
+        "SAME_COMPONENT_FAMILY",
+        "SAME_CARD_DENSITY",
+        "SAME_CHART_FAMILY",
+        "SAME_NAV_GEOMETRY",
+        "SAME_SURFACE_GROUPING"
+      ]
+    },
+    {
+      "kind": "cross-preset",
+      "archetype": "detail",
+      "left": "terracotta",
+      "right": "editorial",
+      "distance": 0.3556,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION",
+      "rootCauses": [
+        "SAME_SECTION_ORDER",
+        "SAME_LAYOUT_PATTERN",
+        "SAME_COMPONENT_FAMILY",
+        "SAME_CARD_DENSITY",
+        "SAME_CHART_FAMILY",
+        "SAME_NAV_GEOMETRY",
+        "SAME_SURFACE_GROUPING"
+      ]
+    },
+    {
+      "kind": "cross-preset",
+      "archetype": "form",
+      "left": "obsidian",
+      "right": "serene",
+      "distance": 0.3756,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION",
+      "rootCauses": [
+        "SAME_SECTION_ORDER",
+        "SAME_LAYOUT_PATTERN",
+        "SAME_COMPONENT_FAMILY",
+        "SAME_CARD_DENSITY",
+        "SAME_CHART_FAMILY",
+        "SAME_NAV_GEOMETRY",
+        "SAME_FORM_GEOMETRY",
+        "SAME_SURFACE_GROUPING"
+      ]
+    },
+    {
+      "kind": "cross-preset",
+      "archetype": "form",
+      "left": "terracotta",
+      "right": "editorial",
+      "distance": 0.3721,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION",
+      "rootCauses": [
+        "SAME_SECTION_ORDER",
+        "SAME_LAYOUT_PATTERN",
+        "SAME_COMPONENT_FAMILY",
+        "SAME_CARD_DENSITY",
+        "SAME_CHART_FAMILY",
+        "SAME_NAV_GEOMETRY",
+        "SAME_FORM_GEOMETRY",
+        "SAME_SURFACE_GROUPING"
+      ]
+    },
+    {
+      "kind": "cross-preset",
+      "archetype": "analytics",
+      "left": "obsidian",
+      "right": "serene",
+      "distance": 0.3944,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION",
+      "rootCauses": [
+        "SAME_SECTION_ORDER",
+        "SAME_LAYOUT_PATTERN",
+        "SAME_COMPONENT_FAMILY",
+        "SAME_CARD_DENSITY",
+        "SAME_CHART_FAMILY",
+        "SAME_NAV_GEOMETRY",
+        "SAME_SURFACE_GROUPING"
+      ]
+    },
+    {
+      "kind": "cross-preset",
+      "archetype": "analytics",
+      "left": "terracotta",
+      "right": "editorial",
+      "distance": 0.3774,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION",
+      "rootCauses": [
+        "SAME_SECTION_ORDER",
+        "SAME_LAYOUT_PATTERN",
+        "SAME_COMPONENT_FAMILY",
+        "SAME_CARD_DENSITY",
+        "SAME_CHART_FAMILY",
+        "SAME_NAV_GEOMETRY",
+        "SAME_SURFACE_GROUPING"
+      ]
+    },
+    {
+      "kind": "cross-preset",
+      "archetype": "settings",
+      "left": "obsidian",
+      "right": "serene",
+      "distance": 0.3532,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION",
+      "rootCauses": [
+        "SAME_SECTION_ORDER",
+        "SAME_LAYOUT_PATTERN",
+        "SAME_COMPONENT_FAMILY",
+        "SAME_CARD_DENSITY",
+        "SAME_CHART_FAMILY",
+        "SAME_NAV_GEOMETRY",
+        "SAME_SURFACE_GROUPING"
+      ]
+    },
+    {
+      "kind": "cross-preset",
+      "archetype": "settings",
+      "left": "serene",
+      "right": "electric",
+      "distance": 0.2,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION",
+      "rootCauses": [
+        "SAME_SECTION_ORDER",
+        "SAME_COMPONENT_FAMILY",
+        "SAME_CARD_DENSITY",
+        "SAME_CHART_FAMILY",
+        "SAME_NAV_GEOMETRY",
+        "SAME_SURFACE_GROUPING"
+      ]
+    },
+    {
+      "kind": "cross-preset",
+      "archetype": "settings",
+      "left": "terracotta",
+      "right": "editorial",
+      "distance": 0.3526,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION",
+      "rootCauses": [
+        "SAME_SECTION_ORDER",
+        "SAME_LAYOUT_PATTERN",
+        "SAME_COMPONENT_FAMILY",
+        "SAME_CARD_DENSITY",
+        "SAME_CHART_FAMILY",
+        "SAME_NAV_GEOMETRY",
+        "SAME_SURFACE_GROUPING"
+      ]
+    }
+  ]
+}

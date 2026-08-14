@@ -1,0 +1,13 @@
+{
+  "version": "1.0.0",
+  "profiles": {
+    "default": { "minimumSectionCount": 2, "minimumSectionAreaCoverage": 0.25, "maximumSectionAreaCoverage": 0.95, "minimumVerticalOccupancy": 0.45, "minimumNodeDensityPer100k": 1, "maximumNodeDensityPer100k": 15, "minimumSectionHeightVariation": 0.05 },
+    "dashboard": { "minimumSectionCount": 2, "minimumSectionAreaCoverage": 0.3, "maximumSectionAreaCoverage": 0.95, "minimumVerticalOccupancy": 0.5, "minimumNodeDensityPer100k": 1.2, "maximumNodeDensityPer100k": 15, "minimumSectionHeightVariation": 0.08 },
+    "analytics": { "minimumSectionCount": 2, "minimumSectionAreaCoverage": 0.3, "maximumSectionAreaCoverage": 0.95, "minimumVerticalOccupancy": 0.5, "minimumNodeDensityPer100k": 1.2, "maximumNodeDensityPer100k": 15, "minimumSectionHeightVariation": 0.08 },
+    "management_list": { "minimumSectionCount": 2, "minimumSectionAreaCoverage": 0.25, "maximumSectionAreaCoverage": 0.95, "minimumVerticalOccupancy": 0.45, "minimumNodeDensityPer100k": 1.2, "maximumNodeDensityPer100k": 15, "minimumSectionHeightVariation": 0.04 },
+    "form": { "minimumSectionCount": 2, "minimumSectionAreaCoverage": 0.2, "maximumSectionAreaCoverage": 0.95, "minimumVerticalOccupancy": 0.4, "minimumNodeDensityPer100k": 0.8, "maximumNodeDensityPer100k": 15, "minimumSectionHeightVariation": 0.02 },
+    "detail": { "minimumSectionCount": 2, "minimumSectionAreaCoverage": 0.2, "maximumSectionAreaCoverage": 0.95, "minimumVerticalOccupancy": 0.4, "minimumNodeDensityPer100k": 0.8, "maximumNodeDensityPer100k": 15, "minimumSectionHeightVariation": 0.02 },
+    "settings": { "minimumSectionCount": 2, "minimumSectionAreaCoverage": 0.2, "maximumSectionAreaCoverage": 0.95, "minimumVerticalOccupancy": 0.45, "minimumNodeDensityPer100k": 0.8, "maximumNodeDensityPer100k": 15, "minimumSectionHeightVariation": 0.03 },
+    "profile": { "minimumSectionCount": 2, "minimumSectionAreaCoverage": 0.2, "maximumSectionAreaCoverage": 0.95, "minimumVerticalOccupancy": 0.45, "minimumNodeDensityPer100k": 0.8, "maximumNodeDensityPer100k": 15, "minimumSectionHeightVariation": 0.03 }
+  }
+}

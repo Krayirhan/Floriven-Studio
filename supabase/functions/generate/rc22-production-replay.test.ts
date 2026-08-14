@@ -20,10 +20,11 @@ describe('RC22 production baseline replay', () => {
   const baseline = composeDeterministicBaseScreens(blueprint)
   const report = evaluateGenerationQuality(baseline, blueprint)
 
-  it('passes the production deterministic baseline quality gate', () => {
+  it('keeps the deterministic draft renderable but rejects it as a quality-passing candidate', () => {
     expect(baseline).toHaveLength(6)
-    expect(report.score).toBeGreaterThanOrEqual(70)
-    expect(report.passed).toBe(true)
+    expect(report.score).toBeLessThan(70)
+    expect(report.passed).toBe(false)
+    expect(report.metrics.fallbackMetricFingerprint).toBe(1)
     expect(report.issues).not.toContain('Alt navigasyon tüm ekranlarda aynı değil.')
   })
 
@@ -41,11 +42,11 @@ describe('RC22 production baseline replay', () => {
     expect(report.metrics.focusedFlowBottomNavViolations).toBe(0)
   })
 
-  it('rejects the RC22 AI 60/100 regression in favor of the passing baseline', () => {
+  it('selects the deterministic draft for inspection but does not make it final-eligible', () => {
     const aiQuality = { score: 60, passed: false }
     expect(aiQuality.passed).toBe(false)
-    expect(selectCompositionMode({ hasBaseline: report.passed, enhancedPassed: aiQuality.passed })).toBe('deterministic_baseline')
-    expect(report.passed).toBe(true)
+    expect(selectCompositionMode({ hasBaseline: true, enhancedPassed: aiQuality.passed })).toBe('deterministic_baseline')
+    expect(report.passed).toBe(false)
   })
 
   it('persists the quality-regression fallback event before runtime handoff', () => {
@@ -53,21 +54,21 @@ describe('RC22 production baseline replay', () => {
       operation: 'composition_quality_gate', status: 'fallback', fallbackUsed: true, errorCode: 'QUALITY_REGRESSION',
     })
     expect(events).toMatchObject([{ operation: 'composition_quality_gate', status: 'fallback', fallbackUsed: true, errorCode: 'QUALITY_REGRESSION' }])
-    expect(report.passed).toBe(true)
+    expect(report.passed).toBe(false)
   })
 
-  it('hands the quality-passing selected application to the mocked runtime boundary', async () => {
+  it('keeps a quality-rejected deterministic draft out of the runtime-ready state', async () => {
     const job: JobSnapshot & { resultScreens?: unknown[] } = { id: 'rc22-replay', status: 'queued', stage: 'queued', providerExecutions: 0 }
     let work!: () => Promise<void>
     const acknowledgement = scheduleGenerationJob(job, async () => {
-      expect(report.passed).toBe(true)
+      expect(report.passed).toBe(false)
       job.resultScreens = baseline
-      job.stage = 'candidate_ready'
-      job.status = 'completed'
+      job.stage = 'QUALITY_REJECTED'
+      job.status = 'failed'
     }, (scheduled) => { work = scheduled })
 
     expect(acknowledgement.status).toBe('queued')
     await work()
-    expect(job).toMatchObject({ status: 'completed', stage: 'candidate_ready', resultScreens: baseline })
+    expect(job).toMatchObject({ status: 'failed', stage: 'QUALITY_REJECTED', resultScreens: baseline })
   })
 })

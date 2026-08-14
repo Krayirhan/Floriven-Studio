@@ -1,11 +1,23 @@
 export type DomainPackId = "health-care" | "commerce" | "learning" | "publishing" | "operations";
+import type { ScreenContract } from './screen-contract.ts'
 
 /**
  * The UX shape a screen should take — decided from the user's task, never from
  * the visual style preset. Without this, every screen degrades to the one
  * layout the model finds "safe": header, big title, a stack of Cards, FAB, nav.
  */
-export type ScreenArchetype = "dashboard" | "management_list" | "settings" | "form" | "detail" | "profile";
+export type ScreenArchetype = "dashboard" | "management_list" | "settings" | "form" | "detail" | "profile" | "analytics";
+export type ExperiencePattern = "standard" | "calendar" | "timeline" | "gallery" | "board" | "map";
+
+export function deriveExperiencePattern(input: string): ExperiencePattern {
+  const value = input.toLocaleLowerCase("tr-TR");
+  if (/takvim|calendar|haftalık plan|haftalik plan|randevu|saat blok/.test(value)) return "calendar";
+  if (/zaman çizelgesi|zaman cizelgesi|timeline|geçmiş|gecmis|aktivite akışı/.test(value)) return "timeline";
+  if (/galeri|gallery|portfolyo|fotoğraf|fotograf|görsel koleksiyon/.test(value)) return "gallery";
+  if (/kanban|board|iş panosu|is panosu|kolon.*kart|sprint panosu/.test(value)) return "board";
+  if (/harita|map|konumlar|rota|yakınımdaki|yakinimdaki/.test(value)) return "map";
+  return "standard";
+}
 
 /** Falls back to a role-based archetype when the plan call omits one. */
 export function deriveArchetype(role: ProductScreenSpec["role"]): ScreenArchetype {
@@ -33,6 +45,9 @@ export type ProductScreenSpec = {
   heroAllowed?: boolean;
   fabAllowed?: boolean;
   patterns?: string[];
+  experiencePattern?: ExperiencePattern;
+  /** Semantic obligations preserved from planning through composition. */
+  contract: ScreenContract;
 };
 
 export type ProductBlueprint = {
@@ -125,6 +140,16 @@ export function buildSyntheticBlueprint(screens: Node[]): ProductBlueprint {
     role: index === 0 ? "overview" : "core",
     priority: "primary",
     navigationPlacement: inNav(String(screen.name)) && index < 5 ? "primary" : "utility",
+    contract: {
+      version: '1.0.0',
+      job: '',
+      requiredSections: [],
+      primaryAction: '',
+      secondaryActions: [],
+      requiredData: [],
+      navigationTargetIds: [],
+      sectionRoles: [],
+    },
   }));
   const primaryScreenIds = screenSpecs.filter((screen) => screen.navigationPlacement === "primary").map((screen) => screen.id);
   const utilityScreenIds = screenSpecs.filter((screen) => screen.navigationPlacement === "utility").map((screen) => screen.id);
@@ -142,6 +167,23 @@ export function buildSyntheticBlueprint(screens: Node[]): ProductBlueprint {
 }
 
 /**
+ * A single incidental keyword (e.g. one mention of "rapor" in an otherwise
+ * unrelated brief) must never be enough to activate a domain pack — that pack
+ * rewrites screen content, so a weak signal would silently override an
+ * unrelated product with someone else's industry copy. A domain only
+ * activates once several of its own keywords show up independently.
+ */
+const DOMAIN_MIN_SIGNALS = 2;
+
+const DOMAIN_SIGNALS: { id: DomainPackId; keywords: string[] }[] = [
+  { id: "health-care", keywords: ["ilaç", "doz", "tansiyon", "kan şekeri", "glukoz", "sağlık ölç", "hasta", "tedavi"] },
+  { id: "commerce", keywords: ["ürün katalo", "sepet", "satın al", "sipariş", "stok", "varyant", "kargo", "e-ticaret", "pazar yeri"] },
+  { id: "learning", keywords: ["ders", "öğren", "quiz", "soru çöz", "xp", "seviye yol", "eğitim", "kurs"] },
+  { id: "publishing", keywords: ["yayın", "makale", "yazı arşiv", "editör", "dergi", "okuma süresi", "kültür yayını"] },
+  { id: "operations", keywords: ["api gecik", "hata oran", "operasyon merkezi", "incident", "denetim kaydı", "sistem sinyali", "servis durumu"] },
+];
+
+/**
  * Selects capabilities only from product semantics. Visual style is deliberately
  * absent from this API so a preset cannot influence domain activation.
  */
@@ -153,12 +195,13 @@ export function resolveDomainPack(blueprint: ProductBlueprint, brief: string): D
     ...blueprint.capabilities,
     ...blueprint.contentVocabulary,
   ].join(" ").toLocaleLowerCase("tr-TR");
-  const matches = (pattern: RegExp) => pattern.test(corpus);
 
-  if (matches(/ilaç|doz|tansiyon|kan şekeri|glukoz|sağlık ölç|hasta|tedavi/)) return "health-care";
-  if (matches(/ürün katalo|sepet|satın al|sipariş|stok|varyant|kargo|e-ticaret|pazar yeri/)) return "commerce";
-  if (matches(/ders|öğren|quiz|soru çöz|xp|seviye yol|eğitim|kurs/)) return "learning";
-  if (matches(/yayın|makale|yazı arşiv|editör|dergi|okuma süresi|kültür yayını/)) return "publishing";
-  if (matches(/api gecik|hata oran|operasyon merkezi|incident|denetim kaydı|sistem sinyali|servis durumu/)) return "operations";
-  return undefined;
+  let best: { id: DomainPackId; score: number } | undefined;
+  for (const signal of DOMAIN_SIGNALS) {
+    const score = signal.keywords.filter((keyword) => corpus.includes(keyword)).length;
+    if (score >= DOMAIN_MIN_SIGNALS && (!best || score > best.score)) {
+      best = { id: signal.id, score };
+    }
+  }
+  return best?.id;
 }

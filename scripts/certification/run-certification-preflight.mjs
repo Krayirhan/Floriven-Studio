@@ -15,6 +15,9 @@ const commands = [
   ["unit-tests", packageManager, ["test"]],
   ["benchmark-validate", packageManager, ["benchmarks:validate"]],
   ["security-audit", packageManager, ["certification:security"]],
+  ["runtime-hierarchy-contract", packageManager, ["contracts:runtime-hierarchy"]],
+  ["runtime-evidence-integrity", packageManager, ["--filter", "@floriven/web", "exec", "vitest", "--root", "../..", "run", "supabase/functions/record-generation-runtime-quality"]],
+  ["runtime-replay-contract", packageManager, ["--filter", "@floriven/design-spec", "exec", "vitest", "run", "src/runtime-live-preflight.test.ts", "src/runtime-replay.test.ts", "src/runtime-replay-cli.test.ts", "src/runtime-release-evidence.test.ts"]],
   ["e2e", packageManager, ["test:e2e"]],
   ["generation-architecture", packageManager, ["test:generation-architecture"]],
 ];

@@ -1,0 +1,179 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "strict-grid",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 42.99996601122745,
+  "sections": [
+    {
+      "role": "context",
+      "order": 0,
+      "span": 12,
+      "emphasis": "secondary",
+      "family": "kpi-context",
+      "x": 20.999930245535715,
+      "y": 58.000009917696545,
+      "width": 348.0001395089286,
+      "height": 213.17187068522088
+    },
+    {
+      "role": "period-comparison",
+      "order": 1,
+      "span": 12,
+      "emphasis": "tertiary",
+      "family": "period-comparison",
+      "x": 20.999930245535715,
+      "y": 285.17186345356714,
+      "width": 348.0001395089286,
+      "height": 66.25000136884874
+    },
+    {
+      "role": "dominant-chart",
+      "order": 2,
+      "span": 12,
+      "emphasis": "primary",
+      "family": "line",
+      "x": 20.999930245535715,
+      "y": 365.4218476730656,
+      "width": 348.0001395089286,
+      "height": 160.00004690243992
+    },
+    {
+      "role": "breakdown",
+      "order": 3,
+      "span": 6,
+      "emphasis": "secondary",
+      "family": "bar",
+      "x": 20.999930245535715,
+      "y": 539.4218774261552,
+      "width": 167.00020926339286,
+      "height": 129.49999395640367
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "serene-analytics-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "context",
+      "x": 36.99986049107143,
+      "y": 74.00000588863233,
+      "width": 316.00027901785717,
+      "height": 29.890616898287927,
+      "fontSize": "23px",
+      "lineHeight": "29.9px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-analytics-rate",
+      "component": "article",
+      "role": null,
+      "sectionRole": "context",
+      "x": 36.99986049107143,
+      "y": 111.89060987325287,
+      "width": 316.00027901785717,
+      "height": 67.64064383619808,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-analytics-reserve",
+      "component": "article",
+      "role": null,
+      "sectionRole": "context",
+      "x": 36.99986049107143,
+      "y": 187.53124079578356,
+      "width": 316.00027901785717,
+      "height": 67.64062203792754,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-analytics-period",
+      "component": "div",
+      "role": null,
+      "sectionRole": "period-comparison",
+      "x": 36.99986049107143,
+      "y": 301.17188122277344,
+      "width": 316.00027901785717,
+      "height": 34.24996583043611,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-analytics-revenue",
+      "component": "figure",
+      "role": null,
+      "sectionRole": "dominant-chart",
+      "x": 36.99986049107143,
+      "y": 381.4218654422719,
+      "width": 316.00027901785717,
+      "height": 88.00001053755258,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-analytics-expense",
+      "component": "figure",
+      "role": null,
+      "sectionRole": "breakdown",
+      "x": 36.99986049107143,
+      "y": 555.4218951953616,
+      "width": 63.500279017857146,
+      "height": 97.49995841799102,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-analytics-collection",
+      "component": "figure",
+      "role": null,
+      "sectionRole": "breakdown",
+      "x": 108.49993024553572,
+      "y": 555.4218951953616,
+      "width": 63.499930245535715,
+      "height": 97.49995841799102,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-analytics-nav",
+      "component": "nav",
+      "role": null,
+      "x": 5,
+      "y": 772.9999810943909,
+      "width": 380,
+      "height": 66.0000188022997,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

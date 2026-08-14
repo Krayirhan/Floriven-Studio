@@ -1,0 +1,29 @@
+{
+  "modes": [
+    {
+      "mode": "obsidian",
+      "measured": true,
+      "source": "PresentationSpecV2 roles + runtime computed styles"
+    },
+    {
+      "mode": "serene",
+      "measured": true,
+      "source": "PresentationSpecV2 roles + runtime computed styles"
+    },
+    {
+      "mode": "terracotta",
+      "measured": true,
+      "source": "PresentationSpecV2 roles + runtime computed styles"
+    },
+    {
+      "mode": "electric",
+      "measured": true,
+      "source": "PresentationSpecV2 roles + runtime computed styles"
+    },
+    {
+      "mode": "editorial",
+      "measured": true,
+      "source": "PresentationSpecV2 roles + runtime computed styles"
+    }
+  ]
+}

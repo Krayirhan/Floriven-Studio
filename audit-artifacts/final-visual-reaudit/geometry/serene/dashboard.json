@@ -1,0 +1,165 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "strict-grid",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 42.99996601122745,
+  "sections": [
+    {
+      "role": "primary-summary",
+      "order": 0,
+      "span": 12,
+      "emphasis": "primary",
+      "family": "calm-hero",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.99979073660717,
+      "height": 150.2812443857831
+    },
+    {
+      "role": "secondary-metrics",
+      "order": 1,
+      "span": 12,
+      "emphasis": "secondary",
+      "family": "card-clusters-dashboard-secondary-metrics",
+      "x": 21.000279017857146,
+      "y": 222.28123715412937,
+      "width": 166.99986049107144,
+      "height": 112.3906621994331
+    },
+    {
+      "role": "trend-progress",
+      "order": 2,
+      "span": 12,
+      "emphasis": "secondary",
+      "family": "card-clusters-dashboard-trend-progress",
+      "x": 21.000279017857146,
+      "y": 348.6718822042122,
+      "width": 347.99979073660717,
+      "height": 120.00000247942414
+    },
+    {
+      "role": "actionable-content",
+      "order": 3,
+      "span": 12,
+      "emphasis": "secondary",
+      "family": "card-clusters-dashboard-actionable-content",
+      "x": 21.000279017857146,
+      "y": 482.67186753428604,
+      "width": 347.99979073660717,
+      "height": 78.0000103309339
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "serene-dashboard-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "primary-summary",
+      "x": 36.99986049107143,
+      "y": 74.00000588863233,
+      "width": 316.00027901785717,
+      "height": 29.890616898287927,
+      "fontSize": "23px",
+      "lineHeight": "29.9px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-dashboard-balance",
+      "component": "article",
+      "role": null,
+      "sectionRole": "primary-summary",
+      "x": 36.99986049107143,
+      "y": 111.89060987325287,
+      "width": 316.00027901785717,
+      "height": 80.390648459291,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-dashboard-income",
+      "component": "article",
+      "role": null,
+      "sectionRole": "secondary-metrics",
+      "x": 36.99986049107143,
+      "y": 238.2812549233357,
+      "width": 63.500279017857146,
+      "height": 80.39062666102046,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-dashboard-expense",
+      "component": "article",
+      "role": null,
+      "sectionRole": "secondary-metrics",
+      "x": 108.49993024553572,
+      "y": 238.2812549233357,
+      "width": 63.499930245535715,
+      "height": 80.39062666102046,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-dashboard-trend",
+      "component": "figure",
+      "role": null,
+      "sectionRole": "trend-progress",
+      "x": 36.99986049107143,
+      "y": 364.6718999734185,
+      "width": 316.00027901785717,
+      "height": 87.99996694101151,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-dashboard-cta",
+      "component": "button",
+      "role": null,
+      "sectionRole": "actionable-content",
+      "x": 36.99986049107143,
+      "y": 498.67188530349233,
+      "width": 316.00027901785717,
+      "height": 45.99997479252127,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-dashboard-nav",
+      "component": "nav",
+      "role": null,
+      "x": 5,
+      "y": 772.9999810943909,
+      "width": 380,
+      "height": 66.0000188022997,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

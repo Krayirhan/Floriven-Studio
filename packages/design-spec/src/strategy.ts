@@ -6,6 +6,7 @@ export type DesignPalette = "obsidian" | "serene" | "terracotta" | "electric" | 
 export type CardStyle = "crisp" | "soft" | "layered" | "playful" | "minimal";
 export type DesignDensity = "compact" | "comfortable" | "spacious";
 export type NavigationStyle = "solid" | "floating" | "glass" | "minimal";
+export type NavigationGeometry = "compact" | "floating" | "inset" | "chunky" | "minimal";
 export type CardType = "metric" | "list" | "hero" | "split" | "timeline" | "media" | "glass" | "editorial";
 export type ChartType = "bar" | "line" | "area" | "donut" | "radial" | "sparkline" | "heatmap" | "segmented";
 export type ControlType = "switch" | "checkbox" | "toggle" | "segmented" | "accordion" | "disclosure";
@@ -14,7 +15,7 @@ export type ButtonStyle = "solid" | "outline" | "ghost" | "gradient" | "icon-onl
 export type FormFieldStyle = "underline" | "filled" | "outlined" | "soft" | "compact" | "touch-large";
 export type IconStyle = "outline" | "filled" | "duotone" | "geometric" | "hand-drawn" | "minimal";
 export type SurfaceStyle = "flat" | "glass" | "paper" | "neon" | "soft-shadow" | "layered";
-export type LayoutPattern = "grid" | "editorial-asymmetry" | "strict-grid" | "bento" | "stacked";
+export type LayoutPattern = "grid" | "editorial-asymmetry" | "strict-grid" | "comparison-grid" | "bento" | "stacked";
 export type MotionEasing = "linear" | "standard" | "spring" | "ease-out" | "editorial";
 
 export interface PresetTypography {
@@ -83,6 +84,7 @@ export interface StyleSystemProfile {
   buttonStyles?: readonly ButtonStyle[];
   formFieldStyles?: readonly FormFieldStyle[];
   navigationModes?: readonly NavigationStyle[];
+  navigationGeometry?: NavigationGeometry;
   typographyRules?: PresetTypography;
   layoutPatterns?: readonly LayoutPattern[];
   groupingStyle?: "flat-list" | "card-clusters" | "sectioned" | "divider-led" | "timeline" | "nested";

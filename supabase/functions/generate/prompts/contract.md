@@ -33,6 +33,11 @@ The screen silently loses content and nothing in the logs says why.
 | `Metric` | no | `label`, `value`, `caption` | `tone` |
 | `Chart` | no | `label`, `values` | `tone` |
 | `SegmentedControl` | no | `items` | — |
+| `Calendar` | no | `days`, `events` | — |
+| `Timeline` | no | `events` | — |
+| `Gallery` | no | `items` | — |
+| `KanbanBoard` | no | `columns`, `cards` | — |
+| `MapView` | no | `markers` | — |
 | `FloatingActionButton` | no | `icon` | — |
 | `Badge` | no | `label` | — |
 | `Avatar` | no | `initials` | — |
@@ -105,6 +110,11 @@ Leaves (must NOT have "children"):
   Metric {label, value, caption, tone?:"primary"|"success"|"warning"|"danger"|"neutral"}
   Chart {label, values:number[], tone?}
   SegmentedControl {items:string[]}
+  Calendar {label:string,days:string[],events:string[]}
+  Timeline {label:string,events:string[]}
+  Gallery {label:string,items:string[]}
+  KanbanBoard {label:string,columns:string[],cards:string[]}
+  MapView {label:string,markers:string[]}
   FloatingActionButton {icon:string}
   Badge {label} · Avatar {initials} · Image {alt} · Icon {name} · Divider {}
   Checkbox|Switch {label}

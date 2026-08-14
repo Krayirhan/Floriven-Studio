@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { createCandidateHash, type PresentationSpec, type Screen } from "@floriven/design-spec";
+import { CANONICAL_VIEWPORT, compileVisualScreen, createCandidateHash, DESIGN_TEMPLATES, findDesignTemplate, type CompiledVisualScreen, type DesignStrategy, type Screen } from "@floriven/design-spec";
 import styles from "../StudioPage.module.css";
 import { FlowConnections } from "./FlowConnections";
 import { PhoneScreen } from "./PhoneScreen";
@@ -21,6 +21,7 @@ const SCREEN_META: Record<string, { device: string; dims: string }> = {
 const PALETTE_LABELS: Record<string, string> = {
   obsidian: "Obsidian", serene: "Serene", terracotta: "Terracotta", electric: "Electric", editorial: "Editorial",
 };
+const STUDIO_PHONE_PREVIEW_SCALE = 0.7;
 
 /** What the screen's own data says its style is — never a label decoupled from the render. */
 function screenPaletteLabel(screen: Screen): string {
@@ -48,19 +49,32 @@ function designStrategy(screen: Screen | undefined) {
   };
 }
 
-function screenPresentation(screen: Screen): PresentationSpec | undefined {
+function screenStrategy(screen: Screen): DesignStrategy {
   const value = screen.root.props.strategy;
-  if (!value || typeof value !== "object" || Array.isArray(value)) return undefined;
+  const fallbackTemplate = DESIGN_TEMPLATES[0]!;
+  if (!value || typeof value !== "object" || Array.isArray(value)) return { mode: "auto", ...fallbackTemplate.strategy, rationale: ["Eksik strategy için güvenli compiler fallback'i"] };
   const strategy = value as Record<string, unknown>;
-  if (typeof strategy.palette !== "string" || typeof strategy.cardStyle !== "string" || typeof strategy.density !== "string" || typeof strategy.navigationStyle !== "string") return undefined;
+  const template = (typeof strategy.stylePresetId === "string" ? findDesignTemplate(strategy.stylePresetId) : undefined)
+    ?? DESIGN_TEMPLATES.find((candidate) => candidate.strategy.palette === strategy.palette)
+    ?? fallbackTemplate;
   return {
-    version: "1.0.0",
-    palette: strategy.palette as PresentationSpec["palette"],
-    cardStyle: strategy.cardStyle as PresentationSpec["cardStyle"],
-    density: strategy.density as PresentationSpec["density"],
-    navigationStyle: strategy.navigationStyle as PresentationSpec["navigationStyle"],
-    visualDirection: typeof strategy.visualDirection === "string" ? strategy.visualDirection : "",
+    mode: strategy.mode === "template" ? "template" : "auto",
+    ...(strategy.mode === "template" ? { stylePresetId: template.id } : {}),
+    palette: template.strategy.palette,
+    cardStyle: template.strategy.cardStyle,
+    density: template.strategy.density,
+    navigationStyle: template.strategy.navigationStyle,
+    visualDirection: typeof strategy.visualDirection === "string" ? strategy.visualDirection : template.strategy.visualDirection,
+    rationale: Array.isArray(strategy.rationale) ? strategy.rationale.filter((item): item is string => typeof item === "string") : [],
   };
+}
+
+function compileScreen(screen: Screen): CompiledVisualScreen {
+  const strategy = screenStrategy(screen);
+  const template = (strategy.stylePresetId ? findDesignTemplate(strategy.stylePresetId) : undefined)
+    ?? DESIGN_TEMPLATES.find((candidate) => candidate.strategy.palette === strategy.palette)
+    ?? DESIGN_TEMPLATES[0]!;
+  return compileVisualScreen({ screen, strategy, styleSystemProfile: template.system });
 }
 
 export function StudioCanvas({
@@ -176,6 +190,7 @@ export function StudioCanvas({
       >
         {screens.map((screen) => {
           const active = screen.id === activeScreenId;
+          const compiled = compileScreen(screen);
           const meta = SCREEN_META[screen.id] ?? { device: "iPhone", dims: "390 × 844" };
           return (
             <div
@@ -212,13 +227,17 @@ export function StudioCanvas({
                   </button>}
                 </div>
               </div>
-              <PhoneScreen
-                screen={screen}
-                presentation={screenPresentation(screen)}
-                active={active}
-                selectedNodeId={selectedNodeId}
-                onSelect={onSelectNode}
-              />
+              <div className={styles.phonePreview} data-preview-scale={STUDIO_PHONE_PREVIEW_SCALE} style={{ width: `${CANONICAL_VIEWPORT.width * STUDIO_PHONE_PREVIEW_SCALE}px`, height: `${CANONICAL_VIEWPORT.height * STUDIO_PHONE_PREVIEW_SCALE}px` }}>
+                <div className={styles.phonePreviewScale} style={{ width: `${CANONICAL_VIEWPORT.width}px`, height: `${CANONICAL_VIEWPORT.height}px`, transform: `scale(${STUDIO_PHONE_PREVIEW_SCALE})` }}>
+                  <PhoneScreen
+                    screen={screen}
+                    compiled={compiled}
+                    active={active}
+                    selectedNodeId={selectedNodeId}
+                    onSelect={onSelectNode}
+                  />
+                </div>
+              </div>
             </div>
           );
         })}

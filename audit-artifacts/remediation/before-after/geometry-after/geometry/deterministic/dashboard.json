@@ -1,0 +1,165 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "strict-grid",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 42.99996601122745,
+  "sections": [
+    {
+      "role": "primary-summary",
+      "order": 0,
+      "span": 8,
+      "emphasis": "primary",
+      "family": "metric",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 227.32840401785717,
+      "height": 119.57811875139919
+    },
+    {
+      "role": "secondary-metrics",
+      "order": 1,
+      "span": 4,
+      "emphasis": "secondary",
+      "family": "list",
+      "x": 21.000279017857146,
+      "y": 191.578133318016,
+      "width": 166.99916294642858,
+      "height": 67.64062203792754
+    },
+    {
+      "role": "trend-progress",
+      "order": 2,
+      "span": 12,
+      "emphasis": "secondary",
+      "family": "line",
+      "x": 21.000279017857146,
+      "y": 273.21873820659323,
+      "width": 347.9994419642857,
+      "height": 95.74999325906562
+    },
+    {
+      "role": "actionable-content",
+      "order": 3,
+      "span": 12,
+      "emphasis": "secondary",
+      "family": "actionable-content",
+      "x": 21.000279017857146,
+      "y": 382.9687579128497,
+      "width": 347.9994419642857,
+      "height": 45.99997479252127
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "deterministic-dashboard-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "primary-summary",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 227.32840401785717,
+      "height": 31.18748320577557,
+      "fontSize": "24px",
+      "lineHeight": "31.2px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "deterministic-dashboard-balance",
+      "component": "article",
+      "role": null,
+      "sectionRole": "primary-summary",
+      "x": 21.000279017857146,
+      "y": 97.18750200807527,
+      "width": 227.32840401785717,
+      "height": 80.39062666102046,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "deterministic-dashboard-income",
+      "component": "article",
+      "role": null,
+      "sectionRole": "secondary-metrics",
+      "x": 21.000279017857146,
+      "y": 191.578133318016,
+      "width": 79.49916294642857,
+      "height": 67.64062203792754,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "deterministic-dashboard-expense",
+      "component": "article",
+      "role": null,
+      "sectionRole": "secondary-metrics",
+      "x": 108.50027901785715,
+      "y": 191.578133318016,
+      "width": 79.49916294642857,
+      "height": 67.64062203792754,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "deterministic-dashboard-trend",
+      "component": "figure",
+      "role": null,
+      "sectionRole": "trend-progress",
+      "x": 21.000279017857146,
+      "y": 273.21873820659323,
+      "width": 347.9994419642857,
+      "height": 95.74999325906562,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "deterministic-dashboard-cta",
+      "component": "button",
+      "role": null,
+      "sectionRole": "actionable-content",
+      "x": 21.000279017857146,
+      "y": 382.9687579128497,
+      "width": 347.9994419642857,
+      "height": 45.99997479252127,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "deterministic-dashboard-nav",
+      "component": "nav",
+      "role": null,
+      "x": 5,
+      "y": 772.9999810943909,
+      "width": 380,
+      "height": 66.0000188022997,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

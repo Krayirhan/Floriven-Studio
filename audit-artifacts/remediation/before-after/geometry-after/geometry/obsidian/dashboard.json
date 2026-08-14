@@ -1,0 +1,165 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "bento",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 42.99996601122745,
+  "sections": [
+    {
+      "role": "primary-summary",
+      "order": 0,
+      "span": 8,
+      "emphasis": "primary",
+      "family": "metric",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 227.3277064732143,
+      "height": 117.99998935913807
+    },
+    {
+      "role": "secondary-metrics",
+      "order": 1,
+      "span": 4,
+      "emphasis": "secondary",
+      "family": "glass",
+      "x": 262.32840401785717,
+      "y": 58.000009917696545,
+      "width": 106.65597098214286,
+      "height": 117.99998935913807
+    },
+    {
+      "role": "trend-progress",
+      "order": 2,
+      "span": 12,
+      "emphasis": "secondary",
+      "family": "line",
+      "x": 21.000279017857146,
+      "y": 190.00000392575487,
+      "width": 347.9840959821429,
+      "height": 111.74996743173087
+    },
+    {
+      "role": "actionable-content",
+      "order": 3,
+      "span": 12,
+      "emphasis": "secondary",
+      "family": "actionable-content",
+      "x": 21.000279017857146,
+      "y": 315.7499978046765,
+      "width": 347.9840959821429,
+      "height": 45.99997479252127
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "obsidian-dashboard-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "primary-summary",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 227.3277064732143,
+      "height": 25.29687116302658,
+      "fontSize": "22px",
+      "lineHeight": "25.3px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-dashboard-balance",
+      "component": "article",
+      "role": null,
+      "sectionRole": "primary-summary",
+      "x": 21.000279017857146,
+      "y": 91.29686816705575,
+      "width": 227.3277064732143,
+      "height": 80.39062666102046,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-dashboard-income",
+      "component": "article",
+      "role": null,
+      "sectionRole": "secondary-metrics",
+      "x": 262.32840401785717,
+      "y": 58.000009917696545,
+      "width": 49.327566964285715,
+      "height": 93.14060948584284,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-dashboard-expense",
+      "component": "article",
+      "role": null,
+      "sectionRole": "secondary-metrics",
+      "x": 319.65611049107144,
+      "y": 58.000009917696545,
+      "width": 49.32826450892858,
+      "height": 93.14060948584284,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-dashboard-trend",
+      "component": "figure",
+      "role": null,
+      "sectionRole": "trend-progress",
+      "x": 21.000279017857146,
+      "y": 190.00000392575487,
+      "width": 347.9840959821429,
+      "height": 111.74996743173087,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-dashboard-cta",
+      "component": "button",
+      "role": null,
+      "sectionRole": "actionable-content",
+      "x": 21.000279017857146,
+      "y": 315.7499978046765,
+      "width": 347.9840959821429,
+      "height": 45.99997479252127,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-dashboard-nav",
+      "component": "nav",
+      "role": null,
+      "x": 5,
+      "y": 772.9999810943909,
+      "width": 380,
+      "height": 66.0000188022997,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

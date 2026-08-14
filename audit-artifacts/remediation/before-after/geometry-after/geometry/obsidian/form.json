@@ -1,0 +1,166 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "strict-grid",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 46.00001838906235,
+  "sections": [
+    {
+      "role": "context",
+      "order": 0,
+      "span": 12,
+      "emphasis": "tertiary",
+      "family": "form-context",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9994419642857,
+      "height": 25.29687116302658
+    },
+    {
+      "role": "field-group",
+      "order": 1,
+      "span": 12,
+      "emphasis": "primary",
+      "family": "outlined",
+      "x": 21.000279017857146,
+      "y": 97.29688572964338,
+      "width": 347.9994419642857,
+      "height": 98.49999767553987
+    },
+    {
+      "role": "field-group",
+      "order": 2,
+      "span": 12,
+      "emphasis": "primary",
+      "family": "compact",
+      "x": 21.000279017857146,
+      "y": 209.79684445756243,
+      "width": 347.9994419642857,
+      "height": 140.75003778539076
+    },
+    {
+      "role": "actions",
+      "order": 3,
+      "span": 12,
+      "emphasis": "primary",
+      "family": "single-primary-action",
+      "x": 21.000279017857146,
+      "y": 364.5468650936029,
+      "width": 347.9994419642857,
+      "height": 71.99999276834626
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "obsidian-form-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "context",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9994419642857,
+      "height": 25.29687116302658,
+      "fontSize": "22px",
+      "lineHeight": "25.3px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-form-customer",
+      "component": "div",
+      "role": null,
+      "sectionRole": "field-group",
+      "x": 21.000279017857146,
+      "y": 99.2968770516589,
+      "width": 347.9994419642857,
+      "height": 43.24999217431757,
+      "fontSize": "11.5px",
+      "lineHeight": "17.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-form-number",
+      "component": "div",
+      "role": null,
+      "sectionRole": "field-group",
+      "x": 21.000279017857146,
+      "y": 150.54687811057963,
+      "width": 347.9994419642857,
+      "height": 43.24999217431757,
+      "fontSize": "11.5px",
+      "lineHeight": "17.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-form-amount",
+      "component": "div",
+      "role": null,
+      "sectionRole": "field-group",
+      "x": 21.000279017857146,
+      "y": 211.79687937611902,
+      "width": 347.9994419642857,
+      "height": 43.24999217431757,
+      "fontSize": "11.5px",
+      "lineHeight": "17.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-form-date",
+      "component": "div",
+      "role": null,
+      "sectionRole": "field-group",
+      "x": 21.000279017857146,
+      "y": 263.0468804350397,
+      "width": 347.9994419642857,
+      "height": 43.24999217431757,
+      "fontSize": "11.5px",
+      "lineHeight": "17.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-form-tax",
+      "component": "div",
+      "role": null,
+      "sectionRole": "field-group",
+      "x": 21.000279017857146,
+      "y": 314.2968814939605,
+      "width": 347.9994419642857,
+      "height": 34.24996583043611,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-form-cta",
+      "component": "button",
+      "role": null,
+      "sectionRole": "actions",
+      "x": 21.000279017857146,
+      "y": 364.5468650936029,
+      "width": 347.9994419642857,
+      "height": 46.00001838906235,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

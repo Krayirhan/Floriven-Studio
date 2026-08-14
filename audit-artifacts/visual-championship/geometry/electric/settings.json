@@ -1,0 +1,179 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "bento",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 42.99996601122745,
+  "sections": [
+    {
+      "role": "section-group",
+      "order": 0,
+      "span": 1,
+      "emphasis": "tertiary",
+      "family": "card-clusters-settings-section-group",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 31.99986049107143,
+      "height": 205.99997809842012
+    },
+    {
+      "role": "rows-controls",
+      "order": 1,
+      "span": 11,
+      "emphasis": "primary",
+      "family": "card-clusters-settings-rows-controls",
+      "x": 51.156529017857146,
+      "y": 58.000009917696545,
+      "width": 317.8431919642857,
+      "height": 205.99997809842012
+    },
+    {
+      "role": "divider",
+      "order": 2,
+      "span": 12,
+      "emphasis": "tertiary",
+      "family": "card-clusters-settings-divider",
+      "x": 21.000279017857146,
+      "y": 277.9999708667664,
+      "width": 347.9994419642857,
+      "height": 33.00005299769093
+    },
+    {
+      "role": "next-section-group",
+      "order": 3,
+      "span": 1,
+      "emphasis": "secondary",
+      "family": "card-clusters-settings-next-section-group",
+      "x": 21.000279017857146,
+      "y": 325.000006715107,
+      "width": 31.99986049107143,
+      "height": 102.24997595475133
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "electric-settings-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "section-group",
+      "x": 36.99986049107143,
+      "y": 74.00000588863233,
+      "width": 0,
+      "height": 26.24997874410349,
+      "fontSize": "25px",
+      "lineHeight": "26.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-settings-profile",
+      "component": "div",
+      "role": null,
+      "sectionRole": "rows-controls",
+      "x": 67.15611049107143,
+      "y": 74.00000588863233,
+      "width": 285.84402901785717,
+      "height": 54.49999240676358,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-settings-currency",
+      "component": "div",
+      "role": null,
+      "sectionRole": "rows-controls",
+      "x": 67.15611049107143,
+      "y": 136.49998538172852,
+      "width": 285.84402901785717,
+      "height": 55.50000986604188,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-settings-notify",
+      "component": "label",
+      "role": null,
+      "sectionRole": "rows-controls",
+      "x": 67.15611049107143,
+      "y": 200.00000413237356,
+      "width": 285.84402901785717,
+      "height": 20.000000413237355,
+      "fontSize": "12px",
+      "lineHeight": "18px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-settings-weekly",
+      "component": "label",
+      "role": null,
+      "sectionRole": "rows-controls",
+      "x": 67.15611049107143,
+      "y": 227.999969833673,
+      "width": 285.84402901785717,
+      "height": 20.000000413237355,
+      "fontSize": "12px",
+      "lineHeight": "18px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-settings-divider",
+      "component": "hr",
+      "role": null,
+      "sectionRole": "divider",
+      "x": 36.99986049107143,
+      "y": 293.99998863597267,
+      "width": 316.00027901785717,
+      "height": 1.0000174592782995,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "hidden",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-settings-security",
+      "component": "div",
+      "role": null,
+      "sectionRole": "next-section-group",
+      "x": 36.99986049107143,
+      "y": 341.00002448431337,
+      "width": 0,
+      "height": 70.24998401287978,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-settings-nav",
+      "component": "nav",
+      "role": null,
+      "x": 5,
+      "y": 772.9999810943909,
+      "width": 380,
+      "height": 66.0000188022997,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

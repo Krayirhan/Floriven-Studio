@@ -1,0 +1,179 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999267578125,
+    "scaleX": 0.7,
+    "scaleY": 0.699999913220157
+  },
+  "layoutPattern": "bento",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 43.000057646617144,
+  "sections": [
+    {
+      "role": "context",
+      "order": 0,
+      "span": 5,
+      "emphasis": "secondary",
+      "family": "card-clusters-analytics-context",
+      "x": 21.000279017857146,
+      "y": 58.000015909639856,
+      "width": 136.82756696428572,
+      "height": 235.78127923008915
+    },
+    {
+      "role": "period-comparison",
+      "order": 1,
+      "span": 12,
+      "emphasis": "tertiary",
+      "family": "card-clusters-analytics-period-comparison",
+      "x": 21.000279017857146,
+      "y": 307.78127943670785,
+      "width": 347.9840959821429,
+      "height": 66.25000821309331
+    },
+    {
+      "role": "dominant-chart",
+      "order": 2,
+      "span": 12,
+      "emphasis": "primary",
+      "family": "radial-energy",
+      "x": 21.000279017857146,
+      "y": 388.03127194678,
+      "width": 347.9840959821429,
+      "height": 160.00001983539514
+    },
+    {
+      "role": "breakdown",
+      "order": 3,
+      "span": 7,
+      "emphasis": "secondary",
+      "family": "card-clusters-analytics-breakdown",
+      "x": 21.000279017857146,
+      "y": 562.0313196756996,
+      "width": 197.15611049107144,
+      "height": 143.4999480353971
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "electric-analytics-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "context",
+      "x": 36.99986049107143,
+      "y": 74.00001353352482,
+      "width": 104.82840401785715,
+      "height": 52.50000650848904,
+      "fontSize": "25px",
+      "lineHeight": "26.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-analytics-rate",
+      "component": "article",
+      "role": null,
+      "sectionRole": "context",
+      "x": 36.99986049107143,
+      "y": 134.50000795481992,
+      "width": 104.82840401785715,
+      "height": 67.64065082410902,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-analytics-reserve",
+      "component": "article",
+      "role": null,
+      "sectionRole": "context",
+      "x": 36.99986049107143,
+      "y": 210.1406684900078,
+      "width": 104.82840401785715,
+      "height": 67.64060722756344,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-analytics-period",
+      "component": "div",
+      "role": null,
+      "sectionRole": "period-comparison",
+      "x": 36.99986049107143,
+      "y": 323.78129885886557,
+      "width": 315.98423549107144,
+      "height": 34.249969368777805,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-analytics-revenue",
+      "component": "figure",
+      "role": null,
+      "sectionRole": "dominant-chart",
+      "x": 36.99986049107143,
+      "y": 404.03129136893773,
+      "width": 315.98423549107144,
+      "height": 95.75000315093517,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-analytics-expense",
+      "component": "figure",
+      "role": null,
+      "sectionRole": "breakdown",
+      "x": 36.99986049107143,
+      "y": 578.0313390978573,
+      "width": 78.57840401785715,
+      "height": 111.49999638417276,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-analytics-collection",
+      "component": "figure",
+      "role": null,
+      "sectionRole": "breakdown",
+      "x": 123.57840401785715,
+      "y": 578.0313390978573,
+      "width": 78.57770647321429,
+      "height": 111.49999638417276,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-analytics-nav",
+      "component": "nav",
+      "role": null,
+      "x": 5,
+      "y": 773.0000609525164,
+      "width": 380,
+      "height": 65.99993842762757,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

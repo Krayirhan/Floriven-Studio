@@ -1,0 +1,54 @@
+name: Runtime quality gates
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  runtime-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm contracts:runtime-hierarchy
+        env:
+          RUNTIME_HIERARCHY_BASE_REF: ${{ github.event.pull_request.base.sha || '' }}
+      - run: pnpm --filter @floriven/design-spec exec vitest run src/runtime-replay.test.ts src/runtime-baseline.test.ts src/runtime-baseline-approval.test.ts src/runtime-visual-hierarchy-calibration.test.ts
+      - run: pnpm type-check
+      - run: pnpm certification:security
+      - name: Report live release evidence status
+        run: pnpm certification:runtime-release-evidence
+
+  baseline-approval:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Verify hash-bound baseline approval
+        env:
+          RUNTIME_BASELINE_BASE_REF: ${{ github.event.pull_request.base.sha }}
+          RUNTIME_BASELINE_APPROVED: ${{ contains(github.event.pull_request.labels.*.name, 'runtime-baseline-approved') }}
+        run: pnpm certification:runtime-baseline-approval

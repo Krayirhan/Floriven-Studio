@@ -1,5 +1,5 @@
 import type { CSSProperties, MouseEvent } from "react";
-import { adaptPresentationV2ToRuntime, isPresentationSpecV2, type DesignNode, type PresentationSpec, type PresentationSpecV2, type Screen } from "@floriven/design-spec";
+import { CANONICAL_VIEWPORT, type CompiledVisualScreen, type DesignNode, type PresentationSpecV2, type Screen } from "@floriven/design-spec";
 import styles from "../StudioPage.module.css";
 import { isComponentType } from "./componentRegistry";
 
@@ -8,7 +8,8 @@ type RendererProps = {
   selectedNodeId: string;
   onSelect: (id: string) => void;
   activeNavItem?: string | undefined;
-  presentation?: PresentationSpec | undefined;
+  presentation: PresentationSpecV2;
+  chartTypeOverride?: string;
 };
 
 function stringProp(node: DesignNode, key: string, fallback = ""): string {
@@ -41,43 +42,54 @@ function toneClass(node: DesignNode): string {
   return styles[`generatedTone${tone[0]?.toUpperCase() ?? ""}${tone.slice(1)}`] ?? "";
 }
 
-function presetComponentClass(presentation: PresentationSpec | undefined, component: string): string {
-  if (!presentation) return "";
-  const palette = presentation.palette[0]?.toUpperCase() + presentation.palette.slice(1);
-  return styles[`preset${palette}${component}`] ?? "";
-}
-
-function presentationVariables(presentation: PresentationSpec | undefined): CSSProperties {
-  if (!presentation) return {};
-  const palette = {
-    obsidian: ["#38bdf8", "rgba(56,189,248,.14)", "#031420"],
-    serene: ["#0d9488", "#ccfbf1", "#ffffff"],
-    terracotta: ["#ea580c", "#ffedd5", "#ffffff"],
-    electric: ["#8b5cf6", "#f3e8ff", "#ffffff"],
-    editorial: ["#18181b", "#f4f4f5", "#ffffff"],
-  }[presentation.palette];
-  const radius = { crisp: "14px", soft: "24px", layered: "22px", playful: "24px", minimal: "0px" }[presentation.cardStyle];
-  const space = { compact: "12px", comfortable: "16px", spacious: "22px" }[presentation.density];
+function presentationVariables(presentation: PresentationSpecV2): CSSProperties {
   return {
-    "--gen-accent": palette?.[0] ?? "#0891b2",
-    "--gen-accent-soft": palette?.[1] ?? "#e0f2fe",
-    "--gen-on-accent": palette?.[2] ?? "#ffffff",
-    "--gen-radius-lg": radius ?? "14px",
-    "--gen-space-4": space ?? "16px",
-    "--gen-navigation-radius": presentation.navigationStyle === "floating" ? "24px" : presentation.navigationStyle === "minimal" ? "0px" : "13px",
+    "--gen-accent": presentation.palette.accent,
+    "--gen-accent-soft": `color-mix(in srgb, ${presentation.palette.accent} 14%, ${presentation.palette.background})`,
+    "--gen-on-accent": presentation.palette.background,
+    "--gen-radius-lg": presentation.geometry.radius,
+    "--gen-card-padding": presentation.geometry.padding,
+    "--gen-card-border": presentation.geometry.border.startsWith("0") ? "0" : `1px solid color-mix(in srgb, ${presentation.palette.foreground} 14%, transparent)`,
+    "--gen-card-shadow": presentation.geometry.elevation === "flat" ? "none" : presentation.geometry.elevation === "playful" ? `0 8px 0 color-mix(in srgb, ${presentation.palette.accent} 22%, transparent)` : `0 12px 30px color-mix(in srgb, ${presentation.palette.foreground} 14%, transparent)`,
+    "--gen-heading-size": presentation.typography.roles.display.size,
+    "--gen-heading-weight": presentation.typography.roles.display.weight,
+    "--gen-heading-line-height": presentation.typography.roles.display.lineHeight,
+    "--gen-body-size": presentation.typography.roles.body.size,
+    "--gen-body-line-height": presentation.typography.roles.body.lineHeight,
+    "--gen-metric-size": presentation.typography.roles.metric.size,
+    "--gen-meta-size": presentation.typography.roles.metadata.size,
+    "--gen-type-weight": presentation.typography.roles.body.weight,
+    "--gen-label-transform": presentation.typography.uppercaseLabels ? "uppercase" : "none",
+    "--gen-chart-grid-opacity": presentation.charts.grid === "none" ? 0 : presentation.charts.grid === "strong" ? 1 : .45,
+    "--gen-chart-height": presentation.charts.density === "dense" ? "88px" : presentation.charts.density === "sparse" ? "58px" : "72px",
+    "--gen-control-radius": presentation.controls.types[0] === "segmented" ? "8px" : presentation.geometry.radius,
+    "--gen-field-radius": presentation.fields.styles[0] === "underline" ? "0px" : presentation.geometry.radius,
+    "--gen-divider-width": presentation.surfaces.divider === "strong" || presentation.surfaces.divider === "ink" ? "2px" : "1px",
+    "--gen-interaction-scale": presentation.behavior.interaction === "energetic" ? "1.02" : "1",
+    "--gen-space-4": `${presentation.spacing.sectionGap}px`,
+    "--gen-navigation-radius": presentation.navigation.active === "floating" ? "24px" : presentation.navigation.active === "minimal" ? "0px" : presentation.geometry.radius,
+    "--fv-phone-bg": presentation.palette.background,
+    "--fv-phone-text": presentation.palette.foreground,
+    "--floriven-font-body": presentation.typography.family,
+    "--floriven-font-display": presentation.typography.displayFamily,
+    "--floriven-motion-duration": presentation.motion.duration,
   } as CSSProperties;
 }
 
-function selectionProps(node: DesignNode, onSelect: (id: string) => void): { className: string; onClick: (event: MouseEvent) => void; "data-node-id": string; "data-floriven-node-id": string } {
+function selectionProps(node: DesignNode, onSelect: (id: string) => void): { className: string; onClick: (event: MouseEvent) => void; "data-node-id": string; "data-floriven-node-id": string; "data-section-role"?: string; "data-semantic-container"?: "true" } {
+  const semanticContainer = node.props?.semanticContainer === true
+  const sectionRole = typeof node.props?.contractSectionRole === "string" ? node.props.contractSectionRole : undefined
   return {
     className: styles.generatedNode ?? "",
     "data-node-id": node.id,
     "data-floriven-node-id": node.id,
+    ...(semanticContainer ? { "data-semantic-container": "true" as const } : {}),
+    ...(semanticContainer && sectionRole ? { "data-section-role": sectionRole } : {}),
     onClick: (event) => { event.stopPropagation(); onSelect(node.id); },
   };
 }
 
-function children(node: DesignNode, selectedNodeId: string, onSelect: (id: string) => void, activeNavItem?: string, presentation?: PresentationSpec) {
+function children(node: DesignNode, selectedNodeId: string, onSelect: (id: string) => void, activeNavItem: string | undefined, presentation: PresentationSpecV2) {
   return node.children?.map((child) => <DesignNodeRenderer key={child.id} node={child} selectedNodeId={selectedNodeId} onSelect={onSelect} activeNavItem={activeNavItem} presentation={presentation} />);
 }
 
@@ -183,7 +195,13 @@ function layoutStyle(node: DesignNode): CSSProperties {
   return { display: "flex", flexDirection: "column", gap: 12 };
 }
 
-export function DesignNodeRenderer({ node, selectedNodeId, onSelect, activeNavItem, presentation }: RendererProps) {
+function sectionNodeColumns(section: CompiledVisualScreen["renderPlan"]["sections"][number]): number {
+  if (section.role === "secondary-metrics") return Math.min(2, Math.max(1, section.nodes.length));
+  if (section.role === "breakdown") return Math.min(2, Math.max(1, section.nodes.length));
+  return 1;
+}
+
+export function DesignNodeRenderer({ node, selectedNodeId, onSelect, activeNavItem, presentation, chartTypeOverride }: RendererProps) {
   if (!isComponentType(node.type)) {
     return <div role="alert" data-renderer-error="UNSUPPORTED_RENDERER_COMPONENT">Unsupported component: {node.type}</div>;
   }
@@ -214,16 +232,16 @@ export function DesignNodeRenderer({ node, selectedNodeId, onSelect, activeNavIt
     case "Card": {
       const variant = stringProp(node, "variant", "elevated");
       const variantClass = styles[`generatedCard${variant[0]?.toUpperCase() ?? ""}${variant.slice(1)}`] ?? "";
-      const family = stringProp(node, "family", presentation?.cardFamilies?.[0] ?? "");
-      return <section {...selectable} data-component-family={family || undefined} className={`${styles.generatedCard} ${variantClass} ${family ? `generatedCardFamily-${family}` : ""} ${toneClass(node)} ${presetComponentClass(presentation, "Card")} ${selectedClass}`}>{childNodes}</section>;
+      const family = stringProp(node, "family", presentation.cards.types[0] ?? "");
+      return <section {...selectable} data-component-family={family || undefined} data-surface-style={presentation.surfaces.style} className={`${styles.generatedCard} ${variantClass} ${toneClass(node)} ${selectedClass}`}>{childNodes}</section>;
     }
     case "Button":
-      return <button {...selectable} type="button" className={`${styles.generatedButton} ${presetComponentClass(presentation, "Button")} ${selectedClass}`}>{stringProp(node, "label", stringProp(node, "icon", "Devam"))}</button>;
+      return <button {...selectable} type="button" data-button-style={presentation.controls.buttons[0]} className={`${styles.generatedButton} ${selectedClass}`}>{stringProp(node, "label", stringProp(node, "icon", "Devam"))}</button>;
     case "IconButton":
       return <button {...selectable} type="button" className={`${styles.generatedIconButton} ${selectedClass}`} aria-label={node.a11y?.label ?? "Aksiyon"}><ActionGlyph name={stringProp(node, "icon", "plus")} /></button>;
     case "TextField":
     case "SearchField":
-      return <div {...selectable} className={`${styles.generatedInput} ${presetComponentClass(presentation, "Input")} ${selectedClass}`}>{node.type === "SearchField" && <ActionGlyph name="search" />}<span>{stringProp(node, "placeholder")}</span></div>;
+      return <label {...selectable} data-field-style={presentation.fields.styles[0]} className={`${styles.generatedInput} ${selectedClass}`}><span className={styles.generatedFieldLabel}>{stringProp(node, "label", stringProp(node, "placeholder"))}</span>{node.type === "SearchField" && <ActionGlyph name="search" />}<span className={styles.generatedFieldValue}>{stringProp(node, "placeholder")}</span></label>;
     case "ListItem": {
       const title = stringProp(node, "title");
       return <div {...selectable} className={`${styles.generatedListItem} ${toneClass(node)} ${selectedClass}`}>
@@ -234,15 +252,15 @@ export function DesignNodeRenderer({ node, selectedNodeId, onSelect, activeNavIt
       </div>;
     }
     case "Divider":
-      return <hr {...selectable} className={`${styles.generatedDivider} ${selectedClass}`} />;
+      return <hr {...selectable} data-divider-style={presentation.surfaces.divider} className={`${styles.generatedDivider} ${selectedClass}`} />;
     case "Badge":
-      return <span {...selectable} className={`${styles.generatedBadge} ${toneClass(node)} ${presetComponentClass(presentation, "Badge")} ${selectedClass}`}>{stringProp(node, "label")}</span>;
+      return <span {...selectable} data-pill-type={presentation.pills.types[0]} data-status-style={presentation.pills.status} className={`${styles.generatedBadge} ${toneClass(node)} ${selectedClass}`}>{stringProp(node, "label")}</span>;
     case "Avatar":
-      return <div {...selectable} className={`${styles.generatedAvatar} ${presetComponentClass(presentation, "Avatar")} ${selectedClass}`}><span>{stringProp(node, "initials", "•")}</span></div>;
+      return <div {...selectable} data-avatar-shape={presentation.media.avatarShape} className={`${styles.generatedAvatar} ${selectedClass}`}><span>{stringProp(node, "initials", "•")}</span></div>;
     case "Image":
-      return <div {...selectable} className={`${styles.generatedImage} ${selectedClass}`} aria-label={stringProp(node, "alt", "Görsel")}><span>{stringProp(node, "alt", "Görsel")}</span></div>;
+      return <div {...selectable} data-image-treatment={presentation.media.treatment} className={`${styles.generatedImage} ${selectedClass}`} aria-label={stringProp(node, "alt", "Görsel")}><span>{stringProp(node, "alt", "Görsel")}</span></div>;
     case "Icon":
-      return <span {...selectable} className={`${styles.generatedIcon} ${selectedClass}`}><LeafGlyph name={stringProp(node, "name", "dot")} /></span>;
+      return <span {...selectable} data-icon-style={presentation.icons.style} className={`${styles.generatedIcon} ${selectedClass}`}><LeafGlyph name={stringProp(node, "name", "dot")} /></span>;
     case "Progress": {
       const rawValue = node.props.value;
       const value = typeof rawValue === "number" ? Math.max(0, Math.min(100, rawValue)) : 0;
@@ -269,9 +287,11 @@ export function DesignNodeRenderer({ node, selectedNodeId, onSelect, activeNavIt
       const points = values.map((value, index) => `${xAt(index)},${yAt(value)}`).join(" ");
       const areaPoints = `0,56 ${points} 100,56`;
       const gradientId = `chart-fill-${node.id}`;
-      const inferredChartType = /dağılım|distribution|kategori|category/i.test(stringProp(node, "label")) ? "bar" : /oran|ratio|pay|share/i.test(stringProp(node, "label")) ? "donut" : undefined;
-      const chartStyle = stringProp(node, "chartType", inferredChartType ?? presentation?.chartTypes?.[0] ?? (presentation?.palette === "terracotta" ? "bar" : presentation?.palette === "serene" ? "area" : presentation?.palette === "electric" ? "radial" : "line"));
+      const chartStyle = chartTypeOverride ?? stringProp(node, "chartType", presentation.charts.types[0] ?? "line");
       const barWidth = 100 / Math.max(values.length, 1) * 0.62;
+      const total = Math.max(values.reduce((sum, value) => sum + Math.max(value, 0), 0), 1);
+      let donutOffset = 0;
+      const radialValue = Math.max(0, Math.min(100, values[0] ?? 0));
       return <figure {...selectable} data-chart-type={chartStyle} className={`${styles.generatedChart} ${toneClass(node)} ${selectedClass}`}>
         <figcaption>{stringProp(node, "label")}</figcaption>
         <svg viewBox="0 0 100 60" preserveAspectRatio="none" aria-hidden="true">
@@ -279,15 +299,32 @@ export function DesignNodeRenderer({ node, selectedNodeId, onSelect, activeNavIt
           <path className={styles.generatedChartGrid} d="M0 16H100M0 32H100M0 48H100" />
           {chartStyle === "area" && <polygon className={styles.generatedChartArea} points={areaPoints} fill={`url(#${gradientId})`} />}
           {chartStyle === "bar" && values.map((value, index) => <rect key={`${value}-${index}`} x={xAt(index) - barWidth / 2} y={yAt(value)} width={barWidth} height={56 - yAt(value)} rx="1.5" />)}
-          {chartStyle !== "bar" && chartStyle !== "donut" && <polyline points={points} />}
+          {chartStyle === "donut" && <g transform="rotate(-90 50 30)">{values.map((value, index) => { const length = Math.max(value, 0) / total * 138.23; const offset = donutOffset; donutOffset += length; return <circle key={`${value}-${index}`} cx="50" cy="30" r="22" fill="none" stroke="var(--node-tone, var(--gen-accent))" strokeOpacity={Math.max(.3, 1 - index * .15)} strokeWidth="9" strokeDasharray={`${length} ${138.23 - length}`} strokeDashoffset={-offset} />; })}</g>}
+          {chartStyle === "radial" && <g transform="rotate(-90 50 30)"><circle cx="50" cy="30" r="22" fill="none" stroke="var(--gen-border)" strokeWidth="8" /><circle cx="50" cy="30" r="22" fill="none" stroke="var(--node-tone, var(--gen-accent))" strokeWidth="8" strokeLinecap="round" strokeDasharray={`${radialValue * 1.3823} 138.23`} /></g>}
+          {!["bar", "donut", "radial"].includes(chartStyle) && <polyline points={points} />}
           {chartStyle !== "bar" && chartStyle !== "donut" && values.map((value, index) => <circle key={`${value}-${index}`} cx={xAt(index)} cy={yAt(value)} r={chartStyle === "radial" ? "2.4" : "1.8"} />)}
         </svg>
       </figure>;
     }
     case "SegmentedControl": {
       const items = stringList(node, "items");
-      return <div {...selectable} className={`${styles.generatedSegments} ${presetComponentClass(presentation, "Segments")} ${selectedClass}`}>{items.map((item, index) => <span className={index === 0 ? styles.generatedSegmentActive : ""} key={item}>{item}</span>)}</div>;
+      return <div {...selectable} className={`${styles.generatedSegments} ${selectedClass}`}>{items.map((item, index) => <span className={index === 0 ? styles.generatedSegmentActive : ""} key={item}>{item}</span>)}</div>;
     }
+    case "Calendar": {
+      const days = stringList(node, "days").slice(0, 7);
+      const events = stringList(node, "events").slice(0, 6);
+      return <section {...selectable} className={`${styles.experienceCalendar} ${selectedClass}`}><header><strong>{stringProp(node, "label")}</strong><span>Hafta</span></header><div className={styles.experienceCalendarDays}>{days.map((day, index) => <span className={index === 2 ? styles.experienceCalendarActive : ""} key={day}>{day.split(" ")[0]}<b>{day.split(" ")[1] ?? index + 1}</b></span>)}</div><div className={styles.experienceCalendarEvents}>{events.map((event, index) => <div key={`${event}-${index}`}><time>{`${9 + index * 2}:00`}</time><i /><span>{event}</span></div>)}</div></section>;
+    }
+    case "Timeline":
+      return <section {...selectable} className={`${styles.experienceTimeline} ${selectedClass}`}><h3>{stringProp(node, "label")}</h3>{stringList(node, "events").map((event, index) => <div key={`${event}-${index}`}><b>{String(index + 1).padStart(2, "0")}</b><i /><span>{event}</span></div>)}</section>;
+    case "Gallery":
+      return <section {...selectable} className={`${styles.experienceGallery} ${selectedClass}`}><h3>{stringProp(node, "label")}</h3><div>{stringList(node, "items").map((item, index) => <figure key={`${item}-${index}`} className={index === 0 ? styles.experienceGalleryLead : ""}><i /><figcaption>{item}</figcaption></figure>)}</div></section>;
+    case "KanbanBoard": {
+      const columns = stringList(node, "columns").slice(0, 3); const cards = stringList(node, "cards");
+      return <section {...selectable} className={`${styles.experienceBoard} ${selectedClass}`}><h3>{stringProp(node, "label")}</h3><div>{columns.map((column, index) => <article key={column}><strong>{column}</strong>{cards.filter((_, cardIndex) => cardIndex % Math.max(columns.length, 1) === index).map((card) => <span key={card}>{card}</span>)}</article>)}</div></section>;
+    }
+    case "MapView":
+      return <figure {...selectable} className={`${styles.experienceMap} ${selectedClass}`}><figcaption>{stringProp(node, "label")}</figcaption><div>{stringList(node, "markers").map((marker, index) => <span style={{ left: `${18 + (index * 23) % 68}%`, top: `${20 + (index * 31) % 58}%` }} key={marker}><i />{marker}</span>)}</div></figure>;
     case "FloatingActionButton":
       return <button {...selectable} type="button" className={`${styles.generatedFab} ${selectedClass}`} aria-label={node.a11y?.label ?? "Aksiyon"}><ActionGlyph name={stringProp(node, "icon", "plus")} /></button>;
     case "CareSummary": {
@@ -399,33 +436,38 @@ export function DesignNodeRenderer({ node, selectedNodeId, onSelect, activeNavIt
     case "BottomNavigation": {
       const items = stringList(node, "items");
       const activeIndex = Math.max(0, items.findIndex((item) => item === activeNavItem));
-      return <nav {...selectable} data-fixed-navigation="true" className={`${styles.generatedNavigation} ${selectedClass}`} aria-label={node.a11y?.label ?? "Alt gezinme"}>{items.map((item, index) => <button type="button" key={item} className={index === activeIndex ? styles.generatedNavigationActive : ""} aria-current={index === activeIndex ? "page" : undefined}><NavigationIcon index={index} label={item} /><span>{item}</span></button>)}</nav>;
+      return <nav {...selectable} data-fixed-navigation="true" data-navigation-mode={presentation.navigation.active} data-navigation-geometry={presentation.navigation.geometry} className={`${styles.generatedNavigation} ${selectedClass}`} aria-label={node.a11y?.label ?? "Alt gezinme"}>{items.map((item, index) => <button type="button" key={item} className={index === activeIndex ? styles.generatedNavigationActive : ""} aria-current={index === activeIndex ? "page" : undefined}><NavigationIcon index={index} label={item} /><span>{item}</span></button>)}</nav>;
     }
     case "Checkbox":
     case "Switch":
       return <label {...selectable} className={`${styles.generatedToggle} ${selectedClass}`}><i aria-hidden="true" />{stringProp(node, "label")}</label>;
     case "Modal":
-      return <section {...selectable} className={`${styles.generatedModal} ${selectedClass}`}>{childNodes}</section>;
+      return <section {...selectable} data-modal-style={presentation.behavior.modal} className={`${styles.generatedModal} ${selectedClass}`}>{childNodes}</section>;
   }
 }
 
-export function PhoneScreen({ screen, presentation: inputPresentation, selectedNodeId, active, onSelect }: { screen: Screen; presentation?: PresentationSpec | PresentationSpecV2 | undefined; selectedNodeId: string; active: boolean; onSelect: (id: string) => void }) {
-  const presentation: PresentationSpec | undefined = inputPresentation && isPresentationSpecV2(inputPresentation) ? adaptPresentationV2ToRuntime(inputPresentation) : inputPresentation;
+export function PhoneScreen({ screen, compiled, selectedNodeId, active, onSelect }: { screen: Screen; compiled: CompiledVisualScreen; selectedNodeId: string; active: boolean; onSelect: (id: string) => void }) {
+  const presentation = compiled.presentation;
   const theme = stringProp(screen.root, "theme", "ocean");
   const themeClass = styles[`generatedTheme${theme[0]?.toUpperCase() ?? ""}${theme.slice(1)}`] ?? "";
   const presentationStyle = presentationVariables(presentation);
-  const palette = presentation?.palette ?? "";
-  const paletteClass = palette ? styles[`strategyPalette${palette[0]?.toUpperCase() ?? ""}${palette.slice(1)}`] ?? "" : "";
-  const cardClass = presentation?.cardStyle ? styles[`strategyCards${presentation.cardStyle[0]?.toUpperCase() ?? ""}${presentation.cardStyle.slice(1)}`] ?? "" : "";
-  const densityClass = presentation?.density ? styles[`strategyDensity${presentation.density[0]?.toUpperCase() ?? ""}${presentation.density.slice(1)}`] ?? "" : "";
-  const navigationClass = presentation?.navigationStyle ? styles[`strategyNavigation${presentation.navigationStyle[0]?.toUpperCase() ?? ""}${presentation.navigationStyle.slice(1)}`] ?? "" : "";
-  const screenKey = screen.name.toLocaleLowerCase("tr-TR");
-  const composition = screenKey.includes("setting") || screenKey.includes("ayar") ? "settings" : screenKey.includes("form") || screenKey.includes("new") || screenKey.includes("create") ? "form" : screenKey.includes("detail") || screenKey.includes("detay") ? "detail" : screenKey.includes("analytic") || screenKey.includes("analysis") || screenKey.includes("rapor") ? "analytics" : screenKey.includes("list") || screenKey.includes("liste") ? "list" : "dashboard";
-  const compositionClass = styles[`presetComposition${composition[0]?.toUpperCase() ?? ""}${composition.slice(1)}`] ?? "";
+  const logicalViewportStyle = { ...presentationStyle, width: `${CANONICAL_VIEWPORT.width}px`, height: `${CANONICAL_VIEWPORT.height}px` };
   const { contentRoot, navigation, fab } = splitScreenNavigation(screen.root);
-  return <div className={`${styles.phone} ${themeClass} ${paletteClass} ${cardClass} ${densityClass} ${navigationClass} ${compositionClass} ${active ? styles.phoneActive : ""}`} data-floriven-screen-id={screen.id} data-screen-composition={composition} data-viewport-width="390" data-viewport-height="844" data-renderer-version="phone-screen-v2" style={presentationStyle}>
+  const nodesById = new Map((contentRoot.children ?? []).map((node) => [node.id, node]));
+  return <div className={`${styles.phone} ${themeClass} ${active ? styles.phoneActive : ""}`} data-floriven-screen-id={screen.id} data-screen-composition={compiled.intent.archetype} data-layout-pattern={compiled.layout.pattern} data-layout-viewport-width={compiled.layout.viewport.width} data-layout-viewport-height={compiled.layout.viewport.height} data-available-layouts={presentation.composition.availablePatterns.join(" ")} data-grouping-style={presentation.composition.grouping} data-chart-grid={presentation.charts.grid} data-chart-palette={presentation.charts.palette} data-chart-animation={presentation.charts.animation} data-control-family={presentation.controls.types[0]} data-data-presentation={presentation.behavior.dataPresentation} data-interaction-style={presentation.behavior.interaction} data-empty-state-style={presentation.behavior.emptyState} data-motion-card={presentation.motion.cardOpen} data-presentation-version={presentation.version} data-viewport-width={CANONICAL_VIEWPORT.width} data-viewport-height={CANONICAL_VIEWPORT.height} data-renderer-version="phone-screen-v4" style={logicalViewportStyle}>
     <div className={styles.phStatus}><span>9:41</span><span>●●● ◒</span></div>
-    <main className={`${styles.phBody} ${fab ? styles.phBodyReserveFab : ""}`} data-scroll-viewport="true" tabIndex={0} aria-label={`${screen.name} kaydırılabilir içeriği`} onWheel={(event) => event.stopPropagation()}><DesignNodeRenderer node={contentRoot} selectedNodeId={active ? selectedNodeId : ""} onSelect={onSelect} activeNavItem={screen.name} presentation={presentation} /></main>
+    <main className={`${styles.phBody} ${fab ? styles.phBodyReserveFab : ""}`} data-scroll-viewport="true" data-layout-pattern={compiled.layout.pattern} tabIndex={0} aria-label={`${screen.name} kaydırılabilir içeriği`} onWheel={(event) => event.stopPropagation()}>
+      {compiled.renderPlan.sections.map((section) => {
+        const box = compiled.layout.boxes.find((candidate) => candidate.id === section.id);
+        return <section key={section.id} data-render-section-role={section.role} data-render-family={section.resolvedFamily} data-render-emphasis={section.emphasis} data-render-order={section.order} data-render-span={section.span} data-layout-x={box?.x} data-layout-y={box?.y} data-layout-width={box?.width} data-layout-height={box?.height} style={{ display: "grid", gridTemplateColumns: `repeat(${sectionNodeColumns(section)}, minmax(0, 1fr))`, gap: `${presentation.spacing.unit * 2}px`, gridColumn: section.span >= 12 ? "1 / -1" : `span ${section.span}` }}>
+          {section.nodes.map((plannedNode) => {
+            const node = nodesById.get(plannedNode.id) ?? plannedNode;
+            const chartTypeOverride = section.role === "dominant-chart" || section.role === "breakdown" || section.role === "trend-progress" ? section.resolvedFamily?.includes("radial") ? "radial" : section.resolvedFamily?.includes("bar") ? "bar" : section.resolvedFamily?.includes("line") ? "line" : undefined : undefined;
+            return <DesignNodeRenderer key={node.id} node={node} selectedNodeId={active ? selectedNodeId : ""} onSelect={onSelect} activeNavItem={screen.name} presentation={presentation} {...(chartTypeOverride ? { chartTypeOverride } : {})} />;
+          })}
+        </section>;
+      })}
+    </main>
     {fab && <div className={`${styles.generatedFabSlot} ${navigation ? styles.generatedFabSlotAboveNav : ""}`}><DesignNodeRenderer node={fab} selectedNodeId={active ? selectedNodeId : ""} onSelect={onSelect} presentation={presentation} /></div>}
     {navigation && <DesignNodeRenderer node={navigation} selectedNodeId={active ? selectedNodeId : ""} onSelect={onSelect} activeNavItem={screen.name} presentation={presentation} />}
   </div>;

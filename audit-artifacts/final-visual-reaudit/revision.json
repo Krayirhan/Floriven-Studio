@@ -1,0 +1,27 @@
+{
+  "audit": "FLORIVEN_V4_POST_STRUCTURAL_FINAL_VISUAL_REAUDIT",
+  "timestamp": "2026-08-10T17:08:21.970Z",
+  "gitSha": "dadf574dd38c81734a3d7590b501f33eb684b60c",
+  "workingTreeEntryCount": 44,
+  "productionCodeChangedAfterFreeze": false,
+  "canonicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "lockfileSha256": "638751547f2db3d09f6d75aff010a118b16c89230eece9dffd48e24dd5b802b6",
+  "environment": {
+    "os": "Windows",
+    "node": "v24.7.0",
+    "pnpm": "9.0.0",
+    "timezone": "Europe/Istanbul"
+  },
+  "gates": {
+    "validScreens": 42,
+    "typecheck": "PASS",
+    "build": "PASS",
+    "lint": "PASS_WITH_EXISTING_WARNING",
+    "runtimeCapture": "PASS",
+    "crossArchetype": "0/105 PASS",
+    "crossPreset": "10/60 PASS"
+  }
+}

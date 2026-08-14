@@ -1,0 +1,120 @@
+{
+  "revision": "6e65c9f5872d3c594692c0ee147146d68e65130c",
+  "validRuntimeScreens": 42,
+  "overallVisualScore": 58.0,
+  "namedPresetAverage": 58.6,
+  "autoScore": 57,
+  "deterministicScore": 56,
+  "crossArchetype": "FAIL",
+  "crossPreset": "FAIL",
+  "geometry": "PASS",
+  "accessibility": "PASS_WITH_WARNINGS",
+  "finalVisualVerdict": "NOT_READY",
+  "best5": [
+    {
+      "mode": "obsidian",
+      "archetype": "management-list",
+      "screenScore": 6.3,
+      "bestThing": "Rows are scannable and amounts retain sign hierarchy.",
+      "worstThing": "The page title lands after the rows; row family is generic across modes.",
+      "criticalIssue": null,
+      "shipToday": "NO"
+    },
+    {
+      "mode": "serene",
+      "archetype": "management-list",
+      "screenScore": 6.3,
+      "bestThing": "Rows are scannable and amounts retain sign hierarchy.",
+      "worstThing": "The page title lands after the rows; row family is generic across modes.",
+      "criticalIssue": null,
+      "shipToday": "NO"
+    },
+    {
+      "mode": "electric",
+      "archetype": "management-list",
+      "screenScore": 6.2,
+      "bestThing": "Rows are scannable and amounts retain sign hierarchy.",
+      "worstThing": "The page title lands after the rows; row family is generic across modes.",
+      "criticalIssue": null,
+      "shipToday": "NO"
+    },
+    {
+      "mode": "terracotta",
+      "archetype": "management-list",
+      "screenScore": 6.1,
+      "bestThing": "Rows are scannable and amounts retain sign hierarchy.",
+      "worstThing": "The page title lands after the rows; row family is generic across modes.",
+      "criticalIssue": null,
+      "shipToday": "NO"
+    },
+    {
+      "mode": "auto",
+      "archetype": "management-list",
+      "screenScore": 6.1,
+      "bestThing": "Rows are scannable and amounts retain sign hierarchy.",
+      "worstThing": "The page title lands after the rows; row family is generic across modes.",
+      "criticalIssue": null,
+      "shipToday": "NO"
+    }
+  ],
+  "worst5": [
+    {
+      "mode": "editorial",
+      "archetype": "analytics",
+      "screenScore": 4.6,
+      "bestThing": "Multiple real chart geometries render without clipping.",
+      "worstThing": "Charts lack units, targets and explanatory insight; donut is visually empty.",
+      "criticalIssue": "STRUCTURAL_COLLISION",
+      "shipToday": "NO"
+    },
+    {
+      "mode": "deterministic",
+      "archetype": "analytics",
+      "screenScore": 4.7,
+      "bestThing": "Multiple real chart geometries render without clipping.",
+      "worstThing": "Charts lack units, targets and explanatory insight; donut is visually empty.",
+      "criticalIssue": "STRUCTURAL_COLLISION",
+      "shipToday": "NO"
+    },
+    {
+      "mode": "editorial",
+      "archetype": "form",
+      "screenScore": 4.7,
+      "bestThing": "Inputs and completion action remain usable.",
+      "worstThing": "Wireframe-like fields collapse across presets and tax control appears after the CTA.",
+      "criticalIssue": "STRUCTURAL_COLLISION",
+      "shipToday": "NO"
+    },
+    {
+      "mode": "deterministic",
+      "archetype": "form",
+      "screenScore": 4.8,
+      "bestThing": "Inputs and completion action remain usable.",
+      "worstThing": "Wireframe-like fields collapse across presets and tax control appears after the CTA.",
+      "criticalIssue": "STRUCTURAL_COLLISION",
+      "shipToday": "NO"
+    },
+    {
+      "mode": "auto",
+      "archetype": "analytics",
+      "screenScore": 4.8,
+      "bestThing": "Multiple real chart geometries render without clipping.",
+      "worstThing": "Charts lack units, targets and explanatory insight; donut is visually empty.",
+      "criticalIssue": "STRUCTURAL_COLLISION",
+      "shipToday": "NO"
+    }
+  ],
+  "p0": [],
+  "p1": [
+    "CROSS_ARCHETYPE_COLLISIONS",
+    "PRESET_COLLISIONS",
+    "FORM_VARIANT_COLLAPSE",
+    "ANALYTICS_LACKS_CONTEXT",
+    "DETERMINISTIC_BELOW_60"
+  ],
+  "p2": [
+    "TOUCH_TARGET_WARNINGS",
+    "SMALL_TEXT_WARNINGS",
+    "TITLE_ORDER"
+  ]
+}

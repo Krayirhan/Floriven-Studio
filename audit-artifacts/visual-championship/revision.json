@@ -1,0 +1,18 @@
+{
+  "audit": "FLORIVEN_V4_42_SCREEN_VISUAL_CHAMPIONSHIP_AUDIT",
+  "frozenAt": "2026-08-10T19:04:00+03:00",
+  "gitSha": "dadf574dd38c81734a3d7590b501f33eb684b60c",
+  "workingTreePatchIdentity": "155327501b3e59639eaffdaad1543bfd21afd4ab",
+  "productionSourcePatchIdentity": "6e65c9f5872d3c594692c0ee147146d68e65130c",
+  "workingTreeEntryCount": 28,
+  "productionCodeChangedAfterFreeze": false,
+  "canonicalViewport": { "width": 390, "height": 844, "safeTop": 24, "safeBottom": 24 },
+  "featureFlags": { "v2Renderer": true, "runtimeEvidence": true, "deterministicFallback": true },
+  "environment": { "os": "Windows", "node": "v24.7.0", "pnpm": "9.0.0", "timezone": "Europe/Istanbul", "appUrl": "http://localhost:3000" },
+  "lockfileSha256": "638751547F2DB3D09F6D75AFF010A118B16C89230EECE9DFFD48E24DD5B802B6",
+  "buildIdentity": {
+    "javascript": { "file": "apps/web/dist/assets/index-4Rm_G2LN.js", "sha256": "A31FBD43082AB966FFCB47265565340BB51F629CCF608DE633D014AB2F214902" },
+    "css": { "file": "apps/web/dist/assets/index-BcnnCenn.css", "sha256": "160CC4AB4B7DCF95EA6F7045A65E09A274276907956E6B307DF6B9DDDBBAA2D6" }
+  },
+  "canonicalViewportGates": { "targetedUnit": "PASS_15_OF_15", "typecheck": "PASS_5_OF_5", "build": "PASS_3_OF_3", "lint": "PASS_WITH_EXISTING_WARNING", "sixArchetypeRuntime": "PASS_6_OF_6", "fullE2E": "PASS_3_OF_3" }
+}

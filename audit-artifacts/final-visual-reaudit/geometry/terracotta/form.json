@@ -1,0 +1,166 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "editorial-asymmetry",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 46.00001838906235,
+  "sections": [
+    {
+      "role": "context",
+      "order": 0,
+      "span": 8,
+      "emphasis": "primary",
+      "family": "curated-context",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 227.3277064732143,
+      "height": 71.99999276834626
+    },
+    {
+      "role": "field-group",
+      "order": 1,
+      "span": 5,
+      "emphasis": "primary",
+      "family": "sectioned-form-field-group",
+      "x": 21.000279017857146,
+      "y": 143.99998553669252,
+      "width": 136.82756696428572,
+      "height": 140.75003778539076
+    },
+    {
+      "role": "field-group",
+      "order": 2,
+      "span": 5,
+      "emphasis": "primary",
+      "family": "sectioned-form-field-group",
+      "x": 171.82826450892858,
+      "y": 143.99998553669252,
+      "width": 136.82826450892858,
+      "height": 140.75003778539076
+    },
+    {
+      "role": "actions",
+      "order": 3,
+      "span": 12,
+      "emphasis": "primary",
+      "family": "sectioned-form-actions",
+      "x": 21.000279017857146,
+      "y": 298.750006172733,
+      "width": 347.9840959821429,
+      "height": 71.99999276834626
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "terracotta-form-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "context",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 227.3277064732143,
+      "height": 28.593750590800283,
+      "fontSize": "26px",
+      "lineHeight": "28.6px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "terracotta-form-customer",
+      "component": "div",
+      "role": null,
+      "sectionRole": "field-group",
+      "x": 21.000279017857146,
+      "y": 145.9999986569786,
+      "width": 136.82756696428572,
+      "height": 43.24999217431757,
+      "fontSize": "11.5px",
+      "lineHeight": "17.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "terracotta-form-number",
+      "component": "div",
+      "role": null,
+      "sectionRole": "field-group",
+      "x": 21.000279017857146,
+      "y": 197.25002151416984,
+      "width": 136.82756696428572,
+      "height": 43.249948577776486,
+      "fontSize": "11.5px",
+      "lineHeight": "17.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "terracotta-form-amount",
+      "component": "div",
+      "role": null,
+      "sectionRole": "field-group",
+      "x": 171.82826450892858,
+      "y": 145.9999986569786,
+      "width": 136.82826450892858,
+      "height": 43.24999217431757,
+      "fontSize": "11.5px",
+      "lineHeight": "17.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "terracotta-form-date",
+      "component": "div",
+      "role": null,
+      "sectionRole": "field-group",
+      "x": 171.82826450892858,
+      "y": 197.25002151416984,
+      "width": 136.82826450892858,
+      "height": 43.249948577776486,
+      "fontSize": "11.5px",
+      "lineHeight": "17.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "terracotta-form-tax",
+      "component": "div",
+      "role": null,
+      "sectionRole": "field-group",
+      "x": 171.82826450892858,
+      "y": 248.50002257309058,
+      "width": 136.82826450892858,
+      "height": 34.24996583043611,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "terracotta-form-cta",
+      "component": "button",
+      "role": null,
+      "sectionRole": "actions",
+      "x": 21.000279017857146,
+      "y": 298.750006172733,
+      "width": 347.9840959821429,
+      "height": 46.00001838906235,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

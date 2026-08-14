@@ -1,0 +1,179 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "strict-grid",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 42.99996601122745,
+  "sections": [
+    {
+      "role": "section-group",
+      "order": 0,
+      "span": 12,
+      "emphasis": "tertiary",
+      "family": "settings-label",
+      "x": 20.999930245535715,
+      "y": 58.000009917696545,
+      "width": 348.0001395089286,
+      "height": 61.89060884015948
+    },
+    {
+      "role": "rows-controls",
+      "order": 1,
+      "span": 12,
+      "emphasis": "primary",
+      "family": "card-clusters",
+      "x": 20.999930245535715,
+      "y": 133.89062340677629,
+      "width": 348.0001395089286,
+      "height": 205.99999989669067
+    },
+    {
+      "role": "divider",
+      "order": 2,
+      "span": 12,
+      "emphasis": "tertiary",
+      "family": "section-divider",
+      "x": 20.999930245535715,
+      "y": 353.89064975065776,
+      "width": 348.0001395089286,
+      "height": 32.99996580460877
+    },
+    {
+      "role": "next-section-group",
+      "order": 3,
+      "span": 12,
+      "emphasis": "secondary",
+      "family": "card-clusters",
+      "x": 20.999930245535715,
+      "y": 400.8906420024573,
+      "width": 348.0001395089286,
+      "height": 86.49998434863514
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "serene-settings-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "section-group",
+      "x": 36.99986049107143,
+      "y": 74.00000588863233,
+      "width": 316.00027901785717,
+      "height": 29.890616898287927,
+      "fontSize": "23px",
+      "lineHeight": "29.9px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-settings-profile",
+      "component": "div",
+      "role": null,
+      "sectionRole": "rows-controls",
+      "x": 36.99986049107143,
+      "y": 149.89061937771206,
+      "width": 316.00027901785717,
+      "height": 54.49999240676358,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-settings-currency",
+      "component": "div",
+      "role": null,
+      "sectionRole": "rows-controls",
+      "x": 36.99986049107143,
+      "y": 212.3906206690788,
+      "width": 316.00027901785717,
+      "height": 55.50000986604188,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-settings-notify",
+      "component": "label",
+      "role": null,
+      "sectionRole": "rows-controls",
+      "x": 36.99986049107143,
+      "y": 275.89059582318276,
+      "width": 316.00027901785717,
+      "height": 20.000000413237355,
+      "fontSize": "12px",
+      "lineHeight": "18px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-settings-weekly",
+      "component": "label",
+      "role": null,
+      "sectionRole": "rows-controls",
+      "x": 36.99986049107143,
+      "y": 303.8906487175644,
+      "width": 316.00027901785717,
+      "height": 20.000000413237355,
+      "fontSize": "12px",
+      "lineHeight": "18px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-settings-divider",
+      "component": "hr",
+      "role": null,
+      "sectionRole": "divider",
+      "x": 36.99986049107143,
+      "y": 369.89062392332295,
+      "width": 316.00027901785717,
+      "height": 1.0000174592782995,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "hidden",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-settings-security",
+      "component": "div",
+      "role": null,
+      "sectionRole": "next-section-group",
+      "x": 36.99986049107143,
+      "y": 416.89061617512255,
+      "width": 316.00027901785717,
+      "height": 54.49999240676358,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-settings-nav",
+      "component": "nav",
+      "role": null,
+      "x": 5,
+      "y": 772.9999810943909,
+      "width": 380,
+      "height": 66.0000188022997,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

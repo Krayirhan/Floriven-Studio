@@ -1,0 +1,179 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "strict-grid",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 42.99996601122745,
+  "sections": [
+    {
+      "role": "context",
+      "order": 0,
+      "span": 12,
+      "emphasis": "secondary",
+      "family": "nested-analytics-context",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9840959821429,
+      "height": 176.57811120981745
+    },
+    {
+      "role": "period-comparison",
+      "order": 1,
+      "span": 12,
+      "emphasis": "tertiary",
+      "family": "nested-analytics-period-comparison",
+      "x": 21.000279017857146,
+      "y": 248.5781475747048,
+      "width": 347.9840959821429,
+      "height": 34.24996583043611
+    },
+    {
+      "role": "dominant-chart",
+      "order": 2,
+      "span": 12,
+      "emphasis": "primary",
+      "family": "line-grid",
+      "x": 21.000279017857146,
+      "y": 296.8280962557906,
+      "width": 347.9840959821429,
+      "height": 160.00004690243992
+    },
+    {
+      "role": "breakdown",
+      "order": 3,
+      "span": 7,
+      "emphasis": "secondary",
+      "family": "nested-analytics-breakdown",
+      "x": 21.000279017857146,
+      "y": 470.82812600888025,
+      "width": 197.15611049107144,
+      "height": 127.50004623092923
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "obsidian-analytics-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "context",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9840959821429,
+      "height": 25.29687116302658,
+      "fontSize": "22px",
+      "lineHeight": "25.3px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-analytics-rate",
+      "component": "article",
+      "role": null,
+      "sectionRole": "context",
+      "x": 21.000279017857146,
+      "y": 91.29686816705575,
+      "width": 347.9840959821429,
+      "height": 67.64064383619808,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-analytics-reserve",
+      "component": "article",
+      "role": null,
+      "sectionRole": "context",
+      "x": 21.000279017857146,
+      "y": 166.93749908958645,
+      "width": 347.9840959821429,
+      "height": 67.64062203792754,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-analytics-period",
+      "component": "div",
+      "role": null,
+      "sectionRole": "period-comparison",
+      "x": 21.000279017857146,
+      "y": 248.5781475747048,
+      "width": 347.9840959821429,
+      "height": 34.24996583043611,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-analytics-revenue",
+      "component": "figure",
+      "role": null,
+      "sectionRole": "dominant-chart",
+      "x": 21.000279017857146,
+      "y": 296.8280962557906,
+      "width": 347.9840959821429,
+      "height": 111.75001102827194,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-analytics-expense",
+      "component": "figure",
+      "role": null,
+      "sectionRole": "breakdown",
+      "x": 21.000279017857146,
+      "y": 470.82812600888025,
+      "width": 94.57798549107143,
+      "height": 127.50004623092923,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-analytics-collection",
+      "component": "figure",
+      "role": null,
+      "sectionRole": "breakdown",
+      "x": 123.57840401785715,
+      "y": 470.82812600888025,
+      "width": 94.57798549107143,
+      "height": 127.50004623092923,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "obsidian-analytics-nav",
+      "component": "nav",
+      "role": null,
+      "x": 5,
+      "y": 772.9999810943909,
+      "width": 380,
+      "height": 66.0000188022997,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

@@ -1,0 +1,166 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "strict-grid",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 46.00001838906235,
+  "sections": [
+    {
+      "role": "context",
+      "order": 0,
+      "span": 12,
+      "emphasis": "tertiary",
+      "family": "form-context",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9994419642857,
+      "height": 58.24999248424558
+    },
+    {
+      "role": "field-group",
+      "order": 1,
+      "span": 12,
+      "emphasis": "primary",
+      "family": "filled",
+      "x": 21.000279017857146,
+      "y": 130.24998525259184,
+      "width": 347.9994419642857,
+      "height": 126.49998517510984
+    },
+    {
+      "role": "field-group",
+      "order": 2,
+      "span": 12,
+      "emphasis": "primary",
+      "family": "touch-large",
+      "x": 21.000279017857146,
+      "y": 270.7499968748925,
+      "width": 347.9994419642857,
+      "height": 168.7500034866902
+    },
+    {
+      "role": "actions",
+      "order": 3,
+      "span": 12,
+      "emphasis": "primary",
+      "family": "single-primary-action",
+      "x": 21.000279017857146,
+      "y": 453.4999832122324,
+      "width": 347.9994419642857,
+      "height": 78.0000103309339
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "electric-form-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "context",
+      "x": 36.99986049107143,
+      "y": 74.00000588863233,
+      "width": 316.00027901785717,
+      "height": 26.24997874410349,
+      "fontSize": "25px",
+      "lineHeight": "26.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-form-customer",
+      "component": "div",
+      "role": null,
+      "sectionRole": "field-group",
+      "x": 36.99986049107143,
+      "y": 146.25000302179816,
+      "width": 316.00027901785717,
+      "height": 43.24999217431757,
+      "fontSize": "11.5px",
+      "lineHeight": "17.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-form-number",
+      "component": "div",
+      "role": null,
+      "sectionRole": "field-group",
+      "x": 36.99986049107143,
+      "y": 197.5000040807189,
+      "width": 316.00027901785717,
+      "height": 43.24999217431757,
+      "fontSize": "11.5px",
+      "lineHeight": "17.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-form-amount",
+      "component": "div",
+      "role": null,
+      "sectionRole": "field-group",
+      "x": 36.99986049107143,
+      "y": 286.7499710475577,
+      "width": 316.00027901785717,
+      "height": 43.250035770858645,
+      "fontSize": "11.5px",
+      "lineHeight": "17.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-form-date",
+      "component": "div",
+      "role": null,
+      "sectionRole": "field-group",
+      "x": 36.99986049107143,
+      "y": 337.9999721064784,
+      "width": 316.00027901785717,
+      "height": 43.250035770858645,
+      "fontSize": "11.5px",
+      "lineHeight": "17.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-form-tax",
+      "component": "div",
+      "role": null,
+      "sectionRole": "field-group",
+      "x": 36.99986049107143,
+      "y": 389.25001676194023,
+      "width": 316.00027901785717,
+      "height": 34.24996583043611,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-form-cta",
+      "component": "button",
+      "role": null,
+      "sectionRole": "actions",
+      "x": 36.99986049107143,
+      "y": 469.5000009814387,
+      "width": 316.00027901785717,
+      "height": 46.00001838906235,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

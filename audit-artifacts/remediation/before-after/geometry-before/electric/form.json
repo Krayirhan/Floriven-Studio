@@ -1,0 +1,120 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "strict-grid",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 45.99997479252127,
+  "nodes": [
+    {
+      "nodeId": "electric-form-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "summary",
+      "x": 36.99986049107143,
+      "y": 74.00000588863233,
+      "width": 316.00027901785717,
+      "height": 26.24997874410349,
+      "fontSize": "25px",
+      "lineHeight": "26.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-form-customer",
+      "component": "div",
+      "role": null,
+      "sectionRole": "primary-content",
+      "x": 36.99986049107143,
+      "y": 146.25000302179816,
+      "width": 316.00027901785717,
+      "height": 43.24999217431757,
+      "fontSize": "11.5px",
+      "lineHeight": "17.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-form-number",
+      "component": "div",
+      "role": null,
+      "sectionRole": "primary-content",
+      "x": 36.99986049107143,
+      "y": 197.5000040807189,
+      "width": 316.00027901785717,
+      "height": 43.24999217431757,
+      "fontSize": "11.5px",
+      "lineHeight": "17.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-form-amount",
+      "component": "div",
+      "role": null,
+      "sectionRole": "primary-content",
+      "x": 36.99986049107143,
+      "y": 248.75000513963963,
+      "width": 316.00027901785717,
+      "height": 43.24999217431757,
+      "fontSize": "11.5px",
+      "lineHeight": "17.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-form-date",
+      "component": "div",
+      "role": null,
+      "sectionRole": "primary-content",
+      "x": 36.99986049107143,
+      "y": 300.00000619856036,
+      "width": 316.00027901785717,
+      "height": 43.24999217431757,
+      "fontSize": "11.5px",
+      "lineHeight": "17.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-form-cta",
+      "component": "button",
+      "role": null,
+      "sectionRole": "actions",
+      "x": 36.99986049107143,
+      "y": 389.25001676194023,
+      "width": 316.00027901785717,
+      "height": 45.99997479252127,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-form-tax",
+      "component": "div",
+      "role": null,
+      "sectionRole": "primary-content",
+      "x": 36.99986049107143,
+      "y": 481.2500099435239,
+      "width": 316.00027901785717,
+      "height": 34.250009426977186,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

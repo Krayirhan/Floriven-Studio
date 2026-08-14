@@ -1,0 +1,166 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "bento",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 46.00001838906235,
+  "sections": [
+    {
+      "role": "context",
+      "order": 0,
+      "span": 5,
+      "emphasis": "tertiary",
+      "family": "card-clusters-form-context",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 136.82756696428572,
+      "height": 126.49998517510984
+    },
+    {
+      "role": "field-group",
+      "order": 1,
+      "span": 6,
+      "emphasis": "primary",
+      "family": "card-clusters-form-field-group",
+      "x": 171.82826450892858,
+      "y": 58.000009917696545,
+      "width": 166.99986049107144,
+      "height": 126.49998517510984
+    },
+    {
+      "role": "field-group",
+      "order": 2,
+      "span": 6,
+      "emphasis": "primary",
+      "family": "card-clusters-form-field-group",
+      "x": 21.000279017857146,
+      "y": 198.5000215399972,
+      "width": 166.98381696428572,
+      "height": 168.7499598901491
+    },
+    {
+      "role": "actions",
+      "order": 3,
+      "span": 12,
+      "emphasis": "primary",
+      "family": "card-clusters-form-actions",
+      "x": 21.000279017857146,
+      "y": 381.2500078773371,
+      "width": 347.9840959821429,
+      "height": 78.0000103309339
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "electric-form-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "context",
+      "x": 36.99986049107143,
+      "y": 74.00000588863233,
+      "width": 104.82840401785715,
+      "height": 52.49997928647752,
+      "fontSize": "25px",
+      "lineHeight": "26.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-form-customer",
+      "component": "div",
+      "role": null,
+      "sectionRole": "field-group",
+      "x": 187.82784598214286,
+      "y": 74.00000588863233,
+      "width": 135,
+      "height": 43.24999217431757,
+      "fontSize": "11.5px",
+      "lineHeight": "17.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-form-number",
+      "component": "div",
+      "role": null,
+      "sectionRole": "field-group",
+      "x": 187.82784598214286,
+      "y": 125.24998514928251,
+      "width": 135,
+      "height": 43.25001397258811,
+      "fontSize": "11.5px",
+      "lineHeight": "17.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-form-amount",
+      "component": "div",
+      "role": null,
+      "sectionRole": "field-group",
+      "x": 36.99986049107143,
+      "y": 214.4999957126624,
+      "width": 134.98465401785714,
+      "height": 43.24999217431757,
+      "fontSize": "11.5px",
+      "lineHeight": "17.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-form-date",
+      "component": "div",
+      "role": null,
+      "sectionRole": "field-group",
+      "x": 36.99986049107143,
+      "y": 265.74999677158314,
+      "width": 134.98465401785714,
+      "height": 43.24999217431757,
+      "fontSize": "11.5px",
+      "lineHeight": "17.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-form-tax",
+      "component": "div",
+      "role": null,
+      "sectionRole": "field-group",
+      "x": 36.99986049107143,
+      "y": 316.9999978305039,
+      "width": 134.98465401785714,
+      "height": 34.250009426977186,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-form-cta",
+      "component": "button",
+      "role": null,
+      "sectionRole": "actions",
+      "x": 36.99986049107143,
+      "y": 397.24998205000236,
+      "width": 315.98423549107144,
+      "height": 46.00001838906235,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

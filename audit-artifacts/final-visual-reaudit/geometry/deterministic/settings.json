@@ -1,0 +1,179 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "strict-grid",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 42.99996601122745,
+  "sections": [
+    {
+      "role": "section-group",
+      "order": 0,
+      "span": 12,
+      "emphasis": "tertiary",
+      "family": "settings-label",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9994419642857,
+      "height": 31.18748320577557
+    },
+    {
+      "role": "rows-controls",
+      "order": 1,
+      "span": 12,
+      "emphasis": "primary",
+      "family": "sectioned",
+      "x": 21.000279017857146,
+      "y": 103.18749777239238,
+      "width": 347.9994419642857,
+      "height": 174.0000079548191
+    },
+    {
+      "role": "divider",
+      "order": 2,
+      "span": 12,
+      "emphasis": "tertiary",
+      "family": "section-divider",
+      "x": 21.000279017857146,
+      "y": 291.1874885778612,
+      "width": 347.9994419642857,
+      "height": 1.0000174592782995
+    },
+    {
+      "role": "next-section-group",
+      "order": 3,
+      "span": 12,
+      "emphasis": "secondary",
+      "family": "sectioned",
+      "x": 21.000279017857146,
+      "y": 306.1874888877892,
+      "width": 347.9994419642857,
+      "height": 54.50003600330466
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "deterministic-settings-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "section-group",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9994419642857,
+      "height": 31.18748320577557,
+      "fontSize": "24px",
+      "lineHeight": "31.2px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "deterministic-settings-profile",
+      "component": "div",
+      "role": null,
+      "sectionRole": "rows-controls",
+      "x": 21.000279017857146,
+      "y": 103.18749777239238,
+      "width": 347.9994419642857,
+      "height": 54.50001420503412,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "deterministic-settings-currency",
+      "component": "div",
+      "role": null,
+      "sectionRole": "rows-controls",
+      "x": 21.000279017857146,
+      "y": 165.6874990637591,
+      "width": 347.9994419642857,
+      "height": 55.49998806777134,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "deterministic-settings-notify",
+      "component": "label",
+      "role": null,
+      "sectionRole": "rows-controls",
+      "x": 21.000279017857146,
+      "y": 229.1874960161336,
+      "width": 347.9994419642857,
+      "height": 20.000000413237355,
+      "fontSize": "12px",
+      "lineHeight": "18px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "deterministic-settings-weekly",
+      "component": "label",
+      "role": null,
+      "sectionRole": "rows-controls",
+      "x": 21.000279017857146,
+      "y": 257.1875053139741,
+      "width": 347.9994419642857,
+      "height": 20.000000413237355,
+      "fontSize": "12px",
+      "lineHeight": "18px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "deterministic-settings-divider",
+      "component": "hr",
+      "role": null,
+      "sectionRole": "divider",
+      "x": 21.000279017857146,
+      "y": 291.1874885778612,
+      "width": 347.9994419642857,
+      "height": 1.0000174592782995,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "hidden",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "deterministic-settings-security",
+      "component": "div",
+      "role": null,
+      "sectionRole": "next-section-group",
+      "x": 21.000279017857146,
+      "y": 306.1874888877892,
+      "width": 347.9994419642857,
+      "height": 54.50003600330466,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "deterministic-settings-nav",
+      "component": "nav",
+      "role": null,
+      "x": 5,
+      "y": 772.9999810943909,
+      "width": 380,
+      "height": 66.0000188022997,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import { createGeometryReport } from "@floriven/design-spec";
+import { CANONICAL_VIEWPORT, createGeometryReport } from "@floriven/design-spec";
 
 const screenNames = ["Özet", "Projeler", "Faturalar", "Müşteriler"];
 
@@ -73,15 +73,26 @@ test("phone content scrolls while bottom navigation stays fixed", async ({ page 
   const evidenceRoot = resolve(process.cwd(), "../../docs/certification/evidence/RC1");
   await mkdir(resolve(evidenceRoot, "runtime"), { recursive: true });
   await mkdir(resolve(evidenceRoot, "screenshots"), { recursive: true });
-  const viewportBox = await viewport.boundingBox();
-  const bounds = await page.locator("[data-floriven-node-id]").evaluateAll((elements) => elements.map((element) => {
+  const phone = page.locator('[data-renderer-version="phone-screen-v4"]').nth(1);
+  const runtimeDimensions = await phone.evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    return { logical: { width: (element as HTMLElement).offsetWidth, height: (element as HTMLElement).offsetHeight }, transformedPreview: { width: rect.width, height: rect.height }, scale: { x: rect.width / (element as HTMLElement).offsetWidth, y: rect.height / (element as HTMLElement).offsetHeight }, layoutInput: { width: Number(element.getAttribute("data-layout-viewport-width")), height: Number(element.getAttribute("data-layout-viewport-height")) } };
+  });
+  expect(runtimeDimensions.logical).toEqual({ width: CANONICAL_VIEWPORT.width, height: CANONICAL_VIEWPORT.height });
+  expect(runtimeDimensions.layoutInput).toEqual({ width: CANONICAL_VIEWPORT.width, height: CANONICAL_VIEWPORT.height });
+  expect(runtimeDimensions.transformedPreview.width).toBeLessThan(runtimeDimensions.logical.width);
+  const bounds = await phone.locator("[data-floriven-node-id]").evaluateAll((elements) => elements.map((element) => {
+    const root = element.closest<HTMLElement>('[data-renderer-version="phone-screen-v4"]')!;
+    const rootBox = root.getBoundingClientRect();
     const box = element.getBoundingClientRect();
-    return { nodeId: element.getAttribute("data-floriven-node-id") ?? "unknown", screenId: element.closest('[data-floriven-screen-id]')?.getAttribute('data-floriven-screen-id') ?? 'unknown', x: box.x, y: box.y, width: box.width, height: box.height };
+    const scaleX = rootBox.width / root.offsetWidth;
+    const scaleY = rootBox.height / root.offsetHeight;
+    return { nodeId: element.getAttribute("data-floriven-node-id") ?? "unknown", screenId: root.getAttribute('data-floriven-screen-id') ?? 'unknown', x: (box.left - rootBox.left) / scaleX, y: (box.top - rootBox.top) / scaleY, width: box.width / scaleX, height: box.height / scaleY };
   }));
   expect(bounds.length).toBeGreaterThan(0);
   expect(bounds.every((bound) => bound.screenId !== 'unknown' && bound.width > 0 && bound.height > 0)).toBe(true);
-  const geometry = createGeometryReport(bounds, { width: viewportBox?.width ?? 390, height: viewportBox?.height ?? 844 });
-  await page.locator('[class*="phone"]').nth(1).screenshot({ path: resolve(evidenceRoot, "screenshots/phone-scroll-runtime.png"), animations: "disabled" });
-  await writeFile(resolve(evidenceRoot, "runtime/phone-scroll-evidence.json"), JSON.stringify({ renderVersion: "phone-screen-v2", screenshotPath: "screenshots/phone-scroll-runtime.png", viewport: viewportBox, nodes: bounds, geometry, visualCritic: "pending" }, null, 2));
-  await expect(page.locator('[class*="phone"]').nth(1)).toHaveScreenshot("phone-scroll-navbar.png", { animations: "disabled" });
+  const geometry = createGeometryReport(bounds, CANONICAL_VIEWPORT);
+  await phone.screenshot({ path: resolve(evidenceRoot, "screenshots/phone-scroll-runtime.png"), animations: "disabled" });
+  await writeFile(resolve(evidenceRoot, "runtime/phone-scroll-evidence.json"), JSON.stringify({ renderVersion: "phone-screen-v4", screenshotPath: "screenshots/phone-scroll-runtime.png", logicalViewport: runtimeDimensions.logical, transformedPreview: runtimeDimensions.transformedPreview, previewScale: runtimeDimensions.scale, layoutInput: runtimeDimensions.layoutInput, nodes: bounds, geometry, visualCritic: "pending" }, null, 2));
+  await expect(phone).toHaveScreenshot("phone-scroll-navbar.png", { animations: "disabled" });
 });

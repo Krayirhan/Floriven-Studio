@@ -1,5 +1,21 @@
 export type ProductScreenRole = "overview" | "core" | "detail" | "form" | "support" | "settings" | "onboarding";
 
+export interface ScreenContract {
+  version: "1.0.0";
+  job: string;
+  requiredSections: string[];
+  primaryAction: string;
+  secondaryActions: string[];
+  requiredData: string[];
+  navigationTargetIds: string[];
+  sectionRoles: Array<{ section: string; role: "summary" | "filters" | "entity-list" | "form-fields" | "actions" | "analytics" | "details" | "settings" }>;
+  identityIntent?: {
+    dominantRole: "summary" | "filters" | "entity-list" | "form-fields" | "actions" | "analytics" | "details" | "settings";
+    supportingRole: "summary" | "filters" | "entity-list" | "form-fields" | "actions" | "analytics" | "details" | "settings";
+    densityProfile: "focused" | "balanced" | "dense";
+  };
+}
+
 export interface ProductScreenPlan {
   id: string;
   name: string;
@@ -10,6 +26,7 @@ export interface ProductScreenPlan {
   priority: "primary" | "secondary" | "tertiary";
   parentId?: string;
   navigationPlacement: "primary" | "hierarchical" | "utility" | "hidden";
+  contract?: ScreenContract;
 }
 
 export interface ProductNavigationPlan {

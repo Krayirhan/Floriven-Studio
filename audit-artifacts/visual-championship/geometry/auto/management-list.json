@@ -1,0 +1,182 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "strict-grid",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 42.99996601122745,
+  "sections": [
+    {
+      "role": "context",
+      "order": 0,
+      "span": 12,
+      "emphasis": "tertiary",
+      "family": "sectioned-management_list-context",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9994419642857,
+      "height": 31.18748320577557
+    },
+    {
+      "role": "toolbar",
+      "order": 1,
+      "span": 12,
+      "emphasis": "secondary",
+      "family": "sectioned-management_list-toolbar",
+      "x": 21.000279017857146,
+      "y": 103.18749777239238,
+      "width": 347.9994419642857,
+      "height": 88.24999310410162
+    },
+    {
+      "role": "dense-list",
+      "order": 2,
+      "span": 12,
+      "emphasis": "primary",
+      "family": "sectioned-management_list-dense-list",
+      "x": 21.000279017857146,
+      "y": 205.43749552541425,
+      "width": 347.9994419642857,
+      "height": 308.5000238128026
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "auto-management-list-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "context",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9994419642857,
+      "height": 31.18748320577557,
+      "fontSize": "24px",
+      "lineHeight": "31.2px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "auto-management-list-search",
+      "component": "label",
+      "role": null,
+      "sectionRole": "toolbar",
+      "x": 21.000279017857146,
+      "y": 103.18749777239238,
+      "width": 347.9994419642857,
+      "height": 45.99999659079181,
+      "fontSize": "11.5px",
+      "lineHeight": "17.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "auto-management-list-filter",
+      "component": "div",
+      "role": null,
+      "sectionRole": "toolbar",
+      "x": 21.000279017857146,
+      "y": 157.18750324778733,
+      "width": 347.9994419642857,
+      "height": 34.24998762870665,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "auto-management-list-row-0",
+      "component": "div",
+      "role": null,
+      "sectionRole": "dense-list",
+      "x": 21.000279017857146,
+      "y": 205.43749552541425,
+      "width": 347.9994419642857,
+      "height": 54.49999240676358,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "auto-management-list-row-1",
+      "component": "div",
+      "role": null,
+      "sectionRole": "dense-list",
+      "x": 21.000279017857146,
+      "y": 267.937496816781,
+      "width": 347.9994419642857,
+      "height": 55.50000986604188,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "auto-management-list-row-2",
+      "component": "div",
+      "role": null,
+      "sectionRole": "dense-list",
+      "x": 21.000279017857146,
+      "y": 331.4374719708849,
+      "width": 347.9994419642857,
+      "height": 55.50000986604188,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "auto-management-list-row-3",
+      "component": "div",
+      "role": null,
+      "sectionRole": "dense-list",
+      "x": 21.000279017857146,
+      "y": 394.93749072152997,
+      "width": 347.9994419642857,
+      "height": 55.50000986604188,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "auto-management-list-row-4",
+      "component": "div",
+      "role": null,
+      "sectionRole": "dense-list",
+      "x": 21.000279017857146,
+      "y": 458.437509472175,
+      "width": 347.9994419642857,
+      "height": 55.50000986604188,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "auto-management-list-nav",
+      "component": "nav",
+      "role": null,
+      "x": 5,
+      "y": 772.9999810943909,
+      "width": 380,
+      "height": 66.0000188022997,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

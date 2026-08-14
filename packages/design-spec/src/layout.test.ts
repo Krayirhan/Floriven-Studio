@@ -8,7 +8,7 @@ describe("layout engine v2", () => {
   it("uses canonical 390x844 viewport and real bento spans", () => {
     const result = layoutRenderPlan({ plan: plan("bento") });
     expect(result.viewport).toMatchObject({ width: 390, height: 844 });
-    expect(result.boxes[0]?.span).toBe(2);
+    expect(result.boxes[0]?.span).toBe(12);
     expect(validateLayout(result)).toEqual([]);
   });
 

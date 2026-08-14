@@ -1,0 +1,382 @@
+{
+  "screens": [
+    {
+      "mode": "obsidian",
+      "archetype": "dashboard",
+      "screenScore": 6.0,
+      "bestThing": "Core finance data is readable and the trend is real.",
+      "worstThing": "Title is composed after actions/content and the screen remains a vertical receipt.",
+      "criticalIssue": null,
+      "shipToday": "NO"
+    },
+    {
+      "mode": "obsidian",
+      "archetype": "management-list",
+      "screenScore": 6.3,
+      "bestThing": "Rows are scannable and amounts retain sign hierarchy.",
+      "worstThing": "The page title lands after the rows; row family is generic across modes.",
+      "criticalIssue": null,
+      "shipToday": "NO"
+    },
+    {
+      "mode": "obsidian",
+      "archetype": "detail",
+      "screenScore": 6.0,
+      "bestThing": "Entity, amount and status are understandable.",
+      "worstThing": "Large empty region and weak metadata grouping make it feel unfinished.",
+      "criticalIssue": null,
+      "shipToday": "NO"
+    },
+    {
+      "mode": "obsidian",
+      "archetype": "form",
+      "screenScore": 5.1,
+      "bestThing": "Inputs and completion action remain usable.",
+      "worstThing": "Wireframe-like fields collapse across presets and tax control appears after the CTA.",
+      "criticalIssue": "STRUCTURAL_COLLISION",
+      "shipToday": "NO"
+    },
+    {
+      "mode": "obsidian",
+      "archetype": "analytics",
+      "screenScore": 5.0,
+      "bestThing": "Multiple real chart geometries render without clipping.",
+      "worstThing": "Charts lack units, targets and explanatory insight; donut is visually empty.",
+      "criticalIssue": "STRUCTURAL_COLLISION",
+      "shipToday": "NO"
+    },
+    {
+      "mode": "obsidian",
+      "archetype": "settings",
+      "screenScore": 5.2,
+      "bestThing": "Settings content avoids a dashboard hero.",
+      "worstThing": "Weak section labels, ambiguous toggles and excessive unused space.",
+      "criticalIssue": "STRUCTURAL_COLLISION",
+      "shipToday": "NO"
+    },
+    {
+      "mode": "serene",
+      "archetype": "dashboard",
+      "screenScore": 6.0,
+      "bestThing": "Core finance data is readable and the trend is real.",
+      "worstThing": "Title is composed after actions/content and the screen remains a vertical receipt.",
+      "criticalIssue": null,
+      "shipToday": "NO"
+    },
+    {
+      "mode": "serene",
+      "archetype": "management-list",
+      "screenScore": 6.3,
+      "bestThing": "Rows are scannable and amounts retain sign hierarchy.",
+      "worstThing": "The page title lands after the rows; row family is generic across modes.",
+      "criticalIssue": null,
+      "shipToday": "NO"
+    },
+    {
+      "mode": "serene",
+      "archetype": "detail",
+      "screenScore": 6.0,
+      "bestThing": "Entity, amount and status are understandable.",
+      "worstThing": "Large empty region and weak metadata grouping make it feel unfinished.",
+      "criticalIssue": null,
+      "shipToday": "NO"
+    },
+    {
+      "mode": "serene",
+      "archetype": "form",
+      "screenScore": 5.1,
+      "bestThing": "Inputs and completion action remain usable.",
+      "worstThing": "Wireframe-like fields collapse across presets and tax control appears after the CTA.",
+      "criticalIssue": "STRUCTURAL_COLLISION",
+      "shipToday": "NO"
+    },
+    {
+      "mode": "serene",
+      "archetype": "analytics",
+      "screenScore": 5.0,
+      "bestThing": "Multiple real chart geometries render without clipping.",
+      "worstThing": "Charts lack units, targets and explanatory insight; donut is visually empty.",
+      "criticalIssue": "STRUCTURAL_COLLISION",
+      "shipToday": "NO"
+    },
+    {
+      "mode": "serene",
+      "archetype": "settings",
+      "screenScore": 5.2,
+      "bestThing": "Settings content avoids a dashboard hero.",
+      "worstThing": "Weak section labels, ambiguous toggles and excessive unused space.",
+      "criticalIssue": "STRUCTURAL_COLLISION",
+      "shipToday": "NO"
+    },
+    {
+      "mode": "terracotta",
+      "archetype": "dashboard",
+      "screenScore": 5.8,
+      "bestThing": "Core finance data is readable and the trend is real.",
+      "worstThing": "Title is composed after actions/content and the screen remains a vertical receipt.",
+      "criticalIssue": null,
+      "shipToday": "NO"
+    },
+    {
+      "mode": "terracotta",
+      "archetype": "management-list",
+      "screenScore": 6.1,
+      "bestThing": "Rows are scannable and amounts retain sign hierarchy.",
+      "worstThing": "The page title lands after the rows; row family is generic across modes.",
+      "criticalIssue": null,
+      "shipToday": "NO"
+    },
+    {
+      "mode": "terracotta",
+      "archetype": "detail",
+      "screenScore": 5.8,
+      "bestThing": "Entity, amount and status are understandable.",
+      "worstThing": "Large empty region and weak metadata grouping make it feel unfinished.",
+      "criticalIssue": null,
+      "shipToday": "NO"
+    },
+    {
+      "mode": "terracotta",
+      "archetype": "form",
+      "screenScore": 4.9,
+      "bestThing": "Inputs and completion action remain usable.",
+      "worstThing": "Wireframe-like fields collapse across presets and tax control appears after the CTA.",
+      "criticalIssue": "STRUCTURAL_COLLISION",
+      "shipToday": "NO"
+    },
+    {
+      "mode": "terracotta",
+      "archetype": "analytics",
+      "screenScore": 4.8,
+      "bestThing": "Multiple real chart geometries render without clipping.",
+      "worstThing": "Charts lack units, targets and explanatory insight; donut is visually empty.",
+      "criticalIssue": "STRUCTURAL_COLLISION",
+      "shipToday": "NO"
+    },
+    {
+      "mode": "terracotta",
+      "archetype": "settings",
+      "screenScore": 5.0,
+      "bestThing": "Settings content avoids a dashboard hero.",
+      "worstThing": "Weak section labels, ambiguous toggles and excessive unused space.",
+      "criticalIssue": "STRUCTURAL_COLLISION",
+      "shipToday": "NO"
+    },
+    {
+      "mode": "electric",
+      "archetype": "dashboard",
+      "screenScore": 5.9,
+      "bestThing": "Core finance data is readable and the trend is real.",
+      "worstThing": "Title is composed after actions/content and the screen remains a vertical receipt.",
+      "criticalIssue": null,
+      "shipToday": "NO"
+    },
+    {
+      "mode": "electric",
+      "archetype": "management-list",
+      "screenScore": 6.2,
+      "bestThing": "Rows are scannable and amounts retain sign hierarchy.",
+      "worstThing": "The page title lands after the rows; row family is generic across modes.",
+      "criticalIssue": null,
+      "shipToday": "NO"
+    },
+    {
+      "mode": "electric",
+      "archetype": "detail",
+      "screenScore": 5.9,
+      "bestThing": "Entity, amount and status are understandable.",
+      "worstThing": "Large empty region and weak metadata grouping make it feel unfinished.",
+      "criticalIssue": null,
+      "shipToday": "NO"
+    },
+    {
+      "mode": "electric",
+      "archetype": "form",
+      "screenScore": 5.0,
+      "bestThing": "Inputs and completion action remain usable.",
+      "worstThing": "Wireframe-like fields collapse across presets and tax control appears after the CTA.",
+      "criticalIssue": "STRUCTURAL_COLLISION",
+      "shipToday": "NO"
+    },
+    {
+      "mode": "electric",
+      "archetype": "analytics",
+      "screenScore": 4.9,
+      "bestThing": "Multiple real chart geometries render without clipping.",
+      "worstThing": "Charts lack units, targets and explanatory insight; donut is visually empty.",
+      "criticalIssue": "STRUCTURAL_COLLISION",
+      "shipToday": "NO"
+    },
+    {
+      "mode": "electric",
+      "archetype": "settings",
+      "screenScore": 5.1,
+      "bestThing": "Settings content avoids a dashboard hero.",
+      "worstThing": "Weak section labels, ambiguous toggles and excessive unused space.",
+      "criticalIssue": "STRUCTURAL_COLLISION",
+      "shipToday": "NO"
+    },
+    {
+      "mode": "editorial",
+      "archetype": "dashboard",
+      "screenScore": 5.6,
+      "bestThing": "Core finance data is readable and the trend is real.",
+      "worstThing": "Title is composed after actions/content and the screen remains a vertical receipt.",
+      "criticalIssue": null,
+      "shipToday": "NO"
+    },
+    {
+      "mode": "editorial",
+      "archetype": "management-list",
+      "screenScore": 5.9,
+      "bestThing": "Rows are scannable and amounts retain sign hierarchy.",
+      "worstThing": "The page title lands after the rows; row family is generic across modes.",
+      "criticalIssue": null,
+      "shipToday": "NO"
+    },
+    {
+      "mode": "editorial",
+      "archetype": "detail",
+      "screenScore": 5.6,
+      "bestThing": "Entity, amount and status are understandable.",
+      "worstThing": "Large empty region and weak metadata grouping make it feel unfinished.",
+      "criticalIssue": null,
+      "shipToday": "NO"
+    },
+    {
+      "mode": "editorial",
+      "archetype": "form",
+      "screenScore": 4.7,
+      "bestThing": "Inputs and completion action remain usable.",
+      "worstThing": "Wireframe-like fields collapse across presets and tax control appears after the CTA.",
+      "criticalIssue": "STRUCTURAL_COLLISION",
+      "shipToday": "NO"
+    },
+    {
+      "mode": "editorial",
+      "archetype": "analytics",
+      "screenScore": 4.6,
+      "bestThing": "Multiple real chart geometries render without clipping.",
+      "worstThing": "Charts lack units, targets and explanatory insight; donut is visually empty.",
+      "criticalIssue": "STRUCTURAL_COLLISION",
+      "shipToday": "NO"
+    },
+    {
+      "mode": "editorial",
+      "archetype": "settings",
+      "screenScore": 4.8,
+      "bestThing": "Settings content avoids a dashboard hero.",
+      "worstThing": "Weak section labels, ambiguous toggles and excessive unused space.",
+      "criticalIssue": "STRUCTURAL_COLLISION",
+      "shipToday": "NO"
+    },
+    {
+      "mode": "auto",
+      "archetype": "dashboard",
+      "screenScore": 5.8,
+      "bestThing": "Core finance data is readable and the trend is real.",
+      "worstThing": "Title is composed after actions/content and the screen remains a vertical receipt.",
+      "criticalIssue": null,
+      "shipToday": "NO"
+    },
+    {
+      "mode": "auto",
+      "archetype": "management-list",
+      "screenScore": 6.1,
+      "bestThing": "Rows are scannable and amounts retain sign hierarchy.",
+      "worstThing": "The page title lands after the rows; row family is generic across modes.",
+      "criticalIssue": null,
+      "shipToday": "NO"
+    },
+    {
+      "mode": "auto",
+      "archetype": "detail",
+      "screenScore": 5.8,
+      "bestThing": "Entity, amount and status are understandable.",
+      "worstThing": "Large empty region and weak metadata grouping make it feel unfinished.",
+      "criticalIssue": null,
+      "shipToday": "NO"
+    },
+    {
+      "mode": "auto",
+      "archetype": "form",
+      "screenScore": 4.9,
+      "bestThing": "Inputs and completion action remain usable.",
+      "worstThing": "Wireframe-like fields collapse across presets and tax control appears after the CTA.",
+      "criticalIssue": "STRUCTURAL_COLLISION",
+      "shipToday": "NO"
+    },
+    {
+      "mode": "auto",
+      "archetype": "analytics",
+      "screenScore": 4.8,
+      "bestThing": "Multiple real chart geometries render without clipping.",
+      "worstThing": "Charts lack units, targets and explanatory insight; donut is visually empty.",
+      "criticalIssue": "STRUCTURAL_COLLISION",
+      "shipToday": "NO"
+    },
+    {
+      "mode": "auto",
+      "archetype": "settings",
+      "screenScore": 5.0,
+      "bestThing": "Settings content avoids a dashboard hero.",
+      "worstThing": "Weak section labels, ambiguous toggles and excessive unused space.",
+      "criticalIssue": "STRUCTURAL_COLLISION",
+      "shipToday": "NO"
+    },
+    {
+      "mode": "deterministic",
+      "archetype": "dashboard",
+      "screenScore": 5.7,
+      "bestThing": "Core finance data is readable and the trend is real.",
+      "worstThing": "Title is composed after actions/content and the screen remains a vertical receipt.",
+      "criticalIssue": null,
+      "shipToday": "NO"
+    },
+    {
+      "mode": "deterministic",
+      "archetype": "management-list",
+      "screenScore": 6.0,
+      "bestThing": "Rows are scannable and amounts retain sign hierarchy.",
+      "worstThing": "The page title lands after the rows; row family is generic across modes.",
+      "criticalIssue": null,
+      "shipToday": "NO"
+    },
+    {
+      "mode": "deterministic",
+      "archetype": "detail",
+      "screenScore": 5.7,
+      "bestThing": "Entity, amount and status are understandable.",
+      "worstThing": "Large empty region and weak metadata grouping make it feel unfinished.",
+      "criticalIssue": null,
+      "shipToday": "NO"
+    },
+    {
+      "mode": "deterministic",
+      "archetype": "form",
+      "screenScore": 4.8,
+      "bestThing": "Inputs and completion action remain usable.",
+      "worstThing": "Wireframe-like fields collapse across presets and tax control appears after the CTA.",
+      "criticalIssue": "STRUCTURAL_COLLISION",
+      "shipToday": "NO"
+    },
+    {
+      "mode": "deterministic",
+      "archetype": "analytics",
+      "screenScore": 4.7,
+      "bestThing": "Multiple real chart geometries render without clipping.",
+      "worstThing": "Charts lack units, targets and explanatory insight; donut is visually empty.",
+      "criticalIssue": "STRUCTURAL_COLLISION",
+      "shipToday": "NO"
+    },
+    {
+      "mode": "deterministic",
+      "archetype": "settings",
+      "screenScore": 4.9,
+      "bestThing": "Settings content avoids a dashboard hero.",
+      "worstThing": "Weak section labels, ambiguous toggles and excessive unused space.",
+      "criticalIssue": "STRUCTURAL_COLLISION",
+      "shipToday": "NO"
+    }
+  ]
+}

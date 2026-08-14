@@ -1,0 +1,370 @@
+{
+  "screens": [
+    {
+      "mode": "obsidian",
+      "archetype": "dashboard",
+      "criticalIssues": [],
+      "warnings": [
+        "TOUCH_TARGET_BELOW_44:43.00"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "obsidian",
+      "archetype": "management-list",
+      "criticalIssues": [],
+      "warnings": [
+        "TOUCH_TARGET_BELOW_44:43.00"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "obsidian",
+      "archetype": "detail",
+      "criticalIssues": [],
+      "warnings": [
+        "SMALL_TEXT:2"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "obsidian",
+      "archetype": "form",
+      "criticalIssues": [],
+      "warnings": [],
+      "passed": true
+    },
+    {
+      "mode": "obsidian",
+      "archetype": "analytics",
+      "criticalIssues": [],
+      "warnings": [
+        "TOUCH_TARGET_BELOW_44:43.00"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "obsidian",
+      "archetype": "settings",
+      "criticalIssues": [],
+      "warnings": [
+        "TOUCH_TARGET_BELOW_44:43.00"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "serene",
+      "archetype": "dashboard",
+      "criticalIssues": [],
+      "warnings": [
+        "TOUCH_TARGET_BELOW_44:43.00"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "serene",
+      "archetype": "management-list",
+      "criticalIssues": [],
+      "warnings": [
+        "TOUCH_TARGET_BELOW_44:43.00"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "serene",
+      "archetype": "detail",
+      "criticalIssues": [],
+      "warnings": [
+        "SMALL_TEXT:2"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "serene",
+      "archetype": "form",
+      "criticalIssues": [],
+      "warnings": [],
+      "passed": true
+    },
+    {
+      "mode": "serene",
+      "archetype": "analytics",
+      "criticalIssues": [],
+      "warnings": [
+        "TOUCH_TARGET_BELOW_44:43.00"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "serene",
+      "archetype": "settings",
+      "criticalIssues": [],
+      "warnings": [
+        "TOUCH_TARGET_BELOW_44:43.00"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "terracotta",
+      "archetype": "dashboard",
+      "criticalIssues": [],
+      "warnings": [
+        "TOUCH_TARGET_BELOW_44:43.00"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "terracotta",
+      "archetype": "management-list",
+      "criticalIssues": [],
+      "warnings": [
+        "TOUCH_TARGET_BELOW_44:43.00"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "terracotta",
+      "archetype": "detail",
+      "criticalIssues": [],
+      "warnings": [
+        "SMALL_TEXT:2"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "terracotta",
+      "archetype": "form",
+      "criticalIssues": [],
+      "warnings": [],
+      "passed": true
+    },
+    {
+      "mode": "terracotta",
+      "archetype": "analytics",
+      "criticalIssues": [],
+      "warnings": [
+        "TOUCH_TARGET_BELOW_44:43.00"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "terracotta",
+      "archetype": "settings",
+      "criticalIssues": [],
+      "warnings": [
+        "TOUCH_TARGET_BELOW_44:43.00"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "electric",
+      "archetype": "dashboard",
+      "criticalIssues": [],
+      "warnings": [
+        "TOUCH_TARGET_BELOW_44:43.00"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "electric",
+      "archetype": "management-list",
+      "criticalIssues": [],
+      "warnings": [
+        "TOUCH_TARGET_BELOW_44:43.00"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "electric",
+      "archetype": "detail",
+      "criticalIssues": [],
+      "warnings": [
+        "SMALL_TEXT:2"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "electric",
+      "archetype": "form",
+      "criticalIssues": [],
+      "warnings": [],
+      "passed": true
+    },
+    {
+      "mode": "electric",
+      "archetype": "analytics",
+      "criticalIssues": [],
+      "warnings": [
+        "TOUCH_TARGET_BELOW_44:43.00"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "electric",
+      "archetype": "settings",
+      "criticalIssues": [],
+      "warnings": [
+        "TOUCH_TARGET_BELOW_44:43.00"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "editorial",
+      "archetype": "dashboard",
+      "criticalIssues": [],
+      "warnings": [
+        "TOUCH_TARGET_BELOW_44:43.00"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "editorial",
+      "archetype": "management-list",
+      "criticalIssues": [],
+      "warnings": [
+        "TOUCH_TARGET_BELOW_44:43.00"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "editorial",
+      "archetype": "detail",
+      "criticalIssues": [],
+      "warnings": [
+        "SMALL_TEXT:2"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "editorial",
+      "archetype": "form",
+      "criticalIssues": [],
+      "warnings": [],
+      "passed": true
+    },
+    {
+      "mode": "editorial",
+      "archetype": "analytics",
+      "criticalIssues": [],
+      "warnings": [
+        "TOUCH_TARGET_BELOW_44:43.00"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "editorial",
+      "archetype": "settings",
+      "criticalIssues": [],
+      "warnings": [
+        "TOUCH_TARGET_BELOW_44:43.00"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "auto",
+      "archetype": "dashboard",
+      "criticalIssues": [],
+      "warnings": [
+        "TOUCH_TARGET_BELOW_44:43.00"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "auto",
+      "archetype": "management-list",
+      "criticalIssues": [],
+      "warnings": [
+        "TOUCH_TARGET_BELOW_44:43.00"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "auto",
+      "archetype": "detail",
+      "criticalIssues": [],
+      "warnings": [
+        "SMALL_TEXT:2"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "auto",
+      "archetype": "form",
+      "criticalIssues": [],
+      "warnings": [],
+      "passed": true
+    },
+    {
+      "mode": "auto",
+      "archetype": "analytics",
+      "criticalIssues": [],
+      "warnings": [
+        "TOUCH_TARGET_BELOW_44:43.00"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "auto",
+      "archetype": "settings",
+      "criticalIssues": [],
+      "warnings": [
+        "TOUCH_TARGET_BELOW_44:43.00"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "deterministic",
+      "archetype": "dashboard",
+      "criticalIssues": [],
+      "warnings": [
+        "TOUCH_TARGET_BELOW_44:43.00"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "deterministic",
+      "archetype": "management-list",
+      "criticalIssues": [],
+      "warnings": [
+        "TOUCH_TARGET_BELOW_44:43.00"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "deterministic",
+      "archetype": "detail",
+      "criticalIssues": [],
+      "warnings": [
+        "SMALL_TEXT:2"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "deterministic",
+      "archetype": "form",
+      "criticalIssues": [],
+      "warnings": [],
+      "passed": true
+    },
+    {
+      "mode": "deterministic",
+      "archetype": "analytics",
+      "criticalIssues": [],
+      "warnings": [
+        "TOUCH_TARGET_BELOW_44:43.00"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "deterministic",
+      "archetype": "settings",
+      "criticalIssues": [],
+      "warnings": [
+        "TOUCH_TARGET_BELOW_44:43.00"
+      ],
+      "passed": true
+    }
+  ],
+  "criticalIssueCount": 0,
+  "passed": true
+}

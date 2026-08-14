@@ -1,0 +1,133 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "strict-grid",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 42.99996601122745,
+  "nodes": [
+    {
+      "nodeId": "editorial-analytics-rate",
+      "component": "article",
+      "role": null,
+      "sectionRole": "summary",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9994419642857,
+      "height": 67.640600239657,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-analytics-reserve",
+      "component": "article",
+      "role": null,
+      "sectionRole": "summary",
+      "x": 21.000279017857146,
+      "y": 133.6406190419567,
+      "width": 347.9994419642857,
+      "height": 67.640600239657,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-analytics-period",
+      "component": "div",
+      "role": null,
+      "sectionRole": "toolbar",
+      "x": 21.000279017857146,
+      "y": 240.2812462453512,
+      "width": 347.9994419642857,
+      "height": 34.250009426977186,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-analytics-revenue",
+      "component": "figure",
+      "role": null,
+      "sectionRole": "primary-content",
+      "x": 21.000279017857146,
+      "y": 313.5312390395248,
+      "width": 347.9994419642857,
+      "height": 88.00001053755258,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-analytics-expense",
+      "component": "figure",
+      "role": null,
+      "sectionRole": "primary-content",
+      "x": 21.000279017857146,
+      "y": 409.5312584616805,
+      "width": 347.9994419642857,
+      "height": 88.00001053755258,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-analytics-collection",
+      "component": "figure",
+      "role": null,
+      "sectionRole": "primary-content",
+      "x": 21.000279017857146,
+      "y": 505.5312342872952,
+      "width": 347.9994419642857,
+      "height": 88.00001053755258,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-analytics-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "insight",
+      "x": 21.000279017857146,
+      "y": 632.5312281920442,
+      "width": 347.9994419642857,
+      "height": 29.10941047868692,
+      "fontSize": "28px",
+      "lineHeight": "29.12px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-analytics-nav",
+      "component": "nav",
+      "role": null,
+      "x": 5,
+      "y": 772.9999810943909,
+      "width": 380,
+      "height": 66.0000188022997,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

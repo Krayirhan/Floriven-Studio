@@ -1,0 +1,120 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "editorial-asymmetry",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 45.99997479252127,
+  "nodes": [
+    {
+      "nodeId": "editorial-detail-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "hero",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9994419642857,
+      "height": 29.109366882145842,
+      "fontSize": "28px",
+      "lineHeight": "29.12px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-detail-avatar",
+      "component": "div",
+      "role": null,
+      "sectionRole": "hero",
+      "x": 21.000279017857146,
+      "y": 95.10938568444554,
+      "width": 36.000279017857146,
+      "height": 35.99997458590259,
+      "fontSize": "11px",
+      "lineHeight": "16.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-detail-status",
+      "component": "span",
+      "role": null,
+      "sectionRole": "summary",
+      "x": 21.000279017857146,
+      "y": 170.10938723408563,
+      "width": 347.9994419642857,
+      "height": 23.999983057268395,
+      "fontSize": "10px",
+      "lineHeight": "15px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-detail-amount",
+      "component": "article",
+      "role": null,
+      "sectionRole": "summary",
+      "x": 21.000279017857146,
+      "y": 202.10937917595717,
+      "width": 347.9994419642857,
+      "height": 80.39062666102046,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-detail-progress",
+      "component": "div",
+      "role": null,
+      "sectionRole": "summary",
+      "x": 21.000279017857146,
+      "y": 290.49997112503974,
+      "width": 347.9994419642857,
+      "height": 28.12500058111503,
+      "fontSize": "10.5px",
+      "lineHeight": "15.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-detail-meta",
+      "component": "div",
+      "role": null,
+      "sectionRole": "primary-content",
+      "x": 21.000279017857146,
+      "y": 357.62499866989225,
+      "width": 347.9994419642857,
+      "height": 54.49999240676358,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-detail-cta",
+      "component": "button",
+      "role": null,
+      "sectionRole": "actions",
+      "x": 21.000279017857146,
+      "y": 451.12501804039334,
+      "width": 347.9994419642857,
+      "height": 45.99997479252127,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

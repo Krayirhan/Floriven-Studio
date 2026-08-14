@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://floriven.local/contracts/runtime-hierarchy-profiles.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "profiles"],
+  "properties": {
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "profiles": {
+      "type": "object",
+      "minProperties": 1,
+      "required": ["default"],
+      "additionalProperties": { "$ref": "#/$defs/profile" }
+    }
+  },
+  "$defs": {
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minimumSectionCount", "minimumSectionAreaCoverage", "maximumSectionAreaCoverage", "minimumVerticalOccupancy", "minimumNodeDensityPer100k", "maximumNodeDensityPer100k", "minimumSectionHeightVariation"],
+      "properties": {
+        "minimumSectionCount": { "type": "integer", "minimum": 1 },
+        "minimumSectionAreaCoverage": { "type": "number", "minimum": 0, "maximum": 1 },
+        "maximumSectionAreaCoverage": { "type": "number", "minimum": 0, "maximum": 1 },
+        "minimumVerticalOccupancy": { "type": "number", "minimum": 0, "maximum": 1 },
+        "minimumNodeDensityPer100k": { "type": "number", "minimum": 0 },
+        "maximumNodeDensityPer100k": { "type": "number", "exclusiveMinimum": 0 },
+        "minimumSectionHeightVariation": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    }
+  }
+}

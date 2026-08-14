@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createGenerationService, isFinalEligibleGeneration } from "./generationService";
+import { createGenerationService, generationProvenanceMessage, isFinalEligibleGeneration } from "./generationService";
 
 describe("generationService", () => {
   it("does not treat a completed job as final without trusted runtime evidence", () => {
@@ -11,6 +11,22 @@ describe("generationService", () => {
         pendingGates: [], finalEligible: true,
       },
     })).toBe(true);
+  });
+
+  it("labels deterministic fallback without exposing provider internals", () => {
+    const message = generationProvenanceMessage({
+      id: "job", projectId: "project", status: "completed", progress: 100,
+      compositionMode: "deterministic_fallback", degraded: true, fallbackReason: "PROVIDER_TIMEOUT",
+    });
+    expect(message).toContain("Güvenli otomatik taslak");
+    expect(message).not.toContain("PROVIDER_TIMEOUT");
+  });
+
+  it("distinguishes accepted AI output from degraded fallback", () => {
+    expect(generationProvenanceMessage({
+      id: "job", projectId: "project", status: "completed", progress: 100,
+      compositionMode: "ai_enhanced", degraded: false,
+    })).toContain("AI tarafından özelleştirilmiş");
   });
 
   it("keeps a controlled quality rejection terminal and non-final", async () => {

@@ -2,22 +2,49 @@
 
 ## Verdict
 
-**NOT CERTIFIED — EVIDENCE HOLD**
+**NOT VERIFIED — LIVE EVIDENCE HOLD**
 
-## Verified in the local release candidate
+Son doğrulama: `2026-08-14T11:19:57.219Z`
 
-- Build, type-check, lint and unit tests pass through `certification:preflight`.
-- Security bypass audit passes through `certification:security`.
-- Benchmark catalog contains 12 domains × 6 style variants = 72 cases.
-- Unsupported renderer output is visible and deterministic.
-- Duplicate node/screen IDs and invalid action targets are rejected by the identity validator.
-- Runtime evidence is required before `final_eligible` can become true.
+Revision: `dadf574dd38c81734a3d7590b501f33eb684b60c`
 
-## Remaining certification evidence
+Komut: `pnpm certification:final`
 
-- Trusted screenshot-based visual critic result.
-- Full E2E certification run and persisted screenshots.
-- Supabase integration evidence against the deployed Edge Functions.
-- 72 benchmark executions, holdout set, and performance baseline.
+## Geçen yerel kapılar
 
-The implementation recovery work is complete locally, but the release remains on evidence hold because these items cannot be truthfully marked PASS without their actual runs.
+- Build
+- Type-check
+- Lint
+- Benchmark katalog validasyonu
+- Security bypass audit
+- Runtime hierarchy contract ve generated-adapter drift
+- Runtime PNG/hash/viewport/renderer evidence integrity
+- Runtime replay/provenance sözleşmesi
+- E2E
+- Generation architecture
+- Unit testler: DesignSpec `168/168`
+
+## Yerel sonuç
+
+Tüm yerel sertifikasyon komutları geçmiştir. Çalışma ağacı değişiklik içerdiği için temiz
+revision koşulu henüz sağlanmış sayılmaz; bu durum tek başına production kanıtı üretmez.
+
+## Eksik canlı kanıt
+
+- Capture environment hazır değil.
+- Gerçek altı ekranlı production baseline yok.
+- Hash-bound baseline approval yok.
+- Production replay sonucu yok.
+- Persist edilmiş server-derived `runtimeFinalEligible=true` kanıtı yok.
+
+Bu alanlar tamamlanmadan durum `VERIFIED` olamaz. Sentetik fixture, yerel screenshot veya
+istemci tarafından gönderilen final kararı production kanıtı sayılmaz.
+
+## Kanonik kanıt dosyaları
+
+- `docs/certification/evidence/commands/preflight.json`
+- `docs/certification/evidence/commands/runtime-release-evidence.json`
+- `docs/certification/evidence/commands/final-certification.json`
+
+Final gate yalnız bütün yerel kapılar geçtiğinde, revision temiz olduğunda ve runtime
+release evidence `VERIFIED` olduğunda `releaseEligible=true` üretir.

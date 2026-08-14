@@ -1,0 +1,179 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "strict-grid",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 42.99996601122745,
+  "sections": [
+    {
+      "role": "context",
+      "order": 0,
+      "span": 12,
+      "emphasis": "secondary",
+      "family": "kpi-context",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9994419642857,
+      "height": 180.39058513066615
+    },
+    {
+      "role": "period-comparison",
+      "order": 1,
+      "span": 12,
+      "emphasis": "tertiary",
+      "family": "period-comparison",
+      "x": 21.000279017857146,
+      "y": 252.39062149555352,
+      "width": 347.9994419642857,
+      "height": 59.250009943523885
+    },
+    {
+      "role": "dominant-chart",
+      "order": 2,
+      "span": 12,
+      "emphasis": "primary",
+      "family": "line",
+      "x": 21.000279017857146,
+      "y": 325.6406142897271,
+      "width": 347.9994419642857,
+      "height": 160.00000330589884
+    },
+    {
+      "role": "breakdown",
+      "order": 3,
+      "span": 6,
+      "emphasis": "secondary",
+      "family": "bar",
+      "x": 21.000279017857146,
+      "y": 499.64064404281675,
+      "width": 166.99916294642858,
+      "height": 122.49995893453773
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "editorial-analytics-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "context",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9994419642857,
+      "height": 29.109366882145842,
+      "fontSize": "28px",
+      "lineHeight": "29.12px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-analytics-rate",
+      "component": "article",
+      "role": null,
+      "sectionRole": "context",
+      "x": 21.000279017857146,
+      "y": 95.10938568444554,
+      "width": 347.9994419642857,
+      "height": 67.640600239657,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-analytics-reserve",
+      "component": "article",
+      "role": null,
+      "sectionRole": "context",
+      "x": 21.000279017857146,
+      "y": 170.7499948087057,
+      "width": 347.9994419642857,
+      "height": 67.640600239657,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-analytics-period",
+      "component": "div",
+      "role": null,
+      "sectionRole": "period-comparison",
+      "x": 21.000279017857146,
+      "y": 277.3906220121002,
+      "width": 347.9994419642857,
+      "height": 34.250009426977186,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-analytics-revenue",
+      "component": "figure",
+      "role": null,
+      "sectionRole": "dominant-chart",
+      "x": 21.000279017857146,
+      "y": 350.6406148062738,
+      "width": 347.9994419642857,
+      "height": 88.00001053755258,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-analytics-expense",
+      "component": "figure",
+      "role": null,
+      "sectionRole": "breakdown",
+      "x": 21.000279017857146,
+      "y": 524.6406445593634,
+      "width": 79.49916294642857,
+      "height": 97.49995841799102,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-analytics-collection",
+      "component": "figure",
+      "role": null,
+      "sectionRole": "breakdown",
+      "x": 108.50027901785715,
+      "y": 524.6406445593634,
+      "width": 79.49916294642857,
+      "height": 97.49995841799102,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-analytics-nav",
+      "component": "nav",
+      "role": null,
+      "x": 5,
+      "y": 772.9999810943909,
+      "width": 380,
+      "height": 66.0000188022997,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

@@ -1,0 +1,937 @@
+{
+  "expectedScreenCount": 42,
+  "validRuntimeScreens": 42,
+  "viewport": {
+    "width": 390,
+    "height": 844,
+    "safeTop": 24,
+    "safeBottom": 24
+  },
+  "rendererVersion": "phone-screen-v4",
+  "entries": [
+    {
+      "mode": "obsidian",
+      "archetype": "dashboard",
+      "screenId": "obsidian-dashboard",
+      "screenshotPath": "screenshots/obsidian/dashboard.png",
+      "geometryPath": "geometry/obsidian/dashboard.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "obsidian",
+      "archetype": "management-list",
+      "screenId": "obsidian-management-list",
+      "screenshotPath": "screenshots/obsidian/management-list.png",
+      "geometryPath": "geometry/obsidian/management-list.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "obsidian",
+      "archetype": "detail",
+      "screenId": "obsidian-detail",
+      "screenshotPath": "screenshots/obsidian/detail.png",
+      "geometryPath": "geometry/obsidian/detail.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "obsidian",
+      "archetype": "form",
+      "screenId": "obsidian-form",
+      "screenshotPath": "screenshots/obsidian/form.png",
+      "geometryPath": "geometry/obsidian/form.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "obsidian",
+      "archetype": "analytics",
+      "screenId": "obsidian-analytics",
+      "screenshotPath": "screenshots/obsidian/analytics.png",
+      "geometryPath": "geometry/obsidian/analytics.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "obsidian",
+      "archetype": "settings",
+      "screenId": "obsidian-settings",
+      "screenshotPath": "screenshots/obsidian/settings.png",
+      "geometryPath": "geometry/obsidian/settings.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "serene",
+      "archetype": "dashboard",
+      "screenId": "serene-dashboard",
+      "screenshotPath": "screenshots/serene/dashboard.png",
+      "geometryPath": "geometry/serene/dashboard.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "serene",
+      "archetype": "management-list",
+      "screenId": "serene-management-list",
+      "screenshotPath": "screenshots/serene/management-list.png",
+      "geometryPath": "geometry/serene/management-list.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "serene",
+      "archetype": "detail",
+      "screenId": "serene-detail",
+      "screenshotPath": "screenshots/serene/detail.png",
+      "geometryPath": "geometry/serene/detail.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "serene",
+      "archetype": "form",
+      "screenId": "serene-form",
+      "screenshotPath": "screenshots/serene/form.png",
+      "geometryPath": "geometry/serene/form.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "serene",
+      "archetype": "analytics",
+      "screenId": "serene-analytics",
+      "screenshotPath": "screenshots/serene/analytics.png",
+      "geometryPath": "geometry/serene/analytics.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "serene",
+      "archetype": "settings",
+      "screenId": "serene-settings",
+      "screenshotPath": "screenshots/serene/settings.png",
+      "geometryPath": "geometry/serene/settings.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "terracotta",
+      "archetype": "dashboard",
+      "screenId": "terracotta-dashboard",
+      "screenshotPath": "screenshots/terracotta/dashboard.png",
+      "geometryPath": "geometry/terracotta/dashboard.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "terracotta",
+      "archetype": "management-list",
+      "screenId": "terracotta-management-list",
+      "screenshotPath": "screenshots/terracotta/management-list.png",
+      "geometryPath": "geometry/terracotta/management-list.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "terracotta",
+      "archetype": "detail",
+      "screenId": "terracotta-detail",
+      "screenshotPath": "screenshots/terracotta/detail.png",
+      "geometryPath": "geometry/terracotta/detail.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "terracotta",
+      "archetype": "form",
+      "screenId": "terracotta-form",
+      "screenshotPath": "screenshots/terracotta/form.png",
+      "geometryPath": "geometry/terracotta/form.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "terracotta",
+      "archetype": "analytics",
+      "screenId": "terracotta-analytics",
+      "screenshotPath": "screenshots/terracotta/analytics.png",
+      "geometryPath": "geometry/terracotta/analytics.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "terracotta",
+      "archetype": "settings",
+      "screenId": "terracotta-settings",
+      "screenshotPath": "screenshots/terracotta/settings.png",
+      "geometryPath": "geometry/terracotta/settings.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "electric",
+      "archetype": "dashboard",
+      "screenId": "electric-dashboard",
+      "screenshotPath": "screenshots/electric/dashboard.png",
+      "geometryPath": "geometry/electric/dashboard.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "electric",
+      "archetype": "management-list",
+      "screenId": "electric-management-list",
+      "screenshotPath": "screenshots/electric/management-list.png",
+      "geometryPath": "geometry/electric/management-list.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "electric",
+      "archetype": "detail",
+      "screenId": "electric-detail",
+      "screenshotPath": "screenshots/electric/detail.png",
+      "geometryPath": "geometry/electric/detail.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "electric",
+      "archetype": "form",
+      "screenId": "electric-form",
+      "screenshotPath": "screenshots/electric/form.png",
+      "geometryPath": "geometry/electric/form.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "electric",
+      "archetype": "analytics",
+      "screenId": "electric-analytics",
+      "screenshotPath": "screenshots/electric/analytics.png",
+      "geometryPath": "geometry/electric/analytics.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999267578125,
+        "scaleX": 0.7,
+        "scaleY": 0.699999913220157
+      },
+      "valid": true
+    },
+    {
+      "mode": "electric",
+      "archetype": "settings",
+      "screenId": "electric-settings",
+      "screenshotPath": "screenshots/electric/settings.png",
+      "geometryPath": "geometry/electric/settings.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "editorial",
+      "archetype": "dashboard",
+      "screenId": "editorial-dashboard",
+      "screenshotPath": "screenshots/editorial/dashboard.png",
+      "geometryPath": "geometry/editorial/dashboard.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "editorial",
+      "archetype": "management-list",
+      "screenId": "editorial-management-list",
+      "screenshotPath": "screenshots/editorial/management-list.png",
+      "geometryPath": "geometry/editorial/management-list.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "editorial",
+      "archetype": "detail",
+      "screenId": "editorial-detail",
+      "screenshotPath": "screenshots/editorial/detail.png",
+      "geometryPath": "geometry/editorial/detail.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "editorial",
+      "archetype": "form",
+      "screenId": "editorial-form",
+      "screenshotPath": "screenshots/editorial/form.png",
+      "geometryPath": "geometry/editorial/form.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "editorial",
+      "archetype": "analytics",
+      "screenId": "editorial-analytics",
+      "screenshotPath": "screenshots/editorial/analytics.png",
+      "geometryPath": "geometry/editorial/analytics.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "editorial",
+      "archetype": "settings",
+      "screenId": "editorial-settings",
+      "screenshotPath": "screenshots/editorial/settings.png",
+      "geometryPath": "geometry/editorial/settings.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "auto",
+      "archetype": "dashboard",
+      "screenId": "auto-dashboard",
+      "screenshotPath": "screenshots/auto/dashboard.png",
+      "geometryPath": "geometry/auto/dashboard.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "auto",
+      "archetype": "management-list",
+      "screenId": "auto-management-list",
+      "screenshotPath": "screenshots/auto/management-list.png",
+      "geometryPath": "geometry/auto/management-list.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "auto",
+      "archetype": "detail",
+      "screenId": "auto-detail",
+      "screenshotPath": "screenshots/auto/detail.png",
+      "geometryPath": "geometry/auto/detail.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "auto",
+      "archetype": "form",
+      "screenId": "auto-form",
+      "screenshotPath": "screenshots/auto/form.png",
+      "geometryPath": "geometry/auto/form.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "auto",
+      "archetype": "analytics",
+      "screenId": "auto-analytics",
+      "screenshotPath": "screenshots/auto/analytics.png",
+      "geometryPath": "geometry/auto/analytics.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "auto",
+      "archetype": "settings",
+      "screenId": "auto-settings",
+      "screenshotPath": "screenshots/auto/settings.png",
+      "geometryPath": "geometry/auto/settings.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "deterministic",
+      "archetype": "dashboard",
+      "screenId": "deterministic-dashboard",
+      "screenshotPath": "screenshots/deterministic/dashboard.png",
+      "geometryPath": "geometry/deterministic/dashboard.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "deterministic",
+      "archetype": "management-list",
+      "screenId": "deterministic-management-list",
+      "screenshotPath": "screenshots/deterministic/management-list.png",
+      "geometryPath": "geometry/deterministic/management-list.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "deterministic",
+      "archetype": "detail",
+      "screenId": "deterministic-detail",
+      "screenshotPath": "screenshots/deterministic/detail.png",
+      "geometryPath": "geometry/deterministic/detail.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "deterministic",
+      "archetype": "form",
+      "screenId": "deterministic-form",
+      "screenshotPath": "screenshots/deterministic/form.png",
+      "geometryPath": "geometry/deterministic/form.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "deterministic",
+      "archetype": "analytics",
+      "screenId": "deterministic-analytics",
+      "screenshotPath": "screenshots/deterministic/analytics.png",
+      "geometryPath": "geometry/deterministic/analytics.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    },
+    {
+      "mode": "deterministic",
+      "archetype": "settings",
+      "screenId": "deterministic-settings",
+      "screenshotPath": "screenshots/deterministic/settings.png",
+      "geometryPath": "geometry/deterministic/settings.json",
+      "logicalViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "layoutViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "preview": {
+        "width": 273,
+        "height": 590.7999877929688,
+        "scaleX": 0.7,
+        "scaleY": 0.6999999855366928
+      },
+      "valid": true
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "strict-grid",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 46.00001838906235,
+  "nodes": [
+    {
+      "nodeId": "auto-detail-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "hero",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9994419642857,
+      "height": 31.18748320577557,
+      "fontSize": "24px",
+      "lineHeight": "31.2px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "auto-detail-avatar",
+      "component": "div",
+      "role": null,
+      "sectionRole": "hero",
+      "x": 21.000279017857146,
+      "y": 97.18750200807527,
+      "width": 36.000279017857146,
+      "height": 35.99999638417313,
+      "fontSize": "11px",
+      "lineHeight": "16.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "auto-detail-status",
+      "component": "span",
+      "role": null,
+      "sectionRole": "summary",
+      "x": 21.000279017857146,
+      "y": 147.18750304116867,
+      "width": 347.9994419642857,
+      "height": 23.000009194531174,
+      "fontSize": "10px",
+      "lineHeight": "15px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "auto-detail-amount",
+      "component": "article",
+      "role": null,
+      "sectionRole": "summary",
+      "x": 21.000279017857146,
+      "y": 178.18749932203247,
+      "width": 347.9994419642857,
+      "height": 80.390648459291,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "auto-detail-progress",
+      "component": "div",
+      "role": null,
+      "sectionRole": "summary",
+      "x": 21.000279017857146,
+      "y": 266.57811306938555,
+      "width": 347.9994419642857,
+      "height": 28.12500058111503,
+      "fontSize": "10.5px",
+      "lineHeight": "15.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "auto-detail-meta",
+      "component": "div",
+      "role": null,
+      "sectionRole": "primary-content",
+      "x": 21.000279017857146,
+      "y": 308.7030965011503,
+      "width": 347.9994419642857,
+      "height": 54.50003600330466,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "auto-detail-cta",
+      "component": "button",
+      "role": null,
+      "sectionRole": "actions",
+      "x": 21.000279017857146,
+      "y": 377.20311535510467,
+      "width": 347.9994419642857,
+      "height": 46.00001838906235,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

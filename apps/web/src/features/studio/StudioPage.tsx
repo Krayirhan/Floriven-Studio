@@ -10,7 +10,7 @@ import { StudioSidebar } from "./sidebar/StudioSidebar";
 import { StudioToolbar } from "./toolbar/StudioToolbar";
 import type { LeftTab } from "./studio.types";
 import { useGenerationJob } from "./state/useGenerationJob";
-import { isFinalEligibleGeneration } from "../../services/generationService";
+import { generationProvenanceMessage, isFinalEligibleGeneration } from "../../services/generationService";
 import html2canvas from "html2canvas";
 import { capturePhoneBaseline } from "./canvas/runtimeCapture";
 
@@ -132,27 +132,28 @@ export function StudioPage() {
 
 
   const isAiTab = studio.leftTab === "ai";
+  const visibleGenerationJob = generation.job ?? studio.lastGenerationJob;
 
   return (
     <div className={styles.studio}>
-      {generation.job && (generation.job.status === "queued" || generation.job.status === "processing") && (
+      {visibleGenerationJob && (visibleGenerationJob.status === "queued" || visibleGenerationJob.status === "processing") && (
         <div className={styles.jobStatus} role="status" aria-live="polite">
-          AI üretimi devam ediyor · %{generation.job.progress}
+          AI üretimi devam ediyor · %{visibleGenerationJob.progress}
         </div>
       )}
-      {generation.job?.status === "completed" && !isFinalEligibleGeneration(generation.job) && (
+      {visibleGenerationJob?.status === "completed" && !isFinalEligibleGeneration(visibleGenerationJob) && (
         <div className={styles.jobStatus} role="status" aria-live="polite">
-          Önizleme hazır. Statik kalite: {generation.job.qualityReport?.score ?? "—"}/100 · Görsel/runtime kalite henüz ölçülmedi.
+          {generationProvenanceMessage(visibleGenerationJob)} Statik kalite: {visibleGenerationJob.qualityReport?.score ?? "—"}/100 · Görsel/runtime kalite henüz ölçülmedi.
         </div>
       )}
-      {generation.job && isFinalEligibleGeneration(generation.job) && (
+      {visibleGenerationJob && isFinalEligibleGeneration(visibleGenerationJob) && (
         <div className={styles.jobStatus} role="status" aria-live="polite">
-          Final kalite kapısı geçti. Statik kalite: {generation.job.qualityReport?.score ?? "—"}/100 · Runtime kalite kanıtı mevcut.
+          Final kalite kapısı geçti. {generationProvenanceMessage(visibleGenerationJob)} Statik kalite: {visibleGenerationJob.qualityReport?.score ?? "—"}/100 · Runtime kalite kanıtı mevcut.
         </div>
       )}
       {generation.error && <div className={styles.jobError} role="alert">{generation.error}</div>}
-      {generation.job?.status === "failed" && generation.job.errorCode === "QUALITY_REJECTED" && (
-        <div className={styles.jobStatus} role="status" aria-live="polite">Ekranlar oluşturuldu; statik kalite kapısı adayı reddetti. Statik kalite: {generation.job.qualityReport?.score ?? "—"}/100. Bu skor görsel/runtime kalite skoru değildir. Önizleme gösteriliyor.</div>
+      {visibleGenerationJob?.status === "failed" && visibleGenerationJob.errorCode === "QUALITY_REJECTED" && (
+        <div className={styles.jobStatus} role="status" aria-live="polite">Ekranlar oluşturuldu; statik kalite kapısı adayı reddetti. Statik kalite: {visibleGenerationJob.qualityReport?.score ?? "—"}/100. Bu skor görsel/runtime kalite skoru değildir. Önizleme gösteriliyor.</div>
       )}
       {exportMessage && <div className={styles.jobStatus} role="status" aria-live="polite">{exportMessage}</div>}
       <StudioToolbar
@@ -253,10 +254,10 @@ export function StudioPage() {
           onDeleteScreen={handleDeleteScreen}
           onDuplicateScreen={handleDuplicateScreen}
           readOnly={readOnly}
-          runtimeCandidate={generation.job?.status === 'completed' && generation.job.qualityReport?.passed === true ? {
-            jobId: generation.job.id,
+          runtimeCandidate={visibleGenerationJob?.status === 'completed' && visibleGenerationJob.qualityReport?.passed === true ? {
+            jobId: visibleGenerationJob.id,
             staticQualityPassed: true,
-            runtimePending: generation.job.runtimeQualityReport?.finalEligible !== true,
+            runtimePending: visibleGenerationJob.runtimeQualityReport?.finalEligible !== true,
           } : undefined}
         />
 

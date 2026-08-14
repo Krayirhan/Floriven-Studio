@@ -11,7 +11,7 @@ describe("deterministic compositor v2", () => {
   it("uses archetype-specific recipes and deterministic hash", () => {
     const candidate = composeDeterministicCandidate({ blueprint: blueprint("finans", "overview"), presentation });
     expect(candidate.provider).toBe("deterministic");
-    expect(candidate.screens[0]?.renderPlan.sections.some((section) => section.role === "hero")).toBe(true);
+    expect(candidate.screens[0]?.renderPlan.sections.some((section) => section.role === "primary-summary")).toBe(true);
     expect(candidate.deterministicHash).toBe(composeDeterministicCandidate({ blueprint: blueprint("finans", "overview"), presentation }).deterministicHash);
   });
 

@@ -1,0 +1,66 @@
+{
+  "pairs": [
+    {
+      "left": "obsidian",
+      "right": "serene",
+      "distance": 0.434,
+      "verdict": "PASS"
+    },
+    {
+      "left": "obsidian",
+      "right": "terracotta",
+      "distance": 0.687,
+      "verdict": "PASS"
+    },
+    {
+      "left": "obsidian",
+      "right": "electric",
+      "distance": 0.954,
+      "verdict": "PASS"
+    },
+    {
+      "left": "obsidian",
+      "right": "editorial",
+      "distance": 0.454,
+      "verdict": "PASS"
+    },
+    {
+      "left": "serene",
+      "right": "terracotta",
+      "distance": 0.453,
+      "verdict": "PASS"
+    },
+    {
+      "left": "serene",
+      "right": "electric",
+      "distance": 0.72,
+      "verdict": "PASS"
+    },
+    {
+      "left": "serene",
+      "right": "editorial",
+      "distance": 0.38,
+      "verdict": "PASS"
+    },
+    {
+      "left": "terracotta",
+      "right": "electric",
+      "distance": 0.566,
+      "verdict": "PASS"
+    },
+    {
+      "left": "terracotta",
+      "right": "editorial",
+      "distance": 0.433,
+      "verdict": "PASS"
+    },
+    {
+      "left": "electric",
+      "right": "editorial",
+      "distance": 0.8,
+      "verdict": "PASS"
+    }
+  ],
+  "minimum": 0.38,
+  "passed": true
+}

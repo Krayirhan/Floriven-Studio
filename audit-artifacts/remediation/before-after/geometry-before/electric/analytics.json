@@ -1,0 +1,133 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "bento",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 42.99996601122745,
+  "nodes": [
+    {
+      "nodeId": "electric-analytics-rate",
+      "component": "article",
+      "role": null,
+      "sectionRole": "summary",
+      "x": 36.99986049107143,
+      "y": 74.00000588863233,
+      "width": 316.00027901785717,
+      "height": 67.64062203792754,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-analytics-reserve",
+      "component": "article",
+      "role": null,
+      "sectionRole": "summary",
+      "x": 36.99986049107143,
+      "y": 149.64063681116303,
+      "width": 316.00027901785717,
+      "height": 67.640600239657,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-analytics-period",
+      "component": "div",
+      "role": null,
+      "sectionRole": "toolbar",
+      "x": 36.99986049107143,
+      "y": 263.2812554398824,
+      "width": 316.00027901785717,
+      "height": 34.24996583043611,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-analytics-revenue",
+      "component": "figure",
+      "role": null,
+      "sectionRole": "primary-content",
+      "x": 36.99986049107143,
+      "y": 343.53123965938084,
+      "width": 316.00027901785717,
+      "height": 95.74999325906562,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-analytics-expense",
+      "component": "figure",
+      "role": null,
+      "sectionRole": "primary-content",
+      "x": 36.99986049107143,
+      "y": 447.2812418030496,
+      "width": 316.00027901785717,
+      "height": 95.74999325906562,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-analytics-collection",
+      "component": "figure",
+      "role": null,
+      "sectionRole": "primary-content",
+      "x": 36.99986049107143,
+      "y": 551.0312439467184,
+      "width": 316.00027901785717,
+      "height": 95.74994966252454,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-analytics-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "insight",
+      "x": 36.99986049107143,
+      "y": 692.7812991913875,
+      "width": 316.00027901785717,
+      "height": 26.25000054237403,
+      "fontSize": "25px",
+      "lineHeight": "26.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-analytics-nav",
+      "component": "nav",
+      "role": null,
+      "x": 5,
+      "y": 772.9999810943909,
+      "width": 380,
+      "height": 66.0000188022997,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

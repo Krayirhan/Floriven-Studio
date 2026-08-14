@@ -1,0 +1,165 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "editorial-asymmetry",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 42.99996601122745,
+  "sections": [
+    {
+      "role": "primary-summary",
+      "order": 0,
+      "span": 10,
+      "emphasis": "primary",
+      "family": "cover-summary",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9840959821429,
+      "height": 117.99998935913807
+    },
+    {
+      "role": "secondary-metrics",
+      "order": 1,
+      "span": 2,
+      "emphasis": "secondary",
+      "family": "divider-led-dashboard-secondary-metrics",
+      "x": 21.000279017857146,
+      "y": 190.00000392575487,
+      "width": 46.328125,
+      "height": 118.14061000238954
+    },
+    {
+      "role": "trend-progress",
+      "order": 2,
+      "span": 12,
+      "emphasis": "secondary",
+      "family": "divider-led-dashboard-trend-progress",
+      "x": 21.000279017857146,
+      "y": 322.14059677879413,
+      "width": 347.9840959821429,
+      "height": 113.00001105409928
+    },
+    {
+      "role": "actionable-content",
+      "order": 3,
+      "span": 12,
+      "emphasis": "secondary",
+      "family": "divider-led-dashboard-actionable-content",
+      "x": 21.000279017857146,
+      "y": 449.1406342800842,
+      "width": 347.9840959821429,
+      "height": 70.99997530906796
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "editorial-dashboard-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "primary-summary",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9840959821429,
+      "height": 29.109366882145842,
+      "fontSize": "28px",
+      "lineHeight": "29.12px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-dashboard-balance",
+      "component": "article",
+      "role": null,
+      "sectionRole": "primary-summary",
+      "x": 21.000279017857146,
+      "y": 95.10938568444554,
+      "width": 347.9840959821429,
+      "height": 80.39062666102046,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-dashboard-income",
+      "component": "article",
+      "role": null,
+      "sectionRole": "secondary-metrics",
+      "x": 21.000279017857146,
+      "y": 215.0000044423016,
+      "width": 25.99958147321429,
+      "height": 93.14060948584284,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-dashboard-expense",
+      "component": "article",
+      "role": null,
+      "sectionRole": "secondary-metrics",
+      "x": 48.15638950892858,
+      "y": 215.0000044423016,
+      "width": 25.99958147321429,
+      "height": 93.14060948584284,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-dashboard-trend",
+      "component": "figure",
+      "role": null,
+      "sectionRole": "trend-progress",
+      "x": 21.000279017857146,
+      "y": 347.14059729534085,
+      "width": 347.9840959821429,
+      "height": 88.00001053755258,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-dashboard-cta",
+      "component": "button",
+      "role": null,
+      "sectionRole": "actionable-content",
+      "x": 21.000279017857146,
+      "y": 474.14063479663093,
+      "width": 347.9840959821429,
+      "height": 45.99997479252127,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-dashboard-nav",
+      "component": "nav",
+      "role": null,
+      "x": 5,
+      "y": 772.9999810943909,
+      "width": 380,
+      "height": 66.0000188022997,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

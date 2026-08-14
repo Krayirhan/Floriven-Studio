@@ -1,0 +1,182 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "bento",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 42.99996601122745,
+  "sections": [
+    {
+      "role": "context",
+      "order": 0,
+      "span": 5,
+      "emphasis": "tertiary",
+      "family": "card-clusters-management_list-context",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 136.82756696428572,
+      "height": 149.49999436964103
+    },
+    {
+      "role": "toolbar",
+      "order": 1,
+      "span": 7,
+      "emphasis": "secondary",
+      "family": "card-clusters-management_list-toolbar",
+      "x": 171.82826450892858,
+      "y": 58.000009917696545,
+      "width": 197.15611049107144,
+      "height": 149.49999436964103
+    },
+    {
+      "role": "dense-list",
+      "order": 2,
+      "span": 8,
+      "emphasis": "primary",
+      "family": "card-clusters-management_list-dense-list",
+      "x": 21.000279017857146,
+      "y": 221.4999871379873,
+      "width": 227.3277064732143,
+      "height": 340.5000157546742
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "electric-management-list-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "context",
+      "x": 36.99986049107143,
+      "y": 74.00000588863233,
+      "width": 104.82840401785715,
+      "height": 26.24997874410349,
+      "fontSize": "25px",
+      "lineHeight": "26.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-management-list-search",
+      "component": "label",
+      "role": null,
+      "sectionRole": "toolbar",
+      "x": 187.82784598214286,
+      "y": 74.00000588863233,
+      "width": 165.15625,
+      "height": 75.25000591445966,
+      "fontSize": "11.5px",
+      "lineHeight": "17.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-management-list-filter",
+      "component": "div",
+      "role": null,
+      "sectionRole": "toolbar",
+      "x": 187.82784598214286,
+      "y": 157.2499988894246,
+      "width": 165.15625,
+      "height": 34.250009426977186,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-management-list-row-0",
+      "component": "div",
+      "role": null,
+      "sectionRole": "dense-list",
+      "x": 36.99986049107143,
+      "y": 237.5000049071936,
+      "width": 195.32854352678572,
+      "height": 54.49999240676358,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-management-list-row-1",
+      "component": "div",
+      "role": null,
+      "sectionRole": "dense-list",
+      "x": 36.99986049107143,
+      "y": 300.00000619856036,
+      "width": 195.32854352678572,
+      "height": 55.499966269500796,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-management-list-row-2",
+      "component": "div",
+      "role": null,
+      "sectionRole": "dense-list",
+      "x": 36.99986049107143,
+      "y": 363.5000249492054,
+      "width": 195.32854352678572,
+      "height": 55.499966269500796,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-management-list-row-3",
+      "component": "div",
+      "role": null,
+      "sectionRole": "dense-list",
+      "x": 36.99986049107143,
+      "y": 427.00000010330933,
+      "width": 195.32854352678572,
+      "height": 55.50000986604188,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-management-list-row-4",
+      "component": "div",
+      "role": null,
+      "sectionRole": "dense-list",
+      "x": 36.99986049107143,
+      "y": 490.5000188539544,
+      "width": 195.32854352678572,
+      "height": 55.499966269500796,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-management-list-nav",
+      "component": "nav",
+      "role": null,
+      "x": 5,
+      "y": 772.9999810943909,
+      "width": 380,
+      "height": 66.0000188022997,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

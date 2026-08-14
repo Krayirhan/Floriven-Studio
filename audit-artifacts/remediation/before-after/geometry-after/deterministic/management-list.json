@@ -1,0 +1,182 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "strict-grid",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 42.99996601122745,
+  "sections": [
+    {
+      "role": "context",
+      "order": 0,
+      "span": 12,
+      "emphasis": "tertiary",
+      "family": "list-context",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9994419642857,
+      "height": 31.18748320577557
+    },
+    {
+      "role": "toolbar",
+      "order": 1,
+      "span": 12,
+      "emphasis": "secondary",
+      "family": "list-toolbar",
+      "x": 21.000279017857146,
+      "y": 103.18749777239238,
+      "width": 347.9994419642857,
+      "height": 85.50001048589792
+    },
+    {
+      "role": "dense-list",
+      "order": 2,
+      "span": 12,
+      "emphasis": "primary",
+      "family": "dense-list",
+      "x": 21.000279017857146,
+      "y": 202.68746931066946,
+      "width": 347.9994419642857,
+      "height": 308.5000238128026
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "deterministic-management-list-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "context",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9994419642857,
+      "height": 31.18748320577557,
+      "fontSize": "24px",
+      "lineHeight": "31.2px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "deterministic-management-list-search",
+      "component": "div",
+      "role": null,
+      "sectionRole": "toolbar",
+      "x": 21.000279017857146,
+      "y": 103.18749777239238,
+      "width": 347.9994419642857,
+      "height": 43.25001397258811,
+      "fontSize": "11.5px",
+      "lineHeight": "17.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "deterministic-management-list-filter",
+      "component": "div",
+      "role": null,
+      "sectionRole": "toolbar",
+      "x": 21.000279017857146,
+      "y": 154.4374988313131,
+      "width": 347.9994419642857,
+      "height": 34.250009426977186,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "deterministic-management-list-row-0",
+      "component": "div",
+      "role": null,
+      "sectionRole": "dense-list",
+      "x": 21.000279017857146,
+      "y": 202.68746931066946,
+      "width": 347.9994419642857,
+      "height": 54.50003600330466,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "deterministic-management-list-row-1",
+      "component": "div",
+      "role": null,
+      "sectionRole": "dense-list",
+      "x": 21.000279017857146,
+      "y": 265.1874706020362,
+      "width": 347.9994419642857,
+      "height": 55.500053462582954,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "deterministic-management-list-row-2",
+      "component": "div",
+      "role": null,
+      "sectionRole": "dense-list",
+      "x": 21.000279017857146,
+      "y": 328.6874893526812,
+      "width": 347.9994419642857,
+      "height": 55.50000986604188,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "deterministic-management-list-row-3",
+      "component": "div",
+      "role": null,
+      "sectionRole": "dense-list",
+      "x": 21.000279017857146,
+      "y": 392.18750810332625,
+      "width": 347.9994419642857,
+      "height": 55.50000986604188,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "deterministic-management-list-row-4",
+      "component": "div",
+      "role": null,
+      "sectionRole": "dense-list",
+      "x": 21.000279017857146,
+      "y": 455.68748325743024,
+      "width": 347.9994419642857,
+      "height": 55.50000986604188,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "deterministic-management-list-nav",
+      "component": "nav",
+      "role": null,
+      "x": 5,
+      "y": 772.9999810943909,
+      "width": 380,
+      "height": 66.0000188022997,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

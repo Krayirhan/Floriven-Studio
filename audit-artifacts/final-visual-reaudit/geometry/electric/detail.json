@@ -1,0 +1,166 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "bento",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 46.00001838906235,
+  "sections": [
+    {
+      "role": "identity",
+      "order": 0,
+      "span": 5,
+      "emphasis": "primary",
+      "family": "card-clusters-detail-identity",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 136.82756696428572,
+      "height": 179.51560255120347
+    },
+    {
+      "role": "primary-state",
+      "order": 1,
+      "span": 7,
+      "emphasis": "primary",
+      "family": "card-clusters-detail-primary-state",
+      "x": 171.82826450892858,
+      "y": 58.000009917696545,
+      "width": 197.15611049107144,
+      "height": 179.51560255120347
+    },
+    {
+      "role": "metadata",
+      "order": 2,
+      "span": 4,
+      "emphasis": "secondary",
+      "family": "card-clusters-detail-metadata",
+      "x": 21.000279017857146,
+      "y": 251.51559531954973,
+      "width": 106.65597098214286,
+      "height": 136.75001154481865
+    },
+    {
+      "role": "actions",
+      "order": 3,
+      "span": 12,
+      "emphasis": "tertiary",
+      "family": "card-clusters-detail-actions",
+      "x": 21.000279017857146,
+      "y": 402.26563331155916,
+      "width": 347.9840959821429,
+      "height": 78.0000103309339
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "electric-detail-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "identity",
+      "x": 36.99986049107143,
+      "y": 74.00000588863233,
+      "width": 104.82840401785715,
+      "height": 78.74997982885155,
+      "fontSize": "25px",
+      "lineHeight": "26.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-detail-avatar",
+      "component": "div",
+      "role": null,
+      "sectionRole": "identity",
+      "x": 36.99986049107143,
+      "y": 160.74999460208704,
+      "width": 36.000279017857146,
+      "height": 35.99997458590259,
+      "fontSize": "11px",
+      "lineHeight": "16.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-detail-status",
+      "component": "span",
+      "role": null,
+      "sectionRole": "primary-state",
+      "x": 187.82784598214286,
+      "y": 74.00000588863233,
+      "width": 165.15625,
+      "height": 22.999987396260636,
+      "fontSize": "10px",
+      "lineHeight": "15px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-detail-amount",
+      "component": "article",
+      "role": null,
+      "sectionRole": "primary-state",
+      "x": 187.82784598214286,
+      "y": 105.00000216949611,
+      "width": 165.15625,
+      "height": 80.39062666102046,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-detail-progress",
+      "component": "div",
+      "role": null,
+      "sectionRole": "primary-state",
+      "x": 187.82784598214286,
+      "y": 193.3906159168492,
+      "width": 165.15625,
+      "height": 28.12497878284449,
+      "fontSize": "10.5px",
+      "lineHeight": "15.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-detail-meta",
+      "component": "div",
+      "role": null,
+      "sectionRole": "metadata",
+      "x": 36.99986049107143,
+      "y": 267.515613088756,
+      "width": 74.65611049107143,
+      "height": 104.75001960294708,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-detail-cta",
+      "component": "button",
+      "role": null,
+      "sectionRole": "actions",
+      "x": 36.99986049107143,
+      "y": 418.2656074842244,
+      "width": 315.98423549107144,
+      "height": 46.00001838906235,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

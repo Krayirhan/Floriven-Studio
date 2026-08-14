@@ -1,0 +1,68 @@
+{
+  "features": "typography scale, section silhouette, field geometry, navigation geometry, chart family, spacing; color excluded",
+  "pairs": [
+    {
+      "left": "obsidian",
+      "right": "serene",
+      "equalArchetypeSignatures": 0,
+      "verdict": "STRONGLY_DISTINGUISHABLE"
+    },
+    {
+      "left": "obsidian",
+      "right": "terracotta",
+      "equalArchetypeSignatures": 0,
+      "verdict": "STRONGLY_DISTINGUISHABLE"
+    },
+    {
+      "left": "obsidian",
+      "right": "electric",
+      "equalArchetypeSignatures": 0,
+      "verdict": "STRONGLY_DISTINGUISHABLE"
+    },
+    {
+      "left": "obsidian",
+      "right": "editorial",
+      "equalArchetypeSignatures": 0,
+      "verdict": "STRONGLY_DISTINGUISHABLE"
+    },
+    {
+      "left": "serene",
+      "right": "terracotta",
+      "equalArchetypeSignatures": 0,
+      "verdict": "STRONGLY_DISTINGUISHABLE"
+    },
+    {
+      "left": "serene",
+      "right": "electric",
+      "equalArchetypeSignatures": 0,
+      "verdict": "STRONGLY_DISTINGUISHABLE"
+    },
+    {
+      "left": "serene",
+      "right": "editorial",
+      "equalArchetypeSignatures": 0,
+      "verdict": "STRONGLY_DISTINGUISHABLE"
+    },
+    {
+      "left": "terracotta",
+      "right": "electric",
+      "equalArchetypeSignatures": 0,
+      "verdict": "STRONGLY_DISTINGUISHABLE"
+    },
+    {
+      "left": "terracotta",
+      "right": "editorial",
+      "equalArchetypeSignatures": 0,
+      "verdict": "STRONGLY_DISTINGUISHABLE"
+    },
+    {
+      "left": "electric",
+      "right": "editorial",
+      "equalArchetypeSignatures": 0,
+      "verdict": "STRONGLY_DISTINGUISHABLE"
+    }
+  ],
+  "collisionCount": 0,
+  "target": 2,
+  "passed": true
+}

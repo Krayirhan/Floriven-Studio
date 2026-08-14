@@ -1,0 +1,1227 @@
+{
+  "entries": [
+    {
+      "mode": "obsidian",
+      "archetype": "dashboard",
+      "sectionRoleSequence": [
+        "primary-summary",
+        "secondary-metrics",
+        "trend-progress",
+        "actionable-content"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "bento",
+      "sectionSpans": [
+        8,
+        4,
+        12,
+        12
+      ],
+      "dominantRegionCount": 1,
+      "componentFamilyHistogram": {
+        "metric": 1,
+        "glass": 1,
+        "line": 1,
+        "actionable-content": 1
+      },
+      "chartFamilies": [
+        "line"
+      ],
+      "fieldCount": 0,
+      "navigationPolicy": "persistent",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "obsidian",
+      "archetype": "management-list",
+      "sectionRoleSequence": [
+        "context",
+        "toolbar",
+        "dense-list"
+      ],
+      "sectionCount": 3,
+      "layoutPattern": "strict-grid",
+      "sectionSpans": [
+        12,
+        12,
+        12
+      ],
+      "dominantRegionCount": 1,
+      "componentFamilyHistogram": {
+        "list-context": 1,
+        "list-toolbar": 1,
+        "dense-list": 1
+      },
+      "chartFamilies": [],
+      "fieldCount": 0,
+      "navigationPolicy": "persistent",
+      "surfaceGroupCount": 3
+    },
+    {
+      "mode": "obsidian",
+      "archetype": "detail",
+      "sectionRoleSequence": [
+        "identity",
+        "primary-state",
+        "metadata",
+        "actions"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "bento",
+      "sectionSpans": [
+        12,
+        8,
+        4,
+        12
+      ],
+      "dominantRegionCount": 2,
+      "componentFamilyHistogram": {
+        "entity-identity": 1,
+        "metric": 1,
+        "technical-metadata": 1,
+        "detail-actions": 1
+      },
+      "chartFamilies": [],
+      "fieldCount": 0,
+      "navigationPolicy": "focused",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "obsidian",
+      "archetype": "form",
+      "sectionRoleSequence": [
+        "context",
+        "field-group",
+        "field-group",
+        "actions"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "strict-grid",
+      "sectionSpans": [
+        12,
+        12,
+        12,
+        12
+      ],
+      "dominantRegionCount": 3,
+      "componentFamilyHistogram": {
+        "form-context": 1,
+        "outlined": 1,
+        "compact": 1,
+        "single-primary-action": 1
+      },
+      "chartFamilies": [],
+      "fieldCount": 5,
+      "navigationPolicy": "focused",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "obsidian",
+      "archetype": "analytics",
+      "sectionRoleSequence": [
+        "context",
+        "period-comparison",
+        "dominant-chart",
+        "breakdown"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "comparison-grid",
+      "sectionSpans": [
+        12,
+        12,
+        12,
+        7
+      ],
+      "dominantRegionCount": 1,
+      "componentFamilyHistogram": {
+        "kpi-context": 1,
+        "period-comparison": 1,
+        "line": 1,
+        "bar": 1
+      },
+      "chartFamilies": [
+        "line",
+        "bar"
+      ],
+      "fieldCount": 0,
+      "navigationPolicy": "persistent",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "obsidian",
+      "archetype": "settings",
+      "sectionRoleSequence": [
+        "section-group",
+        "rows-controls",
+        "divider",
+        "next-section-group"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "strict-grid",
+      "sectionSpans": [
+        12,
+        12,
+        12,
+        12
+      ],
+      "dominantRegionCount": 1,
+      "componentFamilyHistogram": {
+        "settings-label": 1,
+        "nested": 2,
+        "section-divider": 1
+      },
+      "chartFamilies": [],
+      "fieldCount": 0,
+      "navigationPolicy": "persistent",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "serene",
+      "archetype": "dashboard",
+      "sectionRoleSequence": [
+        "primary-summary",
+        "secondary-metrics",
+        "trend-progress",
+        "actionable-content"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "strict-grid",
+      "sectionSpans": [
+        8,
+        4,
+        12,
+        12
+      ],
+      "dominantRegionCount": 1,
+      "componentFamilyHistogram": {
+        "metric": 1,
+        "hero": 1,
+        "area": 1,
+        "actionable-content": 1
+      },
+      "chartFamilies": [
+        "area"
+      ],
+      "fieldCount": 0,
+      "navigationPolicy": "persistent",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "serene",
+      "archetype": "management-list",
+      "sectionRoleSequence": [
+        "context",
+        "toolbar",
+        "dense-list"
+      ],
+      "sectionCount": 3,
+      "layoutPattern": "strict-grid",
+      "sectionSpans": [
+        12,
+        12,
+        12
+      ],
+      "dominantRegionCount": 1,
+      "componentFamilyHistogram": {
+        "list-context": 1,
+        "list-toolbar": 1,
+        "dense-list": 1
+      },
+      "chartFamilies": [],
+      "fieldCount": 0,
+      "navigationPolicy": "persistent",
+      "surfaceGroupCount": 3
+    },
+    {
+      "mode": "serene",
+      "archetype": "detail",
+      "sectionRoleSequence": [
+        "identity",
+        "primary-state",
+        "metadata",
+        "actions"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "strict-grid",
+      "sectionSpans": [
+        12,
+        8,
+        4,
+        12
+      ],
+      "dominantRegionCount": 2,
+      "componentFamilyHistogram": {
+        "entity-identity": 1,
+        "metric": 1,
+        "technical-metadata": 1,
+        "detail-actions": 1
+      },
+      "chartFamilies": [],
+      "fieldCount": 0,
+      "navigationPolicy": "focused",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "serene",
+      "archetype": "form",
+      "sectionRoleSequence": [
+        "context",
+        "field-group",
+        "field-group",
+        "actions"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "strict-grid",
+      "sectionSpans": [
+        12,
+        12,
+        12,
+        12
+      ],
+      "dominantRegionCount": 3,
+      "componentFamilyHistogram": {
+        "form-context": 1,
+        "soft": 1,
+        "touch-large": 1,
+        "single-primary-action": 1
+      },
+      "chartFamilies": [],
+      "fieldCount": 5,
+      "navigationPolicy": "focused",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "serene",
+      "archetype": "analytics",
+      "sectionRoleSequence": [
+        "context",
+        "period-comparison",
+        "dominant-chart",
+        "breakdown"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "comparison-grid",
+      "sectionSpans": [
+        12,
+        12,
+        12,
+        7
+      ],
+      "dominantRegionCount": 1,
+      "componentFamilyHistogram": {
+        "kpi-context": 1,
+        "period-comparison": 1,
+        "line": 1,
+        "bar": 1
+      },
+      "chartFamilies": [
+        "line",
+        "bar"
+      ],
+      "fieldCount": 0,
+      "navigationPolicy": "persistent",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "serene",
+      "archetype": "settings",
+      "sectionRoleSequence": [
+        "section-group",
+        "rows-controls",
+        "divider",
+        "next-section-group"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "strict-grid",
+      "sectionSpans": [
+        12,
+        12,
+        12,
+        12
+      ],
+      "dominantRegionCount": 1,
+      "componentFamilyHistogram": {
+        "settings-label": 1,
+        "card-clusters": 2,
+        "section-divider": 1
+      },
+      "chartFamilies": [],
+      "fieldCount": 0,
+      "navigationPolicy": "persistent",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "terracotta",
+      "archetype": "dashboard",
+      "sectionRoleSequence": [
+        "primary-summary",
+        "secondary-metrics",
+        "trend-progress",
+        "actionable-content"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "editorial-asymmetry",
+      "sectionSpans": [
+        8,
+        4,
+        12,
+        12
+      ],
+      "dominantRegionCount": 1,
+      "componentFamilyHistogram": {
+        "hero": 1,
+        "editorial": 1,
+        "bar": 1,
+        "actionable-content": 1
+      },
+      "chartFamilies": [
+        "bar"
+      ],
+      "fieldCount": 0,
+      "navigationPolicy": "persistent",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "terracotta",
+      "archetype": "management-list",
+      "sectionRoleSequence": [
+        "context",
+        "toolbar",
+        "dense-list"
+      ],
+      "sectionCount": 3,
+      "layoutPattern": "strict-grid",
+      "sectionSpans": [
+        12,
+        12,
+        12
+      ],
+      "dominantRegionCount": 1,
+      "componentFamilyHistogram": {
+        "list-context": 1,
+        "list-toolbar": 1,
+        "dense-list": 1
+      },
+      "chartFamilies": [],
+      "fieldCount": 0,
+      "navigationPolicy": "persistent",
+      "surfaceGroupCount": 3
+    },
+    {
+      "mode": "terracotta",
+      "archetype": "detail",
+      "sectionRoleSequence": [
+        "identity",
+        "primary-state",
+        "metadata",
+        "actions"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "editorial-asymmetry",
+      "sectionSpans": [
+        12,
+        8,
+        4,
+        12
+      ],
+      "dominantRegionCount": 2,
+      "componentFamilyHistogram": {
+        "entity-identity": 1,
+        "hero": 1,
+        "technical-metadata": 1,
+        "detail-actions": 1
+      },
+      "chartFamilies": [],
+      "fieldCount": 0,
+      "navigationPolicy": "focused",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "terracotta",
+      "archetype": "form",
+      "sectionRoleSequence": [
+        "context",
+        "field-group",
+        "field-group",
+        "actions"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "strict-grid",
+      "sectionSpans": [
+        12,
+        12,
+        12,
+        12
+      ],
+      "dominantRegionCount": 3,
+      "componentFamilyHistogram": {
+        "form-context": 1,
+        "filled": 1,
+        "soft": 1,
+        "single-primary-action": 1
+      },
+      "chartFamilies": [],
+      "fieldCount": 5,
+      "navigationPolicy": "focused",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "terracotta",
+      "archetype": "analytics",
+      "sectionRoleSequence": [
+        "context",
+        "period-comparison",
+        "dominant-chart",
+        "breakdown"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "comparison-grid",
+      "sectionSpans": [
+        12,
+        12,
+        12,
+        7
+      ],
+      "dominantRegionCount": 1,
+      "componentFamilyHistogram": {
+        "kpi-context": 1,
+        "period-comparison": 1,
+        "line": 1,
+        "bar": 1
+      },
+      "chartFamilies": [
+        "line",
+        "bar"
+      ],
+      "fieldCount": 0,
+      "navigationPolicy": "persistent",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "terracotta",
+      "archetype": "settings",
+      "sectionRoleSequence": [
+        "section-group",
+        "rows-controls",
+        "divider",
+        "next-section-group"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "strict-grid",
+      "sectionSpans": [
+        12,
+        12,
+        12,
+        12
+      ],
+      "dominantRegionCount": 1,
+      "componentFamilyHistogram": {
+        "settings-label": 1,
+        "sectioned": 2,
+        "section-divider": 1
+      },
+      "chartFamilies": [],
+      "fieldCount": 0,
+      "navigationPolicy": "persistent",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "electric",
+      "archetype": "dashboard",
+      "sectionRoleSequence": [
+        "primary-summary",
+        "secondary-metrics",
+        "trend-progress",
+        "actionable-content"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "bento",
+      "sectionSpans": [
+        8,
+        4,
+        12,
+        12
+      ],
+      "dominantRegionCount": 1,
+      "componentFamilyHistogram": {
+        "hero": 1,
+        "metric": 1,
+        "radial": 1,
+        "actionable-content": 1
+      },
+      "chartFamilies": [
+        "radial"
+      ],
+      "fieldCount": 0,
+      "navigationPolicy": "persistent",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "electric",
+      "archetype": "management-list",
+      "sectionRoleSequence": [
+        "context",
+        "toolbar",
+        "dense-list"
+      ],
+      "sectionCount": 3,
+      "layoutPattern": "bento",
+      "sectionSpans": [
+        12,
+        12,
+        12
+      ],
+      "dominantRegionCount": 1,
+      "componentFamilyHistogram": {
+        "list-context": 1,
+        "list-toolbar": 1,
+        "dense-list": 1
+      },
+      "chartFamilies": [],
+      "fieldCount": 0,
+      "navigationPolicy": "persistent",
+      "surfaceGroupCount": 3
+    },
+    {
+      "mode": "electric",
+      "archetype": "detail",
+      "sectionRoleSequence": [
+        "identity",
+        "primary-state",
+        "metadata",
+        "actions"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "strict-grid",
+      "sectionSpans": [
+        12,
+        8,
+        4,
+        12
+      ],
+      "dominantRegionCount": 2,
+      "componentFamilyHistogram": {
+        "entity-identity": 1,
+        "hero": 1,
+        "technical-metadata": 1,
+        "detail-actions": 1
+      },
+      "chartFamilies": [],
+      "fieldCount": 0,
+      "navigationPolicy": "focused",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "electric",
+      "archetype": "form",
+      "sectionRoleSequence": [
+        "context",
+        "field-group",
+        "field-group",
+        "actions"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "strict-grid",
+      "sectionSpans": [
+        12,
+        12,
+        12,
+        12
+      ],
+      "dominantRegionCount": 3,
+      "componentFamilyHistogram": {
+        "form-context": 1,
+        "filled": 1,
+        "touch-large": 1,
+        "single-primary-action": 1
+      },
+      "chartFamilies": [],
+      "fieldCount": 5,
+      "navigationPolicy": "focused",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "electric",
+      "archetype": "analytics",
+      "sectionRoleSequence": [
+        "context",
+        "period-comparison",
+        "dominant-chart",
+        "breakdown"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "comparison-grid",
+      "sectionSpans": [
+        12,
+        12,
+        12,
+        7
+      ],
+      "dominantRegionCount": 1,
+      "componentFamilyHistogram": {
+        "kpi-context": 1,
+        "period-comparison": 1,
+        "line": 1,
+        "bar": 1
+      },
+      "chartFamilies": [
+        "line",
+        "bar"
+      ],
+      "fieldCount": 0,
+      "navigationPolicy": "persistent",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "electric",
+      "archetype": "settings",
+      "sectionRoleSequence": [
+        "section-group",
+        "rows-controls",
+        "divider",
+        "next-section-group"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "strict-grid",
+      "sectionSpans": [
+        12,
+        12,
+        12,
+        12
+      ],
+      "dominantRegionCount": 1,
+      "componentFamilyHistogram": {
+        "settings-label": 1,
+        "card-clusters": 2,
+        "section-divider": 1
+      },
+      "chartFamilies": [],
+      "fieldCount": 0,
+      "navigationPolicy": "persistent",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "editorial",
+      "archetype": "dashboard",
+      "sectionRoleSequence": [
+        "primary-summary",
+        "secondary-metrics",
+        "trend-progress",
+        "actionable-content"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "editorial-asymmetry",
+      "sectionSpans": [
+        8,
+        4,
+        12,
+        12
+      ],
+      "dominantRegionCount": 1,
+      "componentFamilyHistogram": {
+        "editorial": 1,
+        "list": 1,
+        "line": 1,
+        "actionable-content": 1
+      },
+      "chartFamilies": [
+        "line"
+      ],
+      "fieldCount": 0,
+      "navigationPolicy": "persistent",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "editorial",
+      "archetype": "management-list",
+      "sectionRoleSequence": [
+        "context",
+        "toolbar",
+        "dense-list"
+      ],
+      "sectionCount": 3,
+      "layoutPattern": "editorial-asymmetry",
+      "sectionSpans": [
+        12,
+        12,
+        12
+      ],
+      "dominantRegionCount": 1,
+      "componentFamilyHistogram": {
+        "list-context": 1,
+        "list-toolbar": 1,
+        "dense-list": 1
+      },
+      "chartFamilies": [],
+      "fieldCount": 0,
+      "navigationPolicy": "persistent",
+      "surfaceGroupCount": 3
+    },
+    {
+      "mode": "editorial",
+      "archetype": "detail",
+      "sectionRoleSequence": [
+        "identity",
+        "primary-state",
+        "metadata",
+        "actions"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "editorial-asymmetry",
+      "sectionSpans": [
+        12,
+        8,
+        4,
+        12
+      ],
+      "dominantRegionCount": 2,
+      "componentFamilyHistogram": {
+        "entity-identity": 1,
+        "editorial": 1,
+        "technical-metadata": 1,
+        "detail-actions": 1
+      },
+      "chartFamilies": [],
+      "fieldCount": 0,
+      "navigationPolicy": "focused",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "editorial",
+      "archetype": "form",
+      "sectionRoleSequence": [
+        "context",
+        "field-group",
+        "field-group",
+        "actions"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "strict-grid",
+      "sectionSpans": [
+        12,
+        12,
+        12,
+        12
+      ],
+      "dominantRegionCount": 3,
+      "componentFamilyHistogram": {
+        "form-context": 1,
+        "underline": 1,
+        "compact": 1,
+        "single-primary-action": 1
+      },
+      "chartFamilies": [],
+      "fieldCount": 5,
+      "navigationPolicy": "focused",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "editorial",
+      "archetype": "analytics",
+      "sectionRoleSequence": [
+        "context",
+        "period-comparison",
+        "dominant-chart",
+        "breakdown"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "comparison-grid",
+      "sectionSpans": [
+        12,
+        12,
+        12,
+        7
+      ],
+      "dominantRegionCount": 1,
+      "componentFamilyHistogram": {
+        "kpi-context": 1,
+        "period-comparison": 1,
+        "line": 1,
+        "bar": 1
+      },
+      "chartFamilies": [
+        "line",
+        "bar"
+      ],
+      "fieldCount": 0,
+      "navigationPolicy": "persistent",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "editorial",
+      "archetype": "settings",
+      "sectionRoleSequence": [
+        "section-group",
+        "rows-controls",
+        "divider",
+        "next-section-group"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "strict-grid",
+      "sectionSpans": [
+        12,
+        12,
+        12,
+        12
+      ],
+      "dominantRegionCount": 1,
+      "componentFamilyHistogram": {
+        "settings-label": 1,
+        "divider-led": 2,
+        "section-divider": 1
+      },
+      "chartFamilies": [],
+      "fieldCount": 0,
+      "navigationPolicy": "persistent",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "auto",
+      "archetype": "dashboard",
+      "sectionRoleSequence": [
+        "primary-summary",
+        "secondary-metrics",
+        "trend-progress",
+        "actionable-content"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "strict-grid",
+      "sectionSpans": [
+        8,
+        4,
+        12,
+        12
+      ],
+      "dominantRegionCount": 1,
+      "componentFamilyHistogram": {
+        "metric": 1,
+        "list": 1,
+        "line": 1,
+        "actionable-content": 1
+      },
+      "chartFamilies": [
+        "line"
+      ],
+      "fieldCount": 0,
+      "navigationPolicy": "persistent",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "auto",
+      "archetype": "management-list",
+      "sectionRoleSequence": [
+        "context",
+        "toolbar",
+        "dense-list"
+      ],
+      "sectionCount": 3,
+      "layoutPattern": "strict-grid",
+      "sectionSpans": [
+        12,
+        12,
+        12
+      ],
+      "dominantRegionCount": 1,
+      "componentFamilyHistogram": {
+        "list-context": 1,
+        "list-toolbar": 1,
+        "dense-list": 1
+      },
+      "chartFamilies": [],
+      "fieldCount": 0,
+      "navigationPolicy": "persistent",
+      "surfaceGroupCount": 3
+    },
+    {
+      "mode": "auto",
+      "archetype": "detail",
+      "sectionRoleSequence": [
+        "identity",
+        "primary-state",
+        "metadata",
+        "actions"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "strict-grid",
+      "sectionSpans": [
+        12,
+        8,
+        4,
+        12
+      ],
+      "dominantRegionCount": 2,
+      "componentFamilyHistogram": {
+        "entity-identity": 1,
+        "metric": 1,
+        "technical-metadata": 1,
+        "detail-actions": 1
+      },
+      "chartFamilies": [],
+      "fieldCount": 0,
+      "navigationPolicy": "focused",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "auto",
+      "archetype": "form",
+      "sectionRoleSequence": [
+        "context",
+        "field-group",
+        "field-group",
+        "actions"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "strict-grid",
+      "sectionSpans": [
+        12,
+        12,
+        12,
+        12
+      ],
+      "dominantRegionCount": 3,
+      "componentFamilyHistogram": {
+        "form-context": 1,
+        "outlined": 2,
+        "single-primary-action": 1
+      },
+      "chartFamilies": [],
+      "fieldCount": 5,
+      "navigationPolicy": "focused",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "auto",
+      "archetype": "analytics",
+      "sectionRoleSequence": [
+        "context",
+        "period-comparison",
+        "dominant-chart",
+        "breakdown"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "comparison-grid",
+      "sectionSpans": [
+        12,
+        12,
+        12,
+        7
+      ],
+      "dominantRegionCount": 1,
+      "componentFamilyHistogram": {
+        "kpi-context": 1,
+        "period-comparison": 1,
+        "line": 1,
+        "bar": 1
+      },
+      "chartFamilies": [
+        "line",
+        "bar"
+      ],
+      "fieldCount": 0,
+      "navigationPolicy": "persistent",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "auto",
+      "archetype": "settings",
+      "sectionRoleSequence": [
+        "section-group",
+        "rows-controls",
+        "divider",
+        "next-section-group"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "strict-grid",
+      "sectionSpans": [
+        12,
+        12,
+        12,
+        12
+      ],
+      "dominantRegionCount": 1,
+      "componentFamilyHistogram": {
+        "settings-label": 1,
+        "sectioned": 2,
+        "section-divider": 1
+      },
+      "chartFamilies": [],
+      "fieldCount": 0,
+      "navigationPolicy": "persistent",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "deterministic",
+      "archetype": "dashboard",
+      "sectionRoleSequence": [
+        "primary-summary",
+        "secondary-metrics",
+        "trend-progress",
+        "actionable-content"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "strict-grid",
+      "sectionSpans": [
+        8,
+        4,
+        12,
+        12
+      ],
+      "dominantRegionCount": 1,
+      "componentFamilyHistogram": {
+        "metric": 1,
+        "list": 1,
+        "line": 1,
+        "actionable-content": 1
+      },
+      "chartFamilies": [
+        "line"
+      ],
+      "fieldCount": 0,
+      "navigationPolicy": "persistent",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "deterministic",
+      "archetype": "management-list",
+      "sectionRoleSequence": [
+        "context",
+        "toolbar",
+        "dense-list"
+      ],
+      "sectionCount": 3,
+      "layoutPattern": "strict-grid",
+      "sectionSpans": [
+        12,
+        12,
+        12
+      ],
+      "dominantRegionCount": 1,
+      "componentFamilyHistogram": {
+        "list-context": 1,
+        "list-toolbar": 1,
+        "dense-list": 1
+      },
+      "chartFamilies": [],
+      "fieldCount": 0,
+      "navigationPolicy": "persistent",
+      "surfaceGroupCount": 3
+    },
+    {
+      "mode": "deterministic",
+      "archetype": "detail",
+      "sectionRoleSequence": [
+        "identity",
+        "primary-state",
+        "metadata",
+        "actions"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "strict-grid",
+      "sectionSpans": [
+        12,
+        8,
+        4,
+        12
+      ],
+      "dominantRegionCount": 2,
+      "componentFamilyHistogram": {
+        "entity-identity": 1,
+        "metric": 1,
+        "technical-metadata": 1,
+        "detail-actions": 1
+      },
+      "chartFamilies": [],
+      "fieldCount": 0,
+      "navigationPolicy": "focused",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "deterministic",
+      "archetype": "form",
+      "sectionRoleSequence": [
+        "context",
+        "field-group",
+        "field-group",
+        "actions"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "strict-grid",
+      "sectionSpans": [
+        12,
+        12,
+        12,
+        12
+      ],
+      "dominantRegionCount": 3,
+      "componentFamilyHistogram": {
+        "form-context": 1,
+        "outlined": 2,
+        "single-primary-action": 1
+      },
+      "chartFamilies": [],
+      "fieldCount": 5,
+      "navigationPolicy": "focused",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "deterministic",
+      "archetype": "analytics",
+      "sectionRoleSequence": [
+        "context",
+        "period-comparison",
+        "dominant-chart",
+        "breakdown"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "comparison-grid",
+      "sectionSpans": [
+        12,
+        12,
+        12,
+        7
+      ],
+      "dominantRegionCount": 1,
+      "componentFamilyHistogram": {
+        "kpi-context": 1,
+        "period-comparison": 1,
+        "line": 1,
+        "bar": 1
+      },
+      "chartFamilies": [
+        "line",
+        "bar"
+      ],
+      "fieldCount": 0,
+      "navigationPolicy": "persistent",
+      "surfaceGroupCount": 4
+    },
+    {
+      "mode": "deterministic",
+      "archetype": "settings",
+      "sectionRoleSequence": [
+        "section-group",
+        "rows-controls",
+        "divider",
+        "next-section-group"
+      ],
+      "sectionCount": 4,
+      "layoutPattern": "strict-grid",
+      "sectionSpans": [
+        12,
+        12,
+        12,
+        12
+      ],
+      "dominantRegionCount": 1,
+      "componentFamilyHistogram": {
+        "settings-label": 1,
+        "sectioned": 2,
+        "section-divider": 1
+      },
+      "chartFamilies": [],
+      "fieldCount": 0,
+      "navigationPolicy": "persistent",
+      "surfaceGroupCount": 4
+    }
+  ]
+}

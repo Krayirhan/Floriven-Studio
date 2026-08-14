@@ -1,0 +1,66 @@
+{
+  "pairs": [
+    {
+      "left": "obsidian",
+      "right": "serene",
+      "verdict": "COLLISION",
+      "reason": "Color removal leaves substantially shared section order, chart placement and generic component geometry."
+    },
+    {
+      "left": "obsidian",
+      "right": "terracotta",
+      "verdict": "COLLISION",
+      "reason": "Color removal leaves substantially shared section order, chart placement and generic component geometry."
+    },
+    {
+      "left": "obsidian",
+      "right": "electric",
+      "verdict": "COLLISION",
+      "reason": "Color removal leaves substantially shared section order, chart placement and generic component geometry."
+    },
+    {
+      "left": "obsidian",
+      "right": "editorial",
+      "verdict": "COLLISION",
+      "reason": "Color removal leaves substantially shared section order, chart placement and generic component geometry."
+    },
+    {
+      "left": "serene",
+      "right": "terracotta",
+      "verdict": "COLLISION",
+      "reason": "Color removal leaves substantially shared section order, chart placement and generic component geometry."
+    },
+    {
+      "left": "serene",
+      "right": "electric",
+      "verdict": "COLLISION",
+      "reason": "Color removal leaves substantially shared section order, chart placement and generic component geometry."
+    },
+    {
+      "left": "serene",
+      "right": "editorial",
+      "verdict": "COLLISION",
+      "reason": "Color removal leaves substantially shared section order, chart placement and generic component geometry."
+    },
+    {
+      "left": "terracotta",
+      "right": "electric",
+      "verdict": "COLLISION",
+      "reason": "Color removal leaves substantially shared section order, chart placement and generic component geometry."
+    },
+    {
+      "left": "terracotta",
+      "right": "editorial",
+      "verdict": "COLLISION",
+      "reason": "Color removal leaves substantially shared section order, chart placement and generic component geometry."
+    },
+    {
+      "left": "electric",
+      "right": "editorial",
+      "verdict": "COLLISION",
+      "reason": "Color removal leaves substantially shared section order, chart placement and generic component geometry."
+    }
+  ],
+  "collisionCount": 10,
+  "passed": false
+}

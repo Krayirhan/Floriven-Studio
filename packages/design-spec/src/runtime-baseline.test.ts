@@ -11,8 +11,8 @@ describe("runtime baseline contract", () => {
   it("rejects duplicate or incomplete evidence entries", () => {
     const manifest = createEmptyRuntimeBaselineManifest("2026-08-10T00:00:00.000Z");
     manifest.entries = [
-      { mode: "obsidian", archetype: "dashboard", screenId: "home", screenshotPath: "home.png", treeSignature: "tree", boundsPath: "home.json", candidateHash: "hash", rendererVersion: "phone-screen-v2", viewport: manifest.viewport },
-      { mode: "obsidian", archetype: "dashboard", screenId: "home-2", screenshotPath: "", treeSignature: "", boundsPath: "", candidateHash: "", rendererVersion: "phone-screen-v2", viewport: manifest.viewport },
+      { mode: "obsidian", archetype: "dashboard", screenId: "home", screenshotPath: "home.png", treeSignature: "tree", boundsPath: "home.json", candidateHash: "hash", rendererVersion: "phone-screen-v4", viewport: manifest.viewport },
+      { mode: "obsidian", archetype: "dashboard", screenId: "home-2", screenshotPath: "", treeSignature: "", boundsPath: "", candidateHash: "", rendererVersion: "phone-screen-v4", viewport: manifest.viewport },
     ];
     expect(validateRuntimeBaselineManifest(manifest)).toEqual(expect.arrayContaining(["DUPLICATE_ENTRY:obsidian:dashboard", "INCOMPLETE_ENTRY:obsidian:dashboard"]));
   });

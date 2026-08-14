@@ -1,4 +1,3 @@
-import { directAutoDesign } from '../../../packages/design-spec/src/auto-design-director.ts'
 import { findDesignTemplate } from '../../../packages/design-spec/src/strategy.ts'
 import type { ProductBlueprint } from './domain.ts'
 
@@ -20,12 +19,7 @@ const NAVIGATION_STYLES = ['solid', 'floating', 'glass', 'minimal']
 /** Resolves Auto mode without ever claiming that the user selected a template. */
 export function resolveAutoStrategy(value: unknown, blueprint: ProductBlueprint, brief = ''): AutoStrategy {
   const raw = asRecord(value)
-  const decision = directAutoDesign({
-    ...blueprint,
-    productDomain: [blueprint.productDomain, brief].filter(Boolean).join(' · '),
-    contentVocabulary: brief ? [...blueprint.contentVocabulary, brief] : blueprint.contentVocabulary,
-  })
-  const directedTemplate = findDesignTemplate(decision.presetId)
+  const directedTemplate = findDesignTemplate(selectAutoPresetId(blueprint, brief))
   const fallback = directedTemplate?.strategy
 
   return {
@@ -39,8 +33,24 @@ export function resolveAutoStrategy(value: unknown, blueprint: ProductBlueprint,
       : fallback?.visualDirection ?? `${blueprint.productDomain} için bağlama duyarlı görsel yön`,
     rationale: Array.isArray(raw.rationale) && raw.rationale.some((item) => typeof item === 'string' && item.trim())
       ? raw.rationale.filter((item): item is string => typeof item === 'string' && !!item.trim()).slice(0, 3)
-      : decision.rationale.slice(0, 3),
+      : ['Ürün alanı, hedef kitle ve kullanım bağlamı analiz edildi', 'Görsel yön şablon seçimi olmadan otomatik belirlendi'],
   }
+}
+
+function selectAutoPresetId(blueprint: ProductBlueprint, brief: string): string {
+  const text = [
+    brief,
+    blueprint.productDomain,
+    blueprint.audience,
+    ...blueprint.capabilities,
+    ...blueprint.contentVocabulary,
+  ].join(' ').toLocaleLowerCase('tr-TR')
+
+  if (/finans|finance|operasyon|operation|rapor|report|tablo|dashboard|analytics|veri/.test(text)) return 'obsidian-precision'
+  if (/öğren|egitim|eğitim|learning|kurs|course|oyun|game|hedef|progress|ilerleme/.test(text)) return 'electric-learning'
+  if (/yayın|yayin|publishing|kitap|book|makale|article|kültür|kultur|culture|arşiv|arsiv|archive/.test(text)) return 'editorial-culture'
+  if (/sağlık|saglik|health|bakım|bakim|care|huzur|wellness|meditasyon|meditation/.test(text)) return 'serene-health'
+  return 'terracotta-market'
 }
 
 function pick(candidate: unknown, allowed: string[], fallback: string): string {

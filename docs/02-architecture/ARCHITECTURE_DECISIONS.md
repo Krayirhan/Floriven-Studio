@@ -35,6 +35,7 @@
 | ADR-0006 | Görsel stil ve ürün domainini ayırma | Kabul edildi | 2026-08-08 | [ADR-0006.md](ADR-0006.md) |
 | ADR-0007 | Dinamik ürün bilgi mimarisi ve ekran gruplu üretim | Kabul edildi | 2026-08-08 | [ADR-0007.md](ADR-0007.md) |
 | ADR-0008 | Semantic UX plan and presentation strategy boundaries | Kabul edildi | 2026-08-09 | [ADR-0008.md](ADR-0008.md) |
+| ADR-0009 | Generation V3: contract-first compiler pipeline | Kabul edildi | 2026-08-14 | [ADR-0009.md](ADR-0009.md) |
 
 Yeni ADR'ler `docs/10-templates/ADR_TEMPLATE.md` ile oluşturulur ve bu indeks güncellenir.
 

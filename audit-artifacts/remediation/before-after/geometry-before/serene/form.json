@@ -1,0 +1,120 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "strict-grid",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 45.99997479252127,
+  "nodes": [
+    {
+      "nodeId": "serene-form-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "summary",
+      "x": 36.99986049107143,
+      "y": 74.00000588863233,
+      "width": 316.00027901785717,
+      "height": 29.890616898287927,
+      "fontSize": "23px",
+      "lineHeight": "29.9px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-form-customer",
+      "component": "div",
+      "role": null,
+      "sectionRole": "primary-content",
+      "x": 36.99986049107143,
+      "y": 149.89061937771206,
+      "width": 316.00027901785717,
+      "height": 43.25001397258811,
+      "fontSize": "11.5px",
+      "lineHeight": "17.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-form-number",
+      "component": "div",
+      "role": null,
+      "sectionRole": "primary-content",
+      "x": 36.99986049107143,
+      "y": 201.1406204366328,
+      "width": 316.00027901785717,
+      "height": 43.24999217431757,
+      "fontSize": "11.5px",
+      "lineHeight": "17.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-form-amount",
+      "component": "div",
+      "role": null,
+      "sectionRole": "primary-content",
+      "x": 36.99986049107143,
+      "y": 252.39062149555352,
+      "width": 316.00027901785717,
+      "height": 43.24999217431757,
+      "fontSize": "11.5px",
+      "lineHeight": "17.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-form-date",
+      "component": "div",
+      "role": null,
+      "sectionRole": "primary-content",
+      "x": 36.99986049107143,
+      "y": 303.64062255447425,
+      "width": 316.00027901785717,
+      "height": 43.24999217431757,
+      "fontSize": "11.5px",
+      "lineHeight": "17.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-form-cta",
+      "component": "button",
+      "role": null,
+      "sectionRole": "actions",
+      "x": 36.99986049107143,
+      "y": 392.8906331178541,
+      "width": 316.00027901785717,
+      "height": 45.99997479252127,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-form-tax",
+      "component": "div",
+      "role": null,
+      "sectionRole": "primary-content",
+      "x": 36.99986049107143,
+      "y": 484.89062629943777,
+      "width": 316.00027901785717,
+      "height": 34.250009426977186,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

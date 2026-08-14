@@ -1,0 +1,119 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "editorial-asymmetry",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 42.99996601122745,
+  "nodes": [
+    {
+      "nodeId": "terracotta-dashboard-balance",
+      "component": "article",
+      "role": null,
+      "sectionRole": "hero",
+      "x": 20.999930245535715,
+      "y": 58.000009917696545,
+      "width": 348.0001395089286,
+      "height": 90.29685070777745,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "terracotta-dashboard-income",
+      "component": "article",
+      "role": null,
+      "sectionRole": "summary",
+      "x": 20.999930245535715,
+      "y": 162.2968870726648,
+      "width": 348.0001395089286,
+      "height": 77.54686788295507,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "terracotta-dashboard-expense",
+      "component": "article",
+      "role": null,
+      "sectionRole": "summary",
+      "x": 20.999930245535715,
+      "y": 247.84372024368193,
+      "width": 348.0001395089286,
+      "height": 67.64064383619808,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "terracotta-dashboard-trend",
+      "component": "figure",
+      "role": null,
+      "sectionRole": "insight",
+      "x": 20.999930245535715,
+      "y": 329.48434693052974,
+      "width": 348.0001395089286,
+      "height": 95.75003685560671,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "terracotta-dashboard-cta",
+      "component": "button",
+      "role": null,
+      "sectionRole": "actions",
+      "x": 20.999930245535715,
+      "y": 439.23436663678615,
+      "width": 348.0001395089286,
+      "height": 46.00001838906235,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "terracotta-dashboard-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "primary-content",
+      "x": 20.999930245535715,
+      "y": 499.2343678764982,
+      "width": 348.0001395089286,
+      "height": 28.593750590800283,
+      "fontSize": "26px",
+      "lineHeight": "28.6px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "terracotta-dashboard-nav",
+      "component": "nav",
+      "role": null,
+      "x": 5,
+      "y": 772.9999810943909,
+      "width": 380,
+      "height": 66.0000188022997,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

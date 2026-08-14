@@ -1,0 +1,1328 @@
+{
+  "crossArchetype": [
+    {
+      "mode": "obsidian",
+      "left": "dashboard",
+      "right": "management-list",
+      "distance": 0.7499,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "obsidian",
+      "left": "dashboard",
+      "right": "detail",
+      "distance": 0.5453,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "obsidian",
+      "left": "dashboard",
+      "right": "form",
+      "distance": 0.8986,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "obsidian",
+      "left": "dashboard",
+      "right": "analytics",
+      "distance": 0.6599,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "obsidian",
+      "left": "dashboard",
+      "right": "settings",
+      "distance": 0.713,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "obsidian",
+      "left": "management-list",
+      "right": "detail",
+      "distance": 0.7749,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "obsidian",
+      "left": "management-list",
+      "right": "form",
+      "distance": 0.678,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "obsidian",
+      "left": "management-list",
+      "right": "analytics",
+      "distance": 0.6939,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "obsidian",
+      "left": "management-list",
+      "right": "settings",
+      "distance": 0.4674,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "obsidian",
+      "left": "detail",
+      "right": "form",
+      "distance": 0.7838,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "obsidian",
+      "left": "detail",
+      "right": "analytics",
+      "distance": 0.7457,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "obsidian",
+      "left": "detail",
+      "right": "settings",
+      "distance": 0.7381,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "obsidian",
+      "left": "form",
+      "right": "analytics",
+      "distance": 0.889,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "obsidian",
+      "left": "form",
+      "right": "settings",
+      "distance": 0.6556,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "obsidian",
+      "left": "analytics",
+      "right": "settings",
+      "distance": 0.6781,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "serene",
+      "left": "dashboard",
+      "right": "management-list",
+      "distance": 0.5433,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "serene",
+      "left": "dashboard",
+      "right": "detail",
+      "distance": 0.5411,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "serene",
+      "left": "dashboard",
+      "right": "form",
+      "distance": 0.6915,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "serene",
+      "left": "dashboard",
+      "right": "analytics",
+      "distance": 0.643,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "serene",
+      "left": "dashboard",
+      "right": "settings",
+      "distance": 0.5055,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "serene",
+      "left": "management-list",
+      "right": "detail",
+      "distance": 0.5753,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "serene",
+      "left": "management-list",
+      "right": "form",
+      "distance": 0.6779,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "serene",
+      "left": "management-list",
+      "right": "analytics",
+      "distance": 0.6944,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "serene",
+      "left": "management-list",
+      "right": "settings",
+      "distance": 0.4671,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "serene",
+      "left": "detail",
+      "right": "form",
+      "distance": 0.5844,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "serene",
+      "left": "detail",
+      "right": "analytics",
+      "distance": 0.7458,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "serene",
+      "left": "detail",
+      "right": "settings",
+      "distance": 0.5389,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "serene",
+      "left": "form",
+      "right": "analytics",
+      "distance": 0.8885,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "serene",
+      "left": "form",
+      "right": "settings",
+      "distance": 0.6552,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "serene",
+      "left": "analytics",
+      "right": "settings",
+      "distance": 0.6767,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "terracotta",
+      "left": "dashboard",
+      "right": "management-list",
+      "distance": 0.7405,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "terracotta",
+      "left": "dashboard",
+      "right": "detail",
+      "distance": 0.5368,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "terracotta",
+      "left": "dashboard",
+      "right": "form",
+      "distance": 0.8887,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "terracotta",
+      "left": "dashboard",
+      "right": "analytics",
+      "distance": 0.6431,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "terracotta",
+      "left": "dashboard",
+      "right": "settings",
+      "distance": 0.7025,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "terracotta",
+      "left": "management-list",
+      "right": "detail",
+      "distance": 0.775,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "terracotta",
+      "left": "management-list",
+      "right": "form",
+      "distance": 0.6779,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "terracotta",
+      "left": "management-list",
+      "right": "analytics",
+      "distance": 0.694,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "terracotta",
+      "left": "management-list",
+      "right": "settings",
+      "distance": 0.4672,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "terracotta",
+      "left": "detail",
+      "right": "form",
+      "distance": 0.7839,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "terracotta",
+      "left": "detail",
+      "right": "analytics",
+      "distance": 0.7457,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "terracotta",
+      "left": "detail",
+      "right": "settings",
+      "distance": 0.7381,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "terracotta",
+      "left": "form",
+      "right": "analytics",
+      "distance": 0.8889,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "terracotta",
+      "left": "form",
+      "right": "settings",
+      "distance": 0.6557,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "terracotta",
+      "left": "analytics",
+      "right": "settings",
+      "distance": 0.6781,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "electric",
+      "left": "dashboard",
+      "right": "management-list",
+      "distance": 0.5511,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "electric",
+      "left": "dashboard",
+      "right": "detail",
+      "distance": 0.7466,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "electric",
+      "left": "dashboard",
+      "right": "form",
+      "distance": 0.8996,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "electric",
+      "left": "dashboard",
+      "right": "analytics",
+      "distance": 0.6599,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "electric",
+      "left": "dashboard",
+      "right": "settings",
+      "distance": 0.7131,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "electric",
+      "left": "management-list",
+      "right": "detail",
+      "distance": 0.7752,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "electric",
+      "left": "management-list",
+      "right": "form",
+      "distance": 0.8778,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "electric",
+      "left": "management-list",
+      "right": "analytics",
+      "distance": 0.6944,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "electric",
+      "left": "management-list",
+      "right": "settings",
+      "distance": 0.667,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "electric",
+      "left": "detail",
+      "right": "form",
+      "distance": 0.5842,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "electric",
+      "left": "detail",
+      "right": "analytics",
+      "distance": 0.746,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "electric",
+      "left": "detail",
+      "right": "settings",
+      "distance": 0.5387,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "electric",
+      "left": "form",
+      "right": "analytics",
+      "distance": 0.8887,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "electric",
+      "left": "form",
+      "right": "settings",
+      "distance": 0.6552,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "electric",
+      "left": "analytics",
+      "right": "settings",
+      "distance": 0.677,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "editorial",
+      "left": "dashboard",
+      "right": "management-list",
+      "distance": 0.5404,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "editorial",
+      "left": "dashboard",
+      "right": "detail",
+      "distance": 0.5377,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "editorial",
+      "left": "dashboard",
+      "right": "form",
+      "distance": 0.8881,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "editorial",
+      "left": "dashboard",
+      "right": "analytics",
+      "distance": 0.6426,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "editorial",
+      "left": "dashboard",
+      "right": "settings",
+      "distance": 0.7021,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "editorial",
+      "left": "management-list",
+      "right": "detail",
+      "distance": 0.5754,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "editorial",
+      "left": "management-list",
+      "right": "form",
+      "distance": 0.8779,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "editorial",
+      "left": "management-list",
+      "right": "analytics",
+      "distance": 0.6944,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "editorial",
+      "left": "management-list",
+      "right": "settings",
+      "distance": 0.6673,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "editorial",
+      "left": "detail",
+      "right": "form",
+      "distance": 0.7846,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "editorial",
+      "left": "detail",
+      "right": "analytics",
+      "distance": 0.7461,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "editorial",
+      "left": "detail",
+      "right": "settings",
+      "distance": 0.7389,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "editorial",
+      "left": "form",
+      "right": "analytics",
+      "distance": 0.8885,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "editorial",
+      "left": "form",
+      "right": "settings",
+      "distance": 0.6552,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "editorial",
+      "left": "analytics",
+      "right": "settings",
+      "distance": 0.6772,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "auto",
+      "left": "dashboard",
+      "right": "management-list",
+      "distance": 0.5417,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "auto",
+      "left": "dashboard",
+      "right": "detail",
+      "distance": 0.5381,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "auto",
+      "left": "dashboard",
+      "right": "form",
+      "distance": 0.6899,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "auto",
+      "left": "dashboard",
+      "right": "analytics",
+      "distance": 0.6456,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "auto",
+      "left": "dashboard",
+      "right": "settings",
+      "distance": 0.5044,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "auto",
+      "left": "management-list",
+      "right": "detail",
+      "distance": 0.5749,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "auto",
+      "left": "management-list",
+      "right": "form",
+      "distance": 0.678,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "auto",
+      "left": "management-list",
+      "right": "analytics",
+      "distance": 0.694,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "auto",
+      "left": "management-list",
+      "right": "settings",
+      "distance": 0.4674,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "auto",
+      "left": "detail",
+      "right": "form",
+      "distance": 0.5837,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "auto",
+      "left": "detail",
+      "right": "analytics",
+      "distance": 0.7457,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "auto",
+      "left": "detail",
+      "right": "settings",
+      "distance": 0.5383,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "auto",
+      "left": "form",
+      "right": "analytics",
+      "distance": 0.8887,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "auto",
+      "left": "form",
+      "right": "settings",
+      "distance": 0.6557,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "auto",
+      "left": "analytics",
+      "right": "settings",
+      "distance": 0.678,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "deterministic",
+      "left": "dashboard",
+      "right": "management-list",
+      "distance": 0.5417,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "deterministic",
+      "left": "dashboard",
+      "right": "detail",
+      "distance": 0.5381,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "deterministic",
+      "left": "dashboard",
+      "right": "form",
+      "distance": 0.6899,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "deterministic",
+      "left": "dashboard",
+      "right": "analytics",
+      "distance": 0.6456,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "deterministic",
+      "left": "dashboard",
+      "right": "settings",
+      "distance": 0.5044,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "deterministic",
+      "left": "management-list",
+      "right": "detail",
+      "distance": 0.5749,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "deterministic",
+      "left": "management-list",
+      "right": "form",
+      "distance": 0.678,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "deterministic",
+      "left": "management-list",
+      "right": "analytics",
+      "distance": 0.694,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "deterministic",
+      "left": "management-list",
+      "right": "settings",
+      "distance": 0.4674,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "deterministic",
+      "left": "detail",
+      "right": "form",
+      "distance": 0.5837,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "deterministic",
+      "left": "detail",
+      "right": "analytics",
+      "distance": 0.7457,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "deterministic",
+      "left": "detail",
+      "right": "settings",
+      "distance": 0.5383,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "deterministic",
+      "left": "form",
+      "right": "analytics",
+      "distance": 0.8887,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "deterministic",
+      "left": "form",
+      "right": "settings",
+      "distance": 0.6557,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    },
+    {
+      "mode": "deterministic",
+      "left": "analytics",
+      "right": "settings",
+      "distance": 0.678,
+      "threshold": 0.45,
+      "verdict": "PASS"
+    }
+  ],
+  "crossPreset": [
+    {
+      "archetype": "dashboard",
+      "left": "obsidian",
+      "right": "serene",
+      "distance": 0.4783,
+      "threshold": 0.4,
+      "verdict": "PASS"
+    },
+    {
+      "archetype": "dashboard",
+      "left": "obsidian",
+      "right": "terracotta",
+      "distance": 0.5423,
+      "threshold": 0.4,
+      "verdict": "PASS"
+    },
+    {
+      "archetype": "dashboard",
+      "left": "obsidian",
+      "right": "electric",
+      "distance": 0.3291,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "dashboard",
+      "left": "obsidian",
+      "right": "editorial",
+      "distance": 0.4512,
+      "threshold": 0.4,
+      "verdict": "PASS"
+    },
+    {
+      "archetype": "dashboard",
+      "left": "serene",
+      "right": "terracotta",
+      "distance": 0.5363,
+      "threshold": 0.4,
+      "verdict": "PASS"
+    },
+    {
+      "archetype": "dashboard",
+      "left": "serene",
+      "right": "electric",
+      "distance": 0.5426,
+      "threshold": 0.4,
+      "verdict": "PASS"
+    },
+    {
+      "archetype": "dashboard",
+      "left": "serene",
+      "right": "editorial",
+      "distance": 0.5349,
+      "threshold": 0.4,
+      "verdict": "PASS"
+    },
+    {
+      "archetype": "dashboard",
+      "left": "terracotta",
+      "right": "electric",
+      "distance": 0.476,
+      "threshold": 0.4,
+      "verdict": "PASS"
+    },
+    {
+      "archetype": "dashboard",
+      "left": "terracotta",
+      "right": "editorial",
+      "distance": 0.3266,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "dashboard",
+      "left": "electric",
+      "right": "editorial",
+      "distance": 0.5425,
+      "threshold": 0.4,
+      "verdict": "PASS"
+    },
+    {
+      "archetype": "management-list",
+      "left": "obsidian",
+      "right": "serene",
+      "distance": 0.0038,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "management-list",
+      "left": "obsidian",
+      "right": "terracotta",
+      "distance": 0.0002,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "management-list",
+      "left": "obsidian",
+      "right": "electric",
+      "distance": 0.2037,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "management-list",
+      "left": "obsidian",
+      "right": "editorial",
+      "distance": 0.2017,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "management-list",
+      "left": "serene",
+      "right": "terracotta",
+      "distance": 0.0037,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "management-list",
+      "left": "serene",
+      "right": "electric",
+      "distance": 0.2002,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "management-list",
+      "left": "serene",
+      "right": "editorial",
+      "distance": 0.2022,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "management-list",
+      "left": "terracotta",
+      "right": "electric",
+      "distance": 0.2035,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "management-list",
+      "left": "terracotta",
+      "right": "editorial",
+      "distance": 0.2015,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "management-list",
+      "left": "electric",
+      "right": "editorial",
+      "distance": 0.202,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "detail",
+      "left": "obsidian",
+      "right": "serene",
+      "distance": 0.204,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "detail",
+      "left": "obsidian",
+      "right": "terracotta",
+      "distance": 0.34,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "detail",
+      "left": "obsidian",
+      "right": "electric",
+      "distance": 0.3439,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "detail",
+      "left": "obsidian",
+      "right": "editorial",
+      "distance": 0.3417,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "detail",
+      "left": "serene",
+      "right": "terracotta",
+      "distance": 0.344,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "detail",
+      "left": "serene",
+      "right": "electric",
+      "distance": 0.1401,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "detail",
+      "left": "serene",
+      "right": "editorial",
+      "distance": 0.3422,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "detail",
+      "left": "terracotta",
+      "right": "electric",
+      "distance": 0.2039,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "detail",
+      "left": "terracotta",
+      "right": "editorial",
+      "distance": 0.1417,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "detail",
+      "left": "electric",
+      "right": "editorial",
+      "distance": 0.3421,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "form",
+      "left": "obsidian",
+      "right": "serene",
+      "distance": 0.2375,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "form",
+      "left": "obsidian",
+      "right": "terracotta",
+      "distance": 0.2335,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "form",
+      "left": "obsidian",
+      "right": "electric",
+      "distance": 0.2372,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "form",
+      "left": "obsidian",
+      "right": "editorial",
+      "distance": 0.1416,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "form",
+      "left": "serene",
+      "right": "terracotta",
+      "distance": 0.2373,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "form",
+      "left": "serene",
+      "right": "electric",
+      "distance": 0.1402,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "form",
+      "left": "serene",
+      "right": "editorial",
+      "distance": 0.2358,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "form",
+      "left": "terracotta",
+      "right": "electric",
+      "distance": 0.1437,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "form",
+      "left": "terracotta",
+      "right": "editorial",
+      "distance": 0.2348,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "form",
+      "left": "electric",
+      "right": "editorial",
+      "distance": 0.2356,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "analytics",
+      "left": "obsidian",
+      "right": "serene",
+      "distance": 0.0036,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "analytics",
+      "left": "obsidian",
+      "right": "terracotta",
+      "distance": 0.0005,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "analytics",
+      "left": "obsidian",
+      "right": "electric",
+      "distance": 0.0036,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "analytics",
+      "left": "obsidian",
+      "right": "editorial",
+      "distance": 0.0014,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "analytics",
+      "left": "serene",
+      "right": "terracotta",
+      "distance": 0.0036,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "analytics",
+      "left": "serene",
+      "right": "electric",
+      "distance": 0.0005,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "analytics",
+      "left": "serene",
+      "right": "editorial",
+      "distance": 0.0023,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "analytics",
+      "left": "terracotta",
+      "right": "electric",
+      "distance": 0.0036,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "analytics",
+      "left": "terracotta",
+      "right": "editorial",
+      "distance": 0.0014,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "analytics",
+      "left": "electric",
+      "right": "editorial",
+      "distance": 0.0023,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "settings",
+      "left": "obsidian",
+      "right": "serene",
+      "distance": 0.2381,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "settings",
+      "left": "obsidian",
+      "right": "terracotta",
+      "distance": 0.2333,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "settings",
+      "left": "obsidian",
+      "right": "electric",
+      "distance": 0.2378,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "settings",
+      "left": "obsidian",
+      "right": "editorial",
+      "distance": 0.2356,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "settings",
+      "left": "serene",
+      "right": "terracotta",
+      "distance": 0.2381,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "settings",
+      "left": "serene",
+      "right": "electric",
+      "distance": 0.0003,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "settings",
+      "left": "serene",
+      "right": "editorial",
+      "distance": 0.2358,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "settings",
+      "left": "terracotta",
+      "right": "electric",
+      "distance": 0.2378,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "settings",
+      "left": "terracotta",
+      "right": "editorial",
+      "distance": 0.2356,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    },
+    {
+      "archetype": "settings",
+      "left": "electric",
+      "right": "editorial",
+      "distance": 0.2356,
+      "threshold": 0.4,
+      "verdict": "PRESET_COLLISION"
+    }
+  ],
+  "crossArchetypePassed": true,
+  "crossPresetPassed": false
+}

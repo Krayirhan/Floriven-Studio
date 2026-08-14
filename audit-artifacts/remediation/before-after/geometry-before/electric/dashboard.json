@@ -1,0 +1,119 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "bento",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 42.99996601122745,
+  "nodes": [
+    {
+      "nodeId": "electric-dashboard-balance",
+      "component": "article",
+      "role": null,
+      "sectionRole": "hero",
+      "x": 36.99986049107143,
+      "y": 74.00000588863233,
+      "width": 316.00027901785717,
+      "height": 80.39060486274992,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-dashboard-income",
+      "component": "article",
+      "role": null,
+      "sectionRole": "summary",
+      "x": 36.99986049107143,
+      "y": 200.3906291404446,
+      "width": 316.00027901785717,
+      "height": 67.64064383619808,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-dashboard-expense",
+      "component": "article",
+      "role": null,
+      "sectionRole": "summary",
+      "x": 36.99986049107143,
+      "y": 276.03123826470477,
+      "width": 316.00027901785717,
+      "height": 67.64064383619808,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-dashboard-trend",
+      "component": "figure",
+      "role": null,
+      "sectionRole": "insight",
+      "x": 36.99986049107143,
+      "y": 389.6718568934241,
+      "width": 316.00027901785717,
+      "height": 95.75003685560671,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-dashboard-cta",
+      "component": "button",
+      "role": null,
+      "sectionRole": "actions",
+      "x": 36.99986049107143,
+      "y": 531.421868541552,
+      "width": 316.00027901785717,
+      "height": 46.00001838906235,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-dashboard-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "primary-content",
+      "x": 36.99986049107143,
+      "y": 623.4218181265946,
+      "width": 316.00027901785717,
+      "height": 26.25000054237403,
+      "fontSize": "25px",
+      "lineHeight": "26.25px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "electric-dashboard-nav",
+      "component": "nav",
+      "role": null,
+      "x": 5,
+      "y": 772.9999810943909,
+      "width": 380,
+      "height": 66.0000188022997,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

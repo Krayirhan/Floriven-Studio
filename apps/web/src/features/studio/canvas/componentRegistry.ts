@@ -7,6 +7,7 @@ export const COMPONENT_TYPES = [
   "Button", "IconButton", "TextField", "SearchField", "Checkbox", "Switch", "Card", "ListItem",
   "Divider", "Badge", "Avatar", "TabBar", "BottomNavigation", "TopAppBar", "Modal", "Form", "Progress",
   "Metric", "Chart", "SegmentedControl", "FloatingActionButton",
+  "Calendar", "Timeline", "Gallery", "KanbanBoard", "MapView",
   "CareSummary", "MedicationTimeline", "MedicationDoseRow", "HealthMetric", "UnitInput",
   "RangeChart", "TargetRange", "StatusAlert", "SafetyNotice", "SuccessFeedback",
   "EditorialHero", "FeatureStory", "StoryCard", "Byline", "MetadataStrip",

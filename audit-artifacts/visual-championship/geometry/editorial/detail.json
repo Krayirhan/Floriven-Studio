@@ -1,0 +1,166 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "editorial-asymmetry",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 46.00001838906235,
+  "sections": [
+    {
+      "role": "identity",
+      "order": 0,
+      "span": 9,
+      "emphasis": "primary",
+      "family": "divider-led-detail-identity",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9994419642857,
+      "height": 73.10935035265159
+    },
+    {
+      "role": "primary-state",
+      "order": 1,
+      "span": 3,
+      "emphasis": "primary",
+      "family": "divider-led-detail-primary-state",
+      "x": 21.000279017857146,
+      "y": 145.10938671753894,
+      "width": 76.49972098214286,
+      "height": 199.3906116811663
+    },
+    {
+      "role": "metadata",
+      "order": 2,
+      "span": 9,
+      "emphasis": "secondary",
+      "family": "divider-led-detail-metadata",
+      "x": 111.49972098214286,
+      "y": 145.10938671753894,
+      "width": 257.5,
+      "height": 199.3906116811663
+    },
+    {
+      "role": "actions",
+      "order": 3,
+      "span": 12,
+      "emphasis": "tertiary",
+      "family": "divider-led-detail-actions",
+      "x": 21.000279017857146,
+      "y": 358.500024845896,
+      "width": 347.9994419642857,
+      "height": 70.99997530906796
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "editorial-detail-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "identity",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9994419642857,
+      "height": 29.109366882145842,
+      "fontSize": "28px",
+      "lineHeight": "29.12px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-detail-avatar",
+      "component": "div",
+      "role": null,
+      "sectionRole": "identity",
+      "x": 21.000279017857146,
+      "y": 95.10938568444554,
+      "width": 36.000279017857146,
+      "height": 35.99997458590259,
+      "fontSize": "11px",
+      "lineHeight": "16.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-detail-status",
+      "component": "span",
+      "role": null,
+      "sectionRole": "primary-state",
+      "x": 21.000279017857146,
+      "y": 170.10938723408563,
+      "width": 76.49972098214286,
+      "height": 23.999983057268395,
+      "fontSize": "10px",
+      "lineHeight": "15px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-detail-amount",
+      "component": "article",
+      "role": null,
+      "sectionRole": "primary-state",
+      "x": 21.000279017857146,
+      "y": 202.10937917595717,
+      "width": 76.49972098214286,
+      "height": 93.14060948584284,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-detail-progress",
+      "component": "div",
+      "role": null,
+      "sectionRole": "primary-state",
+      "x": 21.000279017857146,
+      "y": 303.24999754640316,
+      "width": 76.49972098214286,
+      "height": 41.250000852302044,
+      "fontSize": "10.5px",
+      "lineHeight": "15.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-detail-meta",
+      "component": "div",
+      "role": null,
+      "sectionRole": "metadata",
+      "x": 111.49972098214286,
+      "y": 170.10938723408563,
+      "width": 257.5,
+      "height": 54.49999240676358,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-detail-cta",
+      "component": "button",
+      "role": null,
+      "sectionRole": "actions",
+      "x": 21.000279017857146,
+      "y": 383.4999817659016,
+      "width": 347.9994419642857,
+      "height": 46.00001838906235,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

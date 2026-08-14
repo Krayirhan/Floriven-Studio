@@ -1,0 +1,166 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "editorial-asymmetry",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 46.00001838906235,
+  "sections": [
+    {
+      "role": "identity",
+      "order": 0,
+      "span": 12,
+      "emphasis": "primary",
+      "family": "entity-identity",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9840959821429,
+      "height": 73.10935035265159
+    },
+    {
+      "role": "primary-state",
+      "order": 1,
+      "span": 8,
+      "emphasis": "primary",
+      "family": "editorial",
+      "x": 21.000279017857146,
+      "y": 145.10938671753894,
+      "width": 227.32840401785717,
+      "height": 173.5155849886158
+    },
+    {
+      "role": "metadata",
+      "order": 2,
+      "span": 4,
+      "emphasis": "secondary",
+      "family": "technical-metadata",
+      "x": 262.32840401785717,
+      "y": 145.10938671753894,
+      "width": 106.65597098214286,
+      "height": 173.5155849886158
+    },
+    {
+      "role": "actions",
+      "order": 3,
+      "span": 12,
+      "emphasis": "tertiary",
+      "family": "detail-actions",
+      "x": 21.000279017857146,
+      "y": 332.62499815334553,
+      "width": 347.9840959821429,
+      "height": 71.00001890560904
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "editorial-detail-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "identity",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9840959821429,
+      "height": 29.109366882145842,
+      "fontSize": "28px",
+      "lineHeight": "29.12px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-detail-avatar",
+      "component": "div",
+      "role": null,
+      "sectionRole": "identity",
+      "x": 21.000279017857146,
+      "y": 95.10938568444554,
+      "width": 36.000279017857146,
+      "height": 35.99997458590259,
+      "fontSize": "11px",
+      "lineHeight": "16.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-detail-status",
+      "component": "span",
+      "role": null,
+      "sectionRole": "primary-state",
+      "x": 21.000279017857146,
+      "y": 170.10938723408563,
+      "width": 227.32840401785717,
+      "height": 23.999983057268395,
+      "fontSize": "10px",
+      "lineHeight": "15px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-detail-amount",
+      "component": "article",
+      "role": null,
+      "sectionRole": "primary-state",
+      "x": 21.000279017857146,
+      "y": 202.10937917595717,
+      "width": 227.32840401785717,
+      "height": 80.39062666102046,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-detail-progress",
+      "component": "div",
+      "role": null,
+      "sectionRole": "primary-state",
+      "x": 21.000279017857146,
+      "y": 290.49997112503974,
+      "width": 227.32840401785717,
+      "height": 28.12500058111503,
+      "fontSize": "10.5px",
+      "lineHeight": "15.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-detail-meta",
+      "component": "div",
+      "role": null,
+      "sectionRole": "metadata",
+      "x": 262.32840401785717,
+      "y": 170.10938723408563,
+      "width": 106.65597098214286,
+      "height": 104.749976006406,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-detail-cta",
+      "component": "button",
+      "role": null,
+      "sectionRole": "actions",
+      "x": 21.000279017857146,
+      "y": 357.62499866989225,
+      "width": 347.9840959821429,
+      "height": 46.00001838906235,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

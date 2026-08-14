@@ -1,0 +1,179 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "editorial-asymmetry",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 42.99996601122745,
+  "sections": [
+    {
+      "role": "section-group",
+      "order": 0,
+      "span": 12,
+      "emphasis": "tertiary",
+      "family": "divider-led-settings-section-group",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9994419642857,
+      "height": 29.109366882145842
+    },
+    {
+      "role": "rows-controls",
+      "order": 1,
+      "span": 12,
+      "emphasis": "primary",
+      "family": "divider-led-settings-rows-controls",
+      "x": 21.000279017857146,
+      "y": 101.10935965049211,
+      "width": 347.9994419642857,
+      "height": 198.99998667309526
+    },
+    {
+      "role": "divider",
+      "order": 2,
+      "span": 12,
+      "emphasis": "tertiary",
+      "family": "divider-led-settings-divider",
+      "x": 21.000279017857146,
+      "y": 314.1093727707782,
+      "width": 347.9994419642857,
+      "height": 26.999991838562213
+    },
+    {
+      "role": "next-section-group",
+      "order": 3,
+      "span": 12,
+      "emphasis": "secondary",
+      "family": "divider-led-settings-next-section-group",
+      "x": 21.000279017857146,
+      "y": 355.1093474599901,
+      "width": 347.9994419642857,
+      "height": 79.50003651985135
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "editorial-settings-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "section-group",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9994419642857,
+      "height": 29.109366882145842,
+      "fontSize": "28px",
+      "lineHeight": "29.12px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-settings-profile",
+      "component": "div",
+      "role": null,
+      "sectionRole": "rows-controls",
+      "x": 21.000279017857146,
+      "y": 126.1093601670388,
+      "width": 347.9994419642857,
+      "height": 54.50001420503412,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-settings-currency",
+      "component": "div",
+      "role": null,
+      "sectionRole": "rows-controls",
+      "x": 21.000279017857146,
+      "y": 188.60938325667607,
+      "width": 347.9994419642857,
+      "height": 55.49998806777134,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-settings-notify",
+      "component": "label",
+      "role": null,
+      "sectionRole": "rows-controls",
+      "x": 21.000279017857146,
+      "y": 252.10938020905058,
+      "width": 347.9994419642857,
+      "height": 20.000000413237355,
+      "fontSize": "12px",
+      "lineHeight": "18px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-settings-weekly",
+      "component": "label",
+      "role": null,
+      "sectionRole": "rows-controls",
+      "x": 21.000279017857146,
+      "y": 280.10934591035,
+      "width": 347.9994419642857,
+      "height": 20.000000413237355,
+      "fontSize": "12px",
+      "lineHeight": "18px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-settings-divider",
+      "component": "hr",
+      "role": null,
+      "sectionRole": "divider",
+      "x": 21.000279017857146,
+      "y": 339.10937328732484,
+      "width": 347.9994419642857,
+      "height": 1.9999913220155197,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "hidden",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-settings-security",
+      "component": "div",
+      "role": null,
+      "sectionRole": "next-section-group",
+      "x": 21.000279017857146,
+      "y": 380.10939157307786,
+      "width": 347.9994419642857,
+      "height": 54.49999240676358,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "editorial-settings-nav",
+      "component": "nav",
+      "role": null,
+      "x": 5,
+      "y": 772.9999810943909,
+      "width": 380,
+      "height": 66.0000188022997,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

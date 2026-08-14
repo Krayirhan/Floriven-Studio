@@ -30,10 +30,16 @@ export function validateArchetypeMinimumContent(screens: Node[], blueprint: Prod
     if (!planned) continue
     const nodes = flatten(asRecord(screen.root))
     const types = new Set(nodes.map((node) => String(node.type)))
+    const signatureType = planned.experiencePattern === 'calendar' ? 'Calendar'
+      : planned.experiencePattern === 'timeline' ? 'Timeline'
+        : planned.experiencePattern === 'gallery' ? 'Gallery'
+          : planned.experiencePattern === 'board' ? 'KanbanBoard'
+            : planned.experiencePattern === 'map' ? 'MapView' : undefined
+    if (signatureType && !types.has(signatureType)) issues.push(`${planned.id}: experience signature missing (${signatureType})`)
     const enoughNodes = nodes.length - 1 >= 12
     const valid = planned.archetype === 'dashboard'
       ? types.has('Metric') && types.has('Chart') && types.has('ListItem')
-      : planned.archetype === 'list'
+      : planned.archetype === 'management_list'
         ? types.has('SearchField') && types.has('SegmentedControl') && types.has('ListItem')
         : planned.archetype === 'form'
           ? types.has('TextField') && types.has('Button') && types.has('SegmentedControl')

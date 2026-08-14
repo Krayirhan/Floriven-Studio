@@ -1,0 +1,166 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "strict-grid",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 46.00001838906235,
+  "sections": [
+    {
+      "role": "identity",
+      "order": 0,
+      "span": 12,
+      "emphasis": "primary",
+      "family": "sectioned-detail-identity",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9840959821429,
+      "height": 75.18748847455186
+    },
+    {
+      "role": "primary-state",
+      "order": 1,
+      "span": 8,
+      "emphasis": "primary",
+      "family": "sectioned-detail-primary-state",
+      "x": 21.000279017857146,
+      "y": 147.18750304116867,
+      "width": 227.32840401785717,
+      "height": 147.5156106093319
+    },
+    {
+      "role": "metadata",
+      "order": 2,
+      "span": 4,
+      "emphasis": "secondary",
+      "family": "sectioned-detail-metadata",
+      "x": 262.32840401785717,
+      "y": 147.18750304116867,
+      "width": 106.65597098214286,
+      "height": 147.5156106093319
+    },
+    {
+      "role": "actions",
+      "order": 3,
+      "span": 12,
+      "emphasis": "tertiary",
+      "family": "sectioned-detail-actions",
+      "x": 21.000279017857146,
+      "y": 308.7030965011503,
+      "width": 347.9840959821429,
+      "height": 46.00001838906235
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "deterministic-detail-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "identity",
+      "x": 21.000279017857146,
+      "y": 58.000009917696545,
+      "width": 347.9840959821429,
+      "height": 31.18748320577557,
+      "fontSize": "24px",
+      "lineHeight": "31.2px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "deterministic-detail-avatar",
+      "component": "div",
+      "role": null,
+      "sectionRole": "identity",
+      "x": 21.000279017857146,
+      "y": 97.18750200807527,
+      "width": 36.000279017857146,
+      "height": 35.99999638417313,
+      "fontSize": "11px",
+      "lineHeight": "16.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "deterministic-detail-status",
+      "component": "span",
+      "role": null,
+      "sectionRole": "primary-state",
+      "x": 21.000279017857146,
+      "y": 147.18750304116867,
+      "width": 227.32840401785717,
+      "height": 23.000009194531174,
+      "fontSize": "10px",
+      "lineHeight": "15px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "deterministic-detail-amount",
+      "component": "article",
+      "role": null,
+      "sectionRole": "primary-state",
+      "x": 21.000279017857146,
+      "y": 178.18749932203247,
+      "width": 227.32840401785717,
+      "height": 80.390648459291,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "deterministic-detail-progress",
+      "component": "div",
+      "role": null,
+      "sectionRole": "primary-state",
+      "x": 21.000279017857146,
+      "y": 266.57811306938555,
+      "width": 227.32840401785717,
+      "height": 28.12500058111503,
+      "fontSize": "10.5px",
+      "lineHeight": "15.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "deterministic-detail-meta",
+      "component": "div",
+      "role": null,
+      "sectionRole": "metadata",
+      "x": 262.32840401785717,
+      "y": 147.18750304116867,
+      "width": 106.65597098214286,
+      "height": 104.75001960294708,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "deterministic-detail-cta",
+      "component": "button",
+      "role": null,
+      "sectionRole": "actions",
+      "x": 21.000279017857146,
+      "y": 308.7030965011503,
+      "width": 347.9840959821429,
+      "height": 46.00001838906235,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "verdict": "BLOCKED",
+  "overallVisualScore": 0,
+  "architectureScore": 33,
+  "runtimeQualityScore": 0,
+  "presets": {
+    "obsidian": 0,
+    "serene": 0,
+    "terracotta": 0,
+    "electric": 0,
+    "editorial": 0,
+    "auto": 0,
+    "deterministic": 0
+  },
+  "evidence": {
+    "screenshots": 1,
+    "domBounds": false,
+    "geometry": false,
+    "crossScreen": false,
+    "crossPreset": false,
+    "accessibility": false,
+    "runtimeCertification": false
+  },
+  "issues": [
+    {
+      "id": "P0-RUNTIME-IMPORT-001",
+      "severity": "P0",
+      "title": "Production build and localhost renderer are broken",
+      "evidence": "TS5097 during build/typecheck and Vite import-analysis overlay at /app/sablonlar: dist/auto-design-director.js imports ./strategy.ts, which does not exist in dist.",
+      "files": ["packages/design-spec/src/auto-design-director.ts"]
+    },
+    {
+      "id": "P1-DEAD-RENDERPLAN-001",
+      "severity": "P1",
+      "title": "RenderPlan, composers and layout engine are not on the Studio runtime path",
+      "evidence": "Production consumers exist in packages/design-spec, but no non-test app or edge-function consumer invokes composeDashboard, composeManagementList, composeForm, composeDetail, composeAnalytics, composeSettings or layoutRenderPlan.",
+      "files": ["packages/design-spec/src/render-plan.ts", "packages/design-spec/src/composition", "packages/design-spec/src/layout/engine.ts", "apps/web/src/features/studio/canvas/PhoneScreen.tsx"]
+    },
+    {
+      "id": "P1-ARCH-SCREEN-HEURISTIC-001",
+      "severity": "P1",
+      "title": "Renderer infers archetype from screen name",
+      "evidence": "PhoneScreen lowercases screen.name and uses includes(setting/form/detail/analytic/list) to assign composition.",
+      "files": ["apps/web/src/features/studio/canvas/PhoneScreen.tsx"]
+    },
+    {
+      "id": "P1-ARCH-PRESET-LEAK-001",
+      "severity": "P1",
+      "title": "Renderer branches on palette identity",
+      "evidence": "PhoneScreen chooses chart family from presentation.palette and applies strategyPalette* CSS classes directly.",
+      "files": ["apps/web/src/features/studio/canvas/PhoneScreen.tsx", "apps/web/src/features/studio/StudioPage.module.css"]
+    },
+    {
+      "id": "P1-VIS-FAKE-CHART-001",
+      "severity": "P1",
+      "title": "Donut and radial chart families are fake or broken",
+      "evidence": "donut skips bar and polyline branches without drawing arcs; radial uses the same polyline path with larger point circles.",
+      "files": ["apps/web/src/features/studio/canvas/PhoneScreen.tsx"]
+    },
+    {
+      "id": "P1-DEAD-V3-GRAMMAR-001",
+      "severity": "P1",
+      "title": "Most StyleSystemProfile V3 grammar is not consumed by the DOM renderer",
+      "evidence": "Runtime adapter collapses PresentationSpecV2 to palette, cardStyle, density, navigationStyle, cardFamilies and chartTypes. Motion, typography roles, media treatment, grouping, surface/divider/status/data/interaction/empty/modal grammar do not reach runtime behavior.",
+      "files": ["packages/design-spec/src/runtime-renderer-adapter.ts", "apps/web/src/features/studio/canvas/PhoneScreen.tsx"]
+    },
+    {
+      "id": "P1-EVIDENCE-MATRIX-001",
+      "severity": "P1",
+      "title": "Canonical 42-screen runtime evidence matrix does not exist",
+      "evidence": "Current app cannot render; preset E2E only checks five gallery previews and one screenshot, not 7 modes x 6 archetypes with Studio renderer bounds.",
+      "files": ["apps/web/e2e/template-previews.spec.ts", "apps/web/e2e/studio-scroll.spec.ts"]
+    },
+    {
+      "id": "P1-CERT-NOT-PROVEN-001",
+      "severity": "P1",
+      "title": "Runtime certification security is implemented but not proven live",
+      "evidence": "Unit tests and source checks exist, but expected POST /runtime-certification/session endpoint is absent and wrong-job/hash/expired/mutated/write/generation cases were not executed against deployed functions in this audit.",
+      "files": ["supabase/functions/issue-runtime-certification-token/index.ts", "supabase/functions/record-generation-runtime-quality/index.ts", "scripts/certification/run-runtime-certification.mjs"]
+    }
+  ]
+}

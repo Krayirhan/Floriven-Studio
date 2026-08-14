@@ -1,0 +1,12 @@
+- generic: "[plugin:vite:import-analysis] Failed to resolve import \"./strategy.ts\" from \"../../packages/design-spec/dist/auto-design-director.js\". Does the file exist?"
+- generic: ../src/auto-design-director.ts:2:97
+- generic: "1 | import { findDesignTemplate } from \"./strategy.ts\"; | ^ 2 | export function directAutoDesign(blueprint) { 3 | const text = [blueprint.productDomain, blueprint.audience, ...blueprint.capabilities, ...blueprint.contentVocabulary].join(\" \").toLocaleLowerCase(\"tr-TR\");"
+- generic: at TransformPluginContext._formatError (file:///D:/Floriven-Studio/node_modules/.pnpm/vite@5.4.21_@types+node@26.1.2/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49258:41) at TransformPluginContext.error (file:///D:/Floriven-Studio/node_modules/.pnpm/vite@5.4.21_@types+node@26.1.2/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49253:16) at normalizeUrl (file:///D:/Floriven-Studio/node_modules/.pnpm/vite@5.4.21_@types+node@26.1.2/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64307:23) at async file:///D:/Floriven-Studio/node_modules/.pnpm/vite@5.4.21_@types+node@26.1.2/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64439:39 at async Promise.all (index 0) at async TransformPluginContext.transform (file:///D:/Floriven-Studio/node_modules/.pnpm/vite@5.4.21_@types+node@26.1.2/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64366:7) at async PluginContainer.transform (file:///D:/Floriven-Studio/node_modules/.pnpm/vite@5.4.21_@types+node@26.1.2/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49099:18) at async loadAndTransform (file:///D:/Floriven-Studio/node_modules/.pnpm/vite@5.4.21_@types+node@26.1.2/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:51978:27) at async viteTransformMiddleware (file:///D:/Floriven-Studio/node_modules/.pnpm/vite@5.4.21_@types+node@26.1.2/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:62106:24
+- text: Click outside, press Esc key, or fix the code to dismiss.
+- text: You can also disable this overlay by setting
+- code: server.hmr.overlay
+- text: to
+- code: "false"
+- text: in
+- code: vite.config.js
+- text: .

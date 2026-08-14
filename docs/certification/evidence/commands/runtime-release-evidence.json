@@ -1,0 +1,21 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2026-08-14T11:19:57.184Z",
+  "status": "NOT_VERIFIED",
+  "releaseEligible": false,
+  "checks": {
+    "captureEnvironmentReady": null,
+    "baselineManifestValid": null,
+    "baselineApprovalValid": null,
+    "replayPassed": null,
+    "runtimeFinalEligible": null
+  },
+  "failedChecks": [],
+  "pendingChecks": [
+    "captureEnvironmentReady",
+    "baselineManifestValid",
+    "baselineApprovalValid",
+    "replayPassed",
+    "runtimeFinalEligible"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "modes": [
+    {
+      "mode": "obsidian",
+      "measured": true,
+      "source": "runtime DOM sections/cards/dividers"
+    },
+    {
+      "mode": "serene",
+      "measured": true,
+      "source": "runtime DOM sections/cards/dividers"
+    },
+    {
+      "mode": "terracotta",
+      "measured": true,
+      "source": "runtime DOM sections/cards/dividers"
+    },
+    {
+      "mode": "electric",
+      "measured": true,
+      "source": "runtime DOM sections/cards/dividers"
+    },
+    {
+      "mode": "editorial",
+      "measured": true,
+      "source": "runtime DOM sections/cards/dividers"
+    }
+  ]
+}

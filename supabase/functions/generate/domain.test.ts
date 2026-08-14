@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildSyntheticBlueprint, deriveArchetype, meetsScreenPolicy, parseModelJson, requiresSettingsScreen, resolveDomainPack, resolveScreenPolicy, type ProductBlueprint } from "./domain";
+import { buildSyntheticBlueprint, deriveArchetype, deriveExperiencePattern, meetsScreenPolicy, parseModelJson, requiresSettingsScreen, resolveDomainPack, resolveScreenPolicy, type ProductBlueprint } from "./domain";
 
 const stylePresetIds = [
   "obsidian-precision",
@@ -23,6 +23,14 @@ function blueprint(productDomain: string, vocabulary: string[]): ProductBlueprin
 }
 
 describe("domain capability resolution", () => {
+  it("derives defining experience patterns from Turkish and English screen intent", () => {
+    expect(deriveExperiencePattern("Haftalık randevu takvimi ve saat blokları")).toBe("calendar");
+    expect(deriveExperiencePattern("Müşteri aktivite geçmişi")).toBe("timeline");
+    expect(deriveExperiencePattern("Proje portfolyo galerisi")).toBe("gallery");
+    expect(deriveExperiencePattern("Sprint kanban board")).toBe("board");
+    expect(deriveExperiencePattern("Şubelere göre konum haritası")).toBe("map");
+    expect(deriveExperiencePattern("Fatura detayları")).toBe("standard");
+  });
   it("honors explicit counts and lets AI decide when no count is supplied", () => {
     expect(resolveScreenPolicy("Freelance ürün için 6 ekran tasarla")).toMatchObject({ requestedCount: 6, minCount: 6, maxCount: 6 });
     expect(resolveScreenPolicy("Freelance proje yönetimi", "Tek ekran")).toMatchObject({ requestedCount: 1 });

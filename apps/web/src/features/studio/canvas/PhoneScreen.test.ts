@@ -1,8 +1,21 @@
 import { describe, expect, it } from "vitest";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import type { DesignNode, Screen } from "@floriven/design-spec";
-import { PhoneScreen, splitScreenNavigation } from "./PhoneScreen";
+import { compileVisualScreen, DESIGN_TEMPLATES, findDesignTemplate, type DesignNode, type Screen } from "@floriven/design-spec";
+import { PhoneScreen as RuntimePhoneScreen, splitScreenNavigation } from "./PhoneScreen";
+
+function PhoneScreen(props: Omit<React.ComponentProps<typeof RuntimePhoneScreen>, "compiled"> & { presentation?: { palette?: string } }) {
+  const template = props.presentation?.palette === "serene"
+    ? findDesignTemplate("serene-health")!
+    : DESIGN_TEMPLATES[0]!;
+  const compiled = compileVisualScreen({
+    screen: props.screen,
+    strategy: { mode: "auto", ...template.strategy, rationale: ["renderer test fixture"] },
+    styleSystemProfile: template.system,
+  });
+  const { presentation: _legacyPresentation, ...runtimeProps } = props;
+  return createElement(RuntimePhoneScreen, { ...runtimeProps, compiled });
+}
 
 function node(id: string, type: string, children?: DesignNode[]): DesignNode {
   return {
@@ -15,6 +28,18 @@ function node(id: string, type: string, children?: DesignNode[]): DesignNode {
 }
 
 describe("splitScreenNavigation", () => {
+  it("renders a calendar as a real weekly schedule experience", () => {
+    const calendar = node("calendar", "Calendar");
+    calendar.props = { label: "Saha Takvimi", days: ["Pzt 12", "Sal 13", "Çar 14"], events: ["Boğaz Evi ziyareti", "Müşteri teslimi"] };
+    const screen: Screen = { id: "calendar-screen", name: "Takvim", route: "/takvim", root: node("root", "Screen", [calendar]) };
+
+    const html = renderToStaticMarkup(createElement(PhoneScreen, { screen, selectedNodeId: "", active: true, onSelect: () => undefined }));
+
+    expect(html).toContain("Saha Takvimi");
+    expect(html).toContain("Boğaz Evi ziyareti");
+    expect(html).toContain("Pzt");
+    expect(html).toContain("9:00");
+  });
   it("moves bottom navigation outside the scrollable content without mutating the spec", () => {
     const title = node("title", "Text");
     const navigation = node("nav", "BottomNavigation");
@@ -67,9 +92,16 @@ describe("splitScreenNavigation", () => {
     expect(html).toContain("--gen-accent:#0d9488");
     expect(html).toContain("--gen-radius-lg:24px");
     expect(html).toContain("--gen-navigation-radius:24px");
+    expect(html).toContain("--gen-card-padding:22px");
+    expect(html).toContain("--gen-heading-size:23px");
+    expect(html).toContain('data-chart-grid="none"');
+    expect(html).toContain('data-grouping-style="card-clusters"');
+    expect(html).toContain('data-data-presentation="trend-delta"');
+    expect(html).toContain('data-interaction-style="tactile"');
+    expect(html).toContain('data-available-layouts="stacked grid"');
     expect(html).toContain('data-viewport-width="390"');
     expect(html).toContain('data-viewport-height="844"');
-    expect(html).toContain('data-renderer-version="phone-screen-v2"');
+    expect(html).toContain('data-renderer-version="phone-screen-v4"');
   });
 
   it("does not infer presentation from a preset identity in the screen tree", () => {

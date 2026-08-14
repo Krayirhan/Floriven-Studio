@@ -1,0 +1,166 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "strict-grid",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 46.00001838906235,
+  "sections": [
+    {
+      "role": "identity",
+      "order": 0,
+      "span": 12,
+      "emphasis": "primary",
+      "family": "card-clusters-detail-identity",
+      "x": 20.999930245535715,
+      "y": 58.000009917696545,
+      "width": 347.98444475446433,
+      "height": 105.89061410893576
+    },
+    {
+      "role": "primary-state",
+      "order": 1,
+      "span": 8,
+      "emphasis": "primary",
+      "family": "card-clusters-detail-primary-state",
+      "x": 20.999930245535715,
+      "y": 177.89062867555256,
+      "width": 227.32805524553572,
+      "height": 179.51564614774455
+    },
+    {
+      "role": "metadata",
+      "order": 2,
+      "span": 4,
+      "emphasis": "secondary",
+      "family": "card-clusters-detail-metadata",
+      "x": 262.3280552455357,
+      "y": 177.89062867555256,
+      "width": 106.65631975446429,
+      "height": 179.51564614774455
+    },
+    {
+      "role": "actions",
+      "order": 3,
+      "span": 12,
+      "emphasis": "tertiary",
+      "family": "card-clusters-detail-actions",
+      "x": 20.999930245535715,
+      "y": 371.4062576739468,
+      "width": 347.98444475446433,
+      "height": 78.0000103309339
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "serene-detail-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "identity",
+      "x": 36.99986049107143,
+      "y": 74.00000588863233,
+      "width": 315.9845842633929,
+      "height": 29.890616898287927,
+      "fontSize": "23px",
+      "lineHeight": "29.9px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-detail-avatar",
+      "component": "div",
+      "role": null,
+      "sectionRole": "identity",
+      "x": 36.99986049107143,
+      "y": 111.89060987325287,
+      "width": 36.000279017857146,
+      "height": 36.000018182443675,
+      "fontSize": "11px",
+      "lineHeight": "16.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-detail-status",
+      "component": "span",
+      "role": null,
+      "sectionRole": "primary-state",
+      "x": 36.99986049107143,
+      "y": 193.89062464648836,
+      "width": 195.3281947544643,
+      "height": 22.999987396260636,
+      "fontSize": "10px",
+      "lineHeight": "15px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-detail-amount",
+      "component": "article",
+      "role": null,
+      "sectionRole": "primary-state",
+      "x": 36.99986049107143,
+      "y": 224.89062092735213,
+      "width": 195.3281947544643,
+      "height": 80.39062666102046,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-detail-progress",
+      "component": "div",
+      "role": null,
+      "sectionRole": "primary-state",
+      "x": 36.99986049107143,
+      "y": 313.28125647297577,
+      "width": 195.3281947544643,
+      "height": 28.12500058111503,
+      "fontSize": "10.5px",
+      "lineHeight": "15.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-detail-meta",
+      "component": "div",
+      "role": null,
+      "sectionRole": "metadata",
+      "x": 278.32798549107144,
+      "y": 193.89062464648836,
+      "width": 74.65645926339286,
+      "height": 104.74999780467654,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "serene-detail-cta",
+      "component": "button",
+      "role": null,
+      "sectionRole": "actions",
+      "x": 36.99986049107143,
+      "y": 387.40623184661206,
+      "width": 315.9845842633929,
+      "height": 46.00001838906235,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}

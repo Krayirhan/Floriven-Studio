@@ -1,0 +1,165 @@
+{
+  "logicalViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "layoutViewport": {
+    "width": 390,
+    "height": 844
+  },
+  "transformedPreview": {
+    "width": 273,
+    "height": 590.7999877929688,
+    "scaleX": 0.7,
+    "scaleY": 0.6999999855366928
+  },
+  "layoutPattern": "editorial-asymmetry",
+  "horizontalOverflow": false,
+  "navigationInside": true,
+  "minimumTouchTarget": 42.99996601122745,
+  "sections": [
+    {
+      "role": "primary-summary",
+      "order": 0,
+      "span": 5,
+      "emphasis": "primary",
+      "family": "editorial-hero",
+      "x": 20.999930245535715,
+      "y": 58.000009917696545,
+      "width": 347.98444475446433,
+      "height": 117.99998935913807
+    },
+    {
+      "role": "secondary-metrics",
+      "order": 1,
+      "span": 7,
+      "emphasis": "secondary",
+      "family": "sectioned-dashboard-secondary-metrics",
+      "x": 20.999930245535715,
+      "y": 190.00000392575487,
+      "width": 197.15645926339286,
+      "height": 77.54686788295507
+    },
+    {
+      "role": "trend-progress",
+      "order": 2,
+      "span": 7,
+      "emphasis": "secondary",
+      "family": "sectioned-dashboard-trend-progress",
+      "x": 20.999930245535715,
+      "y": 281.5468982559007,
+      "width": 197.15645926339286,
+      "height": 95.74999325906562
+    },
+    {
+      "role": "actionable-content",
+      "order": 3,
+      "span": 5,
+      "emphasis": "secondary",
+      "family": "sectioned-dashboard-actionable-content",
+      "x": 232.15611049107144,
+      "y": 281.5468982559007,
+      "width": 136.82826450892858,
+      "height": 95.74999325906562
+    }
+  ],
+  "nodes": [
+    {
+      "nodeId": "terracotta-dashboard-title",
+      "component": "h1",
+      "role": null,
+      "sectionRole": "primary-summary",
+      "x": 20.999930245535715,
+      "y": 58.000009917696545,
+      "width": 347.98444475446433,
+      "height": 28.593750590800283,
+      "fontSize": "26px",
+      "lineHeight": "28.6px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "terracotta-dashboard-balance",
+      "component": "article",
+      "role": null,
+      "sectionRole": "primary-summary",
+      "x": 20.999930245535715,
+      "y": 94.59374759482945,
+      "width": 347.98444475446433,
+      "height": 80.39062666102046,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "terracotta-dashboard-income",
+      "component": "article",
+      "role": null,
+      "sectionRole": "secondary-metrics",
+      "x": 20.999930245535715,
+      "y": 190.00000392575487,
+      "width": 94.57833426339286,
+      "height": 77.54686788295507,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "terracotta-dashboard-expense",
+      "component": "article",
+      "role": null,
+      "sectionRole": "secondary-metrics",
+      "x": 123.57805524553572,
+      "y": 190.00000392575487,
+      "width": 94.57833426339286,
+      "height": 77.54686788295507,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "terracotta-dashboard-trend",
+      "component": "figure",
+      "role": null,
+      "sectionRole": "trend-progress",
+      "x": 20.999930245535715,
+      "y": 281.5468982559007,
+      "width": 197.15645926339286,
+      "height": 95.74999325906562,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "terracotta-dashboard-cta",
+      "component": "button",
+      "role": null,
+      "sectionRole": "actionable-content",
+      "x": 232.15611049107144,
+      "y": 281.5468982559007,
+      "width": 136.82826450892858,
+      "height": 45.99997479252127,
+      "fontSize": "12.5px",
+      "lineHeight": "18.75px",
+      "overflow": "visible",
+      "visibility": "visible"
+    },
+    {
+      "nodeId": "terracotta-dashboard-nav",
+      "component": "nav",
+      "role": null,
+      "x": 5,
+      "y": 772.9999810943909,
+      "width": 380,
+      "height": 66.0000188022997,
+      "fontSize": "13px",
+      "lineHeight": "19.5px",
+      "overflow": "visible",
+      "visibility": "visible"
+    }
+  ]
+}
