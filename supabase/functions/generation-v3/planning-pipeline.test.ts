@@ -212,4 +212,51 @@ describe('Generation V3 planning pipeline', () => {
     } }
     await expect(runV3Planning({ brief: 'Mimarlar için iki takvim', requestedScreenCount: 2, correlationId: 'corr-9' }, provider)).rejects.toMatchObject({ stage: 'static_critics' })
   })
+
+  it('recovers a ux_structure failure on retry once the model sees the exact validation issue', async () => {
+    let uxAttempts = 0
+    const provider: V3PlanningProvider = { completeJson: async ({ operation, messages }) => {
+      if (operation === 'ux_structure') {
+        uxAttempts += 1
+        if (uxAttempts === 1) return JSON.stringify({ ...uxStructure, regions: [uxStructure.regions[0]] }) // invalid: drops a region
+        expect(messages[messages.length - 1].content).toContain('Your previous attempt was rejected')
+        return JSON.stringify(uxStructure) // corrected on retry
+      }
+      return respond(operation)
+    } }
+    const result = await runV3Planning({ brief: 'Mimarlar için takvim', requestedScreenCount: 1, correlationId: 'corr-10' }, provider)
+    expect(result.uxStructures).toHaveLength(1)
+    expect(uxAttempts).toBe(2)
+  })
+
+  it('recovers a component_capabilities coverage failure on retry once the model sees the exact validation issue', async () => {
+    let capabilityAttempts = 0
+    const provider: V3PlanningProvider = { completeJson: async ({ operation, messages }) => {
+      if (operation === 'component_capabilities') {
+        capabilityAttempts += 1
+        if (capabilityAttempts === 1) {
+          return JSON.stringify({ ...componentCapabilities, regions: [{ ...componentCapabilities.regions[0], selectedComponents: ['Calendar', 'Chart'] }, componentCapabilities.regions[1]] })
+        }
+        expect(messages[messages.length - 1].content).toContain('Your previous attempt was rejected')
+        return JSON.stringify(componentCapabilities) // corrected on retry
+      }
+      return respond(operation)
+    } }
+    const result = await runV3Planning({ brief: 'Mimarlar için takvim', requestedScreenCount: 1, correlationId: 'corr-11' }, provider)
+    expect(result.componentCapabilities).toHaveLength(1)
+    expect(capabilityAttempts).toBe(2)
+  })
+
+  it('still fails closed after exhausting all retry attempts on a persistently invalid ux_structure', async () => {
+    let uxAttempts = 0
+    const provider: V3PlanningProvider = { completeJson: async ({ operation }) => {
+      if (operation === 'ux_structure') {
+        uxAttempts += 1
+        return JSON.stringify({ ...uxStructure, regions: [uxStructure.regions[0]] }) // always invalid
+      }
+      return respond(operation)
+    } }
+    await expect(runV3Planning({ brief: 'Mimarlar için takvim', requestedScreenCount: 1, correlationId: 'corr-12' }, provider)).rejects.toMatchObject({ stage: 'ux_structure' })
+    expect(uxAttempts).toBe(3)
+  })
 })

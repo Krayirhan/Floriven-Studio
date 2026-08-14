@@ -2,13 +2,13 @@ import { validateComponentCapabilities, type ComponentCapabilities } from './com
 import { validateContentPlan, type ContentPlan } from './content-plan.ts'
 import { compileDesignSpecScreen, DesignSpecCompileError, type DesignSpecScreen } from './design-spec-compiler.ts'
 import { validateLayoutPlan, type LayoutPlan } from './layout-plan.ts'
-import { componentCapabilitiesMessages, contentPlanMessages, layoutPlanMessages, productModelMessages, screenJobsMessages, uxStructureMessages, type V3PromptMessage } from './prompts.ts'
+import { componentCapabilitiesMessages, contentPlanMessages, layoutPlanMessages, productModelMessages, screenJobsMessages, uxStructureMessages, withRetryFeedback, type V3PromptMessage } from './prompts.ts'
 import { validateProductModel, type ProductModel } from './product-model.ts'
 import { runTargetedRepair, type RepairResult } from './repair.ts'
 import { validateScreenJobs, type ScreenJobs } from './screen-jobs.ts'
 import { runProductStaticCritics, runStaticCritics, type ProductStaticCriticsReport, type StaticCriticsReport } from './static-critics.ts'
 import { validateUXStructure, type UXStructure } from './ux-structure.ts'
-import { parseStrictJsonObject } from './validation.ts'
+import { parseStrictJsonObject, type ValidationResult } from './validation.ts'
 
 export type V3PlanningOperation = 'product_model' | 'screen_jobs' | 'ux_structure' | 'component_capabilities' | 'layout_plan' | 'content_plan' | 'design_spec_compile' | 'static_critics' | 'patch_plan'
 export type V3PlanningProvider = {
@@ -39,6 +39,36 @@ export class V3ProviderError extends Error {
   }
 }
 
+/**
+ * Retries a planning call up to `maxAttempts` times, feeding the exact validation issues from a
+ * rejected attempt back to the model (withRetryFeedback) instead of hoping a fresh, blind attempt
+ * happens to avoid the same mistake. Used for the two stages that have shown the most run-to-run
+ * inconsistency (ux_structure's presentation-leak scanner, component_capabilities' bidirectional
+ * coverage check) — both are checks a model can usually satisfy once it sees precisely which one
+ * it missed, which one-shot prompting can't guarantee.
+ */
+async function completeWithRetry<T>(params: {
+  operation: V3PlanningOperation
+  provider: V3PlanningProvider
+  correlationId: string
+  timeoutMs: number
+  buildMessages: (feedback?: string[]) => V3PromptMessage[]
+  validate: (raw: unknown) => ValidationResult<T>
+  maxAttempts?: number
+}): Promise<T> {
+  const { operation, provider, correlationId, timeoutMs, buildMessages, validate, maxAttempts = 3 } = params
+  let issues: string[] = []
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    const raw = await provider.completeJson({ operation, messages: buildMessages(attempt > 1 ? issues : undefined), correlationId, timeoutMs })
+    const parsed = parseStrictJsonObject(raw)
+    if (!parsed.ok) { issues = parsed.issues; continue }
+    const validated = validate(parsed.value)
+    if (validated.ok) return validated.value
+    issues = validated.issues
+  }
+  throw new V3PlanningError(operation, issues)
+}
+
 export async function runV3Planning(input: V3PlanningInput, provider: V3PlanningProvider): Promise<V3PlanningOutput> {
   const brief = input.brief.trim()
   if (!brief || brief.length > 12_000) throw new V3PlanningError('product_model', ['brief: length must be between 1 and 12000 characters'])
@@ -62,22 +92,22 @@ export async function runV3Planning(input: V3PlanningInput, provider: V3Planning
 
   const uxStructures: UXStructure[] = []
   for (const job of jobs.value.jobs) {
-    const uxRaw = await provider.completeJson({ operation: 'ux_structure', messages: uxStructureMessages(job), correlationId: input.correlationId, timeoutMs })
-    const uxJson = parseStrictJsonObject(uxRaw)
-    if (!uxJson.ok) throw new V3PlanningError('ux_structure', uxJson.issues)
-    const ux = validateUXStructure(uxJson.value, job)
-    if (!ux.ok) throw new V3PlanningError('ux_structure', ux.issues)
-    uxStructures.push(ux.value)
+    const structure = await completeWithRetry({
+      operation: 'ux_structure', provider, correlationId: input.correlationId, timeoutMs,
+      buildMessages: (feedback) => withRetryFeedback(uxStructureMessages(job), feedback),
+      validate: (raw) => validateUXStructure(raw, job),
+    })
+    uxStructures.push(structure)
   }
 
   const componentCapabilities: ComponentCapabilities[] = []
   for (const structure of uxStructures) {
-    const capabilitiesRaw = await provider.completeJson({ operation: 'component_capabilities', messages: componentCapabilitiesMessages(structure), correlationId: input.correlationId, timeoutMs })
-    const capabilitiesJson = parseStrictJsonObject(capabilitiesRaw)
-    if (!capabilitiesJson.ok) throw new V3PlanningError('component_capabilities', capabilitiesJson.issues)
-    const capabilities = validateComponentCapabilities(capabilitiesJson.value, structure)
-    if (!capabilities.ok) throw new V3PlanningError('component_capabilities', capabilities.issues)
-    componentCapabilities.push(capabilities.value)
+    const capabilities = await completeWithRetry({
+      operation: 'component_capabilities', provider, correlationId: input.correlationId, timeoutMs,
+      buildMessages: (feedback) => withRetryFeedback(componentCapabilitiesMessages(structure), feedback),
+      validate: (raw) => validateComponentCapabilities(raw, structure),
+    })
+    componentCapabilities.push(capabilities)
   }
 
   const layoutPlans: LayoutPlan[] = []

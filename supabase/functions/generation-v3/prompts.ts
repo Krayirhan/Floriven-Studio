@@ -136,3 +136,16 @@ OUTPUT_SCHEMA=${JSON.stringify(PATCH_PLAN_JSON_SCHEMA)}` },
 function userData(value: unknown): string {
   return `USER_DATA_BEGIN\n${JSON.stringify(value)}\nUSER_DATA_END`
 }
+
+/**
+ * Appends the exact validation issues from a rejected attempt as a final user message, so a retry
+ * sees its own concrete mistake instead of just repeating the same static instructions and
+ * probably repeating the same mistake. Far more effective than tuning prompt wording blind.
+ */
+export function withRetryFeedback(messages: V3PromptMessage[], issues?: string[]): V3PromptMessage[] {
+  if (!issues || issues.length === 0) return messages
+  return [...messages, {
+    role: 'user',
+    content: `Your previous attempt was rejected for these exact reasons:\n${issues.map((issue) => `- ${issue}`).join('\n')}\nReturn a corrected full JSON object that fixes every one of these issues. Keep everything else that was already correct unchanged.`,
+  }]
+}
