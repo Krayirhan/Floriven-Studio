@@ -180,8 +180,11 @@ export interface GenerationServiceV3 {
 
 const GENERATION_TIMEOUT_MS = 15_000;
 const STATUS_TIMEOUT_MS = 15_000;
-const MAX_STATUS_POLLS = 120;
 const STATUS_POLL_INTERVAL_MS = 1_500;
+/** Must stay comfortably above the backend's own processing-timeout safety net (http-adapter.ts's
+ * PROCESSING_TIMEOUT_MS, 4 minutes) — otherwise the client gives up and shows a stuck spinner
+ * before the server ever gets a chance to resolve a stalled job to a real failure. */
+const MAX_STATUS_POLLS = 220;
 
 export function createGenerationServiceV3(
   fetcher: typeof fetch = fetch,
