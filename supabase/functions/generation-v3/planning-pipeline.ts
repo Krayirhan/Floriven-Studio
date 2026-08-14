@@ -75,23 +75,27 @@ export async function runV3Planning(input: V3PlanningInput, provider: V3Planning
   if (!input.correlationId.trim()) throw new V3PlanningError('product_model', ['correlationId: required'])
   const timeoutMs = Math.min(60_000, Math.max(1_000, input.timeoutMs ?? 30_000))
 
-  const productRaw = await provider.completeJson({ operation: 'product_model', messages: productModelMessages(brief), correlationId: input.correlationId, timeoutMs })
-  const productJson = parseStrictJsonObject(productRaw)
-  if (!productJson.ok) throw new V3PlanningError('product_model', productJson.issues)
-  const product = validateProductModel(productJson.value)
-  if (!product.ok) throw new V3PlanningError('product_model', product.issues)
+  const product = await completeWithRetry({
+    operation: 'product_model', provider, correlationId: input.correlationId, timeoutMs,
+    buildMessages: (feedback) => withRetryFeedback(productModelMessages(brief), feedback),
+    validate: (raw) => validateProductModel(raw),
+  })
 
-  const jobsRaw = await provider.completeJson({ operation: 'screen_jobs', messages: screenJobsMessages(product.value, input.requestedScreenCount), correlationId: input.correlationId, timeoutMs })
-  const jobsJson = parseStrictJsonObject(jobsRaw)
-  if (!jobsJson.ok) throw new V3PlanningError('screen_jobs', jobsJson.issues)
-  const jobs = validateScreenJobs(jobsJson.value, product.value)
-  if (!jobs.ok) throw new V3PlanningError('screen_jobs', jobs.issues)
-  if (input.requestedScreenCount !== undefined && jobs.value.jobs.length !== input.requestedScreenCount) {
-    throw new V3PlanningError('screen_jobs', [`screenJobs.jobs: expected exactly ${input.requestedScreenCount} jobs`])
-  }
+  const jobs = await completeWithRetry({
+    operation: 'screen_jobs', provider, correlationId: input.correlationId, timeoutMs,
+    buildMessages: (feedback) => withRetryFeedback(screenJobsMessages(product, input.requestedScreenCount), feedback),
+    validate: (raw) => {
+      const result = validateScreenJobs(raw, product)
+      if (!result.ok) return result
+      if (input.requestedScreenCount !== undefined && result.value.jobs.length !== input.requestedScreenCount) {
+        return { ok: false, issues: [`screenJobs.jobs: expected exactly ${input.requestedScreenCount} jobs`] }
+      }
+      return result
+    },
+  })
 
   const uxStructures: UXStructure[] = []
-  for (const job of jobs.value.jobs) {
+  for (const job of jobs.jobs) {
     const structure = await completeWithRetry({
       operation: 'ux_structure', provider, correlationId: input.correlationId, timeoutMs,
       buildMessages: (feedback) => withRetryFeedback(uxStructureMessages(job), feedback),
@@ -113,29 +117,29 @@ export async function runV3Planning(input: V3PlanningInput, provider: V3Planning
   const layoutPlans: LayoutPlan[] = []
   for (const [structure, capabilities] of uxStructures.map((structure, index) => [structure, componentCapabilities[index]] as const)) {
     if (!capabilities) throw new V3PlanningError('layout_plan', [`layout_plan: missing componentCapabilities for ${structure.screenJobId}`])
-    const layoutRaw = await provider.completeJson({ operation: 'layout_plan', messages: layoutPlanMessages(structure, capabilities), correlationId: input.correlationId, timeoutMs })
-    const layoutJson = parseStrictJsonObject(layoutRaw)
-    if (!layoutJson.ok) throw new V3PlanningError('layout_plan', layoutJson.issues)
-    const layout = validateLayoutPlan(layoutJson.value, structure, capabilities)
-    if (!layout.ok) throw new V3PlanningError('layout_plan', layout.issues)
-    layoutPlans.push(layout.value)
+    const layout = await completeWithRetry({
+      operation: 'layout_plan', provider, correlationId: input.correlationId, timeoutMs,
+      buildMessages: (feedback) => withRetryFeedback(layoutPlanMessages(structure, capabilities), feedback),
+      validate: (raw) => validateLayoutPlan(raw, structure, capabilities),
+    })
+    layoutPlans.push(layout)
   }
 
   const contentPlans: ContentPlan[] = []
   for (const [structure, layout] of uxStructures.map((structure, index) => [structure, layoutPlans[index]] as const)) {
     if (!layout) throw new V3PlanningError('content_plan', [`content_plan: missing layoutPlan for ${structure.screenJobId}`])
-    const contentRaw = await provider.completeJson({ operation: 'content_plan', messages: contentPlanMessages(product.value, structure, layout), correlationId: input.correlationId, timeoutMs })
-    const contentJson = parseStrictJsonObject(contentRaw)
-    if (!contentJson.ok) throw new V3PlanningError('content_plan', contentJson.issues)
-    const content = validateContentPlan(contentJson.value, structure, layout)
-    if (!content.ok) throw new V3PlanningError('content_plan', content.issues)
-    contentPlans.push(content.value)
+    const content = await completeWithRetry({
+      operation: 'content_plan', provider, correlationId: input.correlationId, timeoutMs,
+      buildMessages: (feedback) => withRetryFeedback(contentPlanMessages(product, structure, layout), feedback),
+      validate: (raw) => validateContentPlan(raw, structure, layout),
+    })
+    contentPlans.push(content)
   }
 
   const designSpecScreens: DesignSpecScreen[] = []
   const staticCritics: StaticCriticsReport[] = []
   const repairs: RepairResult[] = []
-  for (const [job, structure, capabilitiesEntry, layoutEntry, contentEntry] of jobs.value.jobs.map((job, index) =>
+  for (const [job, structure, capabilitiesEntry, layoutEntry, contentEntry] of jobs.jobs.map((job, index) =>
     [job, uxStructures[index], componentCapabilities[index], layoutPlans[index], contentPlans[index]] as const)) {
     if (!structure || !capabilitiesEntry || !layoutEntry || !contentEntry) throw new V3PlanningError('design_spec_compile', [`design_spec_compile: missing planning stage output for ${job.id}`])
     let screen: DesignSpecScreen
@@ -163,5 +167,5 @@ export async function runV3Planning(input: V3PlanningInput, provider: V3Planning
     throw new V3PlanningError('static_critics', [`duplicationRatePct ${productCritic.duplicationRatePct.toFixed(1)} exceeds the 10% gate`, ...productCritic.duplicates.map((duplicate) => `${duplicate.screenJobIdA} ~ ${duplicate.screenJobIdB}: ${(duplicate.similarity * 100).toFixed(0)}% structural similarity`)])
   }
 
-  return { productModel: product.value, screenJobs: jobs.value, uxStructures, componentCapabilities, layoutPlans, contentPlans, designSpecScreens, staticCritics, productStaticCritics: productCritic, repairs }
+  return { productModel: product, screenJobs: jobs, uxStructures, componentCapabilities, layoutPlans, contentPlans, designSpecScreens, staticCritics, productStaticCritics: productCritic, repairs }
 }
