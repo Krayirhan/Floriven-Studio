@@ -7,7 +7,10 @@ import {
 import { applyV3Patches, PatchConcurrencyError, PatchValidationError } from './patch-engine.ts'
 import { patchPlanMessages } from './prompts.ts'
 import { validatePatchPlan } from './patch-planner.ts'
-import { runV3Planning, V3PlanningError, V3ProviderError, type V3PlanningProvider } from './planning-pipeline.ts'
+import {
+  compileV3PlanningOutput, describeV3WorkItem, emptyV3PlanningState, estimateV3Progress, nextV3WorkItem, runV3WorkItem,
+  V3PlanningError, V3ProviderError, type V3PlanningProvider, type V3PlanningState,
+} from './planning-pipeline.ts'
 import { evaluateRenderCritics, type RenderCriticsReport } from './render-critics.ts'
 import { parseStrictJsonObject } from './validation.ts'
 
@@ -16,8 +19,8 @@ export type BackgroundScheduler = (work: () => Promise<void>) => void
 export type V3JobStore = {
   findByIdempotencyKey(projectId: string, idempotencyKey: string): Promise<V3JobRecord | null>
   findById(jobId: string): Promise<V3JobRecord | null>
-  insert(record: Omit<V3JobRecord, 'id'>): Promise<V3JobRecord>
-  update(jobId: string, patch: Partial<Omit<V3JobRecord, 'id' | 'projectId' | 'idempotencyKey' | 'jobTokenHash' | 'createdAt'>>): Promise<void>
+  insert(record: Omit<V3JobRecord, 'id' | 'updatedAt'>): Promise<V3JobRecord>
+  update(jobId: string, patch: Partial<Omit<V3JobRecord, 'id' | 'projectId' | 'idempotencyKey' | 'jobTokenHash' | 'createdAt' | 'updatedAt'>>): Promise<void>
 }
 
 export type V3HttpDeps = {
@@ -30,8 +33,17 @@ export type V3HttpDeps = {
 
 const IDEMPOTENCY_KEY_PATTERN = /^[a-zA-Z0-9_-]{16,128}$/
 const CANONICAL_RENDERER_VERSION = 'phone-screen-v4'
-/** Generous upper bound for the whole planning pipeline even with a slow fallback provider — well past this, the background run is presumed killed rather than merely slow. */
-const PROCESSING_TIMEOUT_MS = 4 * 60 * 1000
+/**
+ * A single invocation's own work budget — kept safely under Supabase's free-tier background-task
+ * ceiling (150s; see docs/background-tasks) so a chunk always has time to persist its checkpoint
+ * before the platform would kill it, no matter how many work items a run needs in total. A run of
+ * any length is just "keep advancing" across as many invocations as it takes.
+ */
+const ADVANCE_TIME_BUDGET_MS = 100_000
+/** A job whose checkpoint hasn't moved in this long is presumed genuinely killed (not just slow — every work item's own provider chain fails closed and updates the record well before this) and is resolved to a real failure instead of polling it forever. */
+const STALE_JOB_THRESHOLD_MS = 3 * 60 * 1000
+/** Floor between GET-triggered continuation attempts for the same job, so back-to-back polls (client polls every 1.5s) don't schedule overlapping advances of the same job. */
+const CONTINUATION_MIN_GAP_MS = 5_000
 
 function problem(status: number, code: string, title: string, correlationId: string, detail: string[] = []): HttpResult<never> {
   const body: ProblemDetails = { type: `https://errors.floriven.dev/${code.toLowerCase()}`, title, status, code, correlationId, detail }
@@ -86,15 +98,18 @@ export async function handleV3GenerationPost(request: V3GenerationPostRequest, d
 
   const record = await deps.jobs.insert({
     projectId: request.projectId, correlationId, idempotencyKey: request.idempotencyKey, inputHash, jobTokenHash,
-    status: 'queued', stage: 'queued', progress: 0, errorCode: null, errorMessage: null, planningOutput: null, acceptedDesignSpec: null, createdAt: deps.now(),
+    status: 'queued', stage: 'queued', progress: 0, errorCode: null, errorMessage: null,
+    brief: request.brief, platform: request.platform, locale: request.locale ?? null, deviceProfile: request.deviceProfile ?? null,
+    requestedScreenCount: request.requestedScreenCount ?? null,
+    planningState: null, planningOutput: null, acceptedDesignSpec: null, createdAt: deps.now(),
   })
 
-  deps.schedule(() => runV3GenerationJob(record.id, request, deps))
+  deps.schedule(() => advanceV3GenerationJob(record.id, deps))
 
   return { ok: true, status: 202, body: toSnapshot(record) }
 }
 
-/** GET /generation-v3/jobs/{id} equivalent — same token-hash re-check as V2's job read path. */
+/** GET /generation-v3/jobs/{id} equivalent — same token-hash re-check as V2's job read path. Also the main driver of a resumable run: a `processing` job that hasn't checkpointed recently gets nudged forward here, since a single background invocation is never guaranteed to finish the whole pipeline on its own (see ADVANCE_TIME_BUDGET_MS). */
 export async function handleV3GenerationGet(request: V3GenerationGetRequest, deps: V3HttpDeps): Promise<HttpResult<V3JobSnapshot>> {
   const correlationId = deps.newCorrelationId()
   if (request.jobToken.length < 32) return problem(403, 'V3_INVALID_JOB_TOKEN', 'a valid X-Job-Token header is required', correlationId)
@@ -105,17 +120,26 @@ export async function handleV3GenerationGet(request: V3GenerationGetRequest, dep
   const jobTokenHash = await sha256Hex(request.jobToken)
   if (record.jobTokenHash !== jobTokenHash) return problem(403, 'V3_JOB_ACCESS_DENIED', 'job access denied', correlationId)
 
-  // A background run killed mid-flight by the platform's own execution ceiling (observed live: a
-  // slow provider chain blew past it) never gets to update its own record — it would otherwise
-  // stay "processing" forever with no error and no way for the client to know to stop polling.
-  if (record.status === 'processing' && Date.now() - Date.parse(record.createdAt) > PROCESSING_TIMEOUT_MS) {
-    await deps.jobs.update(record.id, {
-      status: 'failed', stage: 'failed', progress: 100,
-      errorCode: 'V3_PROCESSING_TIMEOUT',
-      errorMessage: 'The job exceeded the maximum processing time and was presumed lost.',
-    })
-    const timedOut = await deps.jobs.findById(record.id)
-    return { ok: true, status: 200, body: toSnapshot(timedOut ?? record) }
+  if (record.status === 'queued' || record.status === 'processing') {
+    const sinceCheckpoint = Date.parse(deps.now()) - Date.parse(record.updatedAt)
+    // Every work item's own provider chain fails closed within its own bounded time — a
+    // "processing" job with no checkpoint movement in STALE_JOB_THRESHOLD_MS was killed
+    // externally (the platform's own execution ceiling), not just working on something slow.
+    if (sinceCheckpoint > STALE_JOB_THRESHOLD_MS) {
+      await deps.jobs.update(record.id, {
+        status: 'failed', stage: 'failed', progress: 100,
+        errorCode: 'V3_PROCESSING_TIMEOUT',
+        errorMessage: 'The job stopped checkpointing and was presumed lost.',
+      })
+      const timedOut = await deps.jobs.findById(record.id)
+      return { ok: true, status: 200, body: toSnapshot(timedOut ?? record) }
+    }
+    // Otherwise: nudge the run forward. A no-op if a chunk just finished/is finishing (the gap
+    // check), harmless if it double-fires (advanceV3GenerationJob re-reads the record fresh each
+    // time and just continues from whatever the latest checkpoint is).
+    if (sinceCheckpoint > CONTINUATION_MIN_GAP_MS) {
+      deps.schedule(() => advanceV3GenerationJob(record.id, deps))
+    }
   }
 
   return { ok: true, status: 200, body: toSnapshot(record) }
@@ -200,30 +224,52 @@ export async function handleV3SubmitRenderEvidence(
   }
 }
 
-/** Background worker: runs the planning pipeline and parks the job at `awaiting_render` for the client to submit live DOM evidence. Never throws — always resolves after updating the job record. */
-export async function runV3GenerationJob(jobId: string, request: V3GenerationPostRequest, deps: V3HttpDeps): Promise<void> {
+/**
+ * Background worker — advances a job by as many work items as fit inside ADVANCE_TIME_BUDGET_MS,
+ * checkpointing (planningState) after every single one, then simply stops if work remains. It
+ * never tries to finish the whole pipeline itself; handleV3GenerationGet re-triggers this on the
+ * next poll that finds the job still short of done, so a run of any length completes across as
+ * many invocations as it takes instead of needing to fit inside one. Never throws — always
+ * resolves after updating the job record (to a checkpoint, to awaiting_render, or to failed).
+ */
+export async function advanceV3GenerationJob(jobId: string, deps: V3HttpDeps, budgetMs: number = ADVANCE_TIME_BUDGET_MS): Promise<void> {
   const record = await deps.jobs.findById(jobId)
   if (!record) return
-  await deps.jobs.update(jobId, { status: 'processing', stage: 'planning' })
+  if (record.status !== 'queued' && record.status !== 'processing') return // already terminal or awaiting something else — nothing to advance
+
+  if (record.status === 'queued') await deps.jobs.update(jobId, { status: 'processing', stage: 'planning' })
+
+  const startedAt = Date.now()
+  let state: V3PlanningState = record.planningState ?? emptyV3PlanningState()
 
   try {
-    const planning = await runV3Planning({
-      brief: request.brief, correlationId: record.correlationId,
-      ...(request.requestedScreenCount !== undefined ? { requestedScreenCount: request.requestedScreenCount } : {}),
-      // Real stage/progress instead of the record sitting at "planning" for the whole run with no
-      // visibility into where a slow or stuck run actually is.
-      onProgress: async (stage, progress) => { await deps.jobs.update(jobId, { stage, progress }) },
-    }, deps.provider)
+    let item = nextV3WorkItem(state)
+    // Always completes at least one item per invocation regardless of budget (so a run always
+    // makes forward progress), only stopping *between* items once the budget is spent.
+    while (item && item.kind !== 'compile') {
+      state = await runV3WorkItem(state, item, deps.provider, {
+        brief: record.brief, correlationId: record.correlationId, timeoutMs: 45_000,
+        ...(record.requestedScreenCount !== null ? { requestedScreenCount: record.requestedScreenCount } : {}),
+      })
+      const totalScreens = state.screenJobs?.jobs.length ?? 0
+      await deps.jobs.update(jobId, { stage: describeV3WorkItem(item, totalScreens), progress: estimateV3Progress(item, totalScreens), planningState: state })
+      item = nextV3WorkItem(state)
+      if (item && item.kind !== 'compile' && Date.now() - startedAt >= budgetMs) return // budget exhausted, work remains — next poll resumes from this checkpoint
+    }
+
+    if (!item || item.kind !== 'compile') return // budget exhausted with work still left — next poll resumes from this checkpoint
+
     await deps.jobs.update(jobId, { stage: 'accepting' })
+    const planning = compileV3PlanningOutput(state)
 
     const acceptanceInput: AcceptedDesignSpecInput = {
-      projectId: request.projectId, platform: request.platform, locale: request.locale ?? 'tr-TR', deviceProfile: request.deviceProfile ?? 'phone-default', acceptedAt: deps.now(),
+      projectId: record.projectId, platform: record.platform, locale: record.locale ?? 'tr-TR', deviceProfile: record.deviceProfile ?? 'phone-default', acceptedAt: deps.now(),
     }
     const preliminarySpec = await acceptDesignSpec(planning, acceptanceInput)
 
     await deps.jobs.update(jobId, {
       status: 'awaiting_render', stage: 'awaiting_render', progress: 80,
-      planningOutput: planning, acceptedDesignSpec: preliminarySpec,
+      planningState: null, planningOutput: planning, acceptedDesignSpec: preliminarySpec,
     })
   } catch (error) {
     const { code, message } = mapErrorToJobFailure(error)

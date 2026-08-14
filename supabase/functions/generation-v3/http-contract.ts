@@ -1,5 +1,5 @@
 import { type AcceptedDesignSpec, type Platform } from './accepted-design-spec.ts'
-import { type V3PlanningOutput } from './planning-pipeline.ts'
+import { type V3PlanningOutput, type V3PlanningState } from './planning-pipeline.ts'
 import { type RuntimeCaptureMetrics } from './render-critics.ts'
 
 export const V3_JOB_STATUSES = ['queued', 'processing', 'awaiting_render', 'render_verifying', 'completed', 'failed'] as const
@@ -85,7 +85,17 @@ export type V3JobRecord = {
   progress: number
   errorCode: string | null
   errorMessage: string | null
+  // Original request fields, persisted so a resumed run (triggered from a GET, which only carries
+  // jobId + jobToken) can reconstruct the planning input without the client resending it.
+  brief: string
+  platform: Platform
+  locale: string | null
+  deviceProfile: string | null
+  requestedScreenCount: number | null
+  /** Checkpoint after every single work item (see planning-pipeline.ts's V3PlanningState) — what makes a run resumable across as many separate invocations as it takes, each safely inside Supabase's own execution ceiling. Null once compiled into planningOutput. */
+  planningState?: V3PlanningState | null
   planningOutput?: V3PlanningOutput | null
   acceptedDesignSpec: AcceptedDesignSpec | null
   createdAt: string
+  updatedAt: string
 }

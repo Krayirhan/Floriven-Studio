@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { runV3Planning, V3PlanningError, type V3PlanningProvider } from './planning-pipeline.ts'
+import {
+  compileV3PlanningOutput, emptyV3PlanningState, nextV3WorkItem, runV3Planning, runV3WorkItem,
+  V3PlanningError, type V3PlanningProvider, type V3PlanningState,
+} from './planning-pipeline.ts'
 import { validateProductModel, type ProductModel } from './product-model.ts'
 import { validateScreenJobs } from './screen-jobs.ts'
 
@@ -132,7 +135,9 @@ describe('Generation V3 planning pipeline', () => {
       onProgress: async (stage, progress) => { progressCalls.push([stage, progress]) },
     }, provider)
     expect(progressCalls.map(([stage]) => stage)).toEqual([
-      'product_model', 'screen_jobs', 'ux_structure 1/1', 'component_capabilities', 'layout_plan 1/1', 'content_plan 1/1', 'design_spec_compile',
+      // component_capabilities is folded into the ux_structure work item (deterministic, no
+      // separate LLM call — see runV3WorkItem), so it no longer gets its own progress entry.
+      'product_model', 'screen_jobs', 'ux_structure 1/1', 'layout_plan 1/1', 'content_plan 1/1', 'design_spec_compile',
     ])
     // Strictly increasing — never regresses or repeats a value while the run is still progressing.
     for (let i = 1; i < progressCalls.length; i += 1) expect(progressCalls[i][1]).toBeGreaterThan(progressCalls[i - 1][1])
@@ -232,5 +237,61 @@ describe('Generation V3 planning pipeline', () => {
     } }
     await expect(runV3Planning({ brief: 'Mimarlar için takvim', requestedScreenCount: 1, correlationId: 'corr-12' }, provider)).rejects.toMatchObject({ stage: 'ux_structure' })
     expect(uxAttempts).toBe(2)
+  })
+})
+
+describe('Resumable execution (nextV3WorkItem / runV3WorkItem / compileV3PlanningOutput)', () => {
+  const baseInput = { brief: 'Mimarlar için proje ve saha takvimi', requestedScreenCount: 1, correlationId: 'corr-resume', timeoutMs: 30_000 }
+
+  it('produces the exact same final output whether run in one call or resumed piecemeal across separate "invocations"', async () => {
+    const provider: V3PlanningProvider = { completeJson: async ({ operation }) => respond(operation) }
+
+    // Simulates a real Edge Function background job: each work item is executed, its resulting
+    // state is what would be persisted to the job record, and the "next invocation" picks up from
+    // that persisted state with no memory of anything before it — exactly what a Supabase
+    // execution-ceiling kill-and-resume cycle looks like.
+    let state: V3PlanningState = emptyV3PlanningState()
+    let item = nextV3WorkItem(state)
+    let invocations = 0
+    while (item && item.kind !== 'compile') {
+      invocations += 1
+      const persistedState: V3PlanningState = JSON.parse(JSON.stringify(state)) // simulate DB round-trip
+      state = await runV3WorkItem(persistedState, item, provider, baseInput)
+      item = nextV3WorkItem(state)
+    }
+    const resumed = compileV3PlanningOutput(state)
+
+    expect(invocations).toBe(5) // product_model, screen_jobs, ux_structure, layout_plan, content_plan (component_capabilities is free, folded into ux_structure)
+
+    const direct = await runV3Planning(baseInput, provider)
+    expect(resumed).toEqual(direct)
+  })
+
+  it('nextV3WorkItem never dead-ends — always returns the correct next item or null exactly at completion', () => {
+    let state: V3PlanningState = emptyV3PlanningState()
+    expect(nextV3WorkItem(state)).toEqual({ kind: 'product_model' })
+
+    state = { ...state, productModel: product }
+    expect(nextV3WorkItem(state)).toEqual({ kind: 'screen_jobs' })
+
+    state = { ...state, screenJobs: jobs }
+    expect(nextV3WorkItem(state)).toEqual({ kind: 'ux_structure', index: 0 })
+
+    state = { ...state, uxStructures: [uxStructure], componentCapabilities: [{ version: '1.0.0', screenJobId: 'weekly-schedule', regions: [] }] }
+    expect(nextV3WorkItem(state)).toEqual({ kind: 'layout_plan', index: 0 })
+
+    state = { ...state, layoutPlans: [layoutPlan] }
+    expect(nextV3WorkItem(state)).toEqual({ kind: 'content_plan', index: 0 })
+
+    state = { ...state, contentPlans: [contentPlan] }
+    expect(nextV3WorkItem(state)).toEqual({ kind: 'compile' })
+  })
+
+  it('a work item run against a freshly-rehydrated (deserialized) state behaves identically to one run against live state', async () => {
+    const provider: V3PlanningProvider = { completeJson: async ({ operation }) => respond(operation) }
+    let state = await runV3WorkItem(emptyV3PlanningState(), { kind: 'product_model' }, provider, baseInput)
+    const rehydrated: V3PlanningState = JSON.parse(JSON.stringify(state))
+    state = await runV3WorkItem(rehydrated, { kind: 'screen_jobs' }, provider, baseInput)
+    expect(state.screenJobs?.jobs).toHaveLength(1)
   })
 })

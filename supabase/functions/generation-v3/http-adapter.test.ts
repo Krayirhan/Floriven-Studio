@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import {
-  handleV3GenerationEdit, handleV3GenerationGet, handleV3GenerationPost, handleV3SubmitRenderEvidence,
-  runV3GenerationJob, type V3HttpDeps, type V3JobStore,
+  advanceV3GenerationJob, handleV3GenerationEdit, handleV3GenerationGet, handleV3GenerationPost, handleV3SubmitRenderEvidence,
+  type V3HttpDeps, type V3JobStore,
 } from './http-adapter.ts'
 import type { V3GenerationPostRequest, V3JobRecord, V3ScreenRenderEvidence } from './http-contract.ts'
 import type { V3PlanningProvider } from './planning-pipeline.ts'
 
-function createInMemoryJobStore(): V3JobStore & { records: Map<string, V3JobRecord> } {
+function createInMemoryJobStore(now: () => string): V3JobStore & { records: Map<string, V3JobRecord> } {
   const records = new Map<string, V3JobRecord>()
   let nextId = 1
   return {
@@ -19,7 +19,7 @@ function createInMemoryJobStore(): V3JobStore & { records: Map<string, V3JobReco
     },
     async findById(jobId) { return records.get(jobId) ?? null },
     async insert(input) {
-      const record: V3JobRecord = { ...input, id: `job_${nextId}` }
+      const record: V3JobRecord = { ...input, id: `job_${nextId}`, updatedAt: now() }
       nextId += 1
       records.set(record.id, record)
       return record
@@ -27,7 +27,7 @@ function createInMemoryJobStore(): V3JobStore & { records: Map<string, V3JobReco
     async update(jobId, patch) {
       const existing = records.get(jobId)
       if (!existing) return
-      records.set(jobId, { ...existing, ...patch })
+      records.set(jobId, { ...existing, ...patch, updatedAt: now() })
     },
   }
 }
@@ -141,18 +141,23 @@ const workingProvider: V3PlanningProvider = { completeJson: async ({ operation }
 type TestDeps = V3HttpDeps & {
   jobs: ReturnType<typeof createInMemoryJobStore>
   scheduledWork: Array<() => Promise<void>>
+  /** Moves the fake clock forward — lets a test simulate "N minutes since the last checkpoint" without a real sleep. */
+  advanceClock: (ms: number) => void
 }
 
 function createDeps(provider: V3PlanningProvider): TestDeps {
   let correlationCounter = 0
+  let currentTimeMs = Date.parse('2026-01-01T00:00:00.000Z')
   const scheduledWork: Array<() => Promise<void>> = []
+  const now = () => new Date(currentTimeMs).toISOString()
   return {
-    jobs: createInMemoryJobStore(),
+    jobs: createInMemoryJobStore(now),
     provider,
     schedule: (work) => { scheduledWork.push(work) },
-    now: () => '2026-01-01T00:00:00.000Z',
+    now,
     newCorrelationId: () => `corr-${(correlationCounter += 1)}`,
     scheduledWork,
+    advanceClock: (ms) => { currentTimeMs += ms },
   }
 }
 
@@ -481,5 +486,97 @@ describe('handleV3GenerationEdit', () => {
 
     expect(editResult.ok).toBe(false)
     if (!editResult.ok) expect(editResult.body.code).toBe('V3_INVALID_REQUEST')
+  })
+})
+
+describe('Resumable execution — the guarantee that a run of any length eventually completes', () => {
+  it('completes correctly across many separate advanceV3GenerationJob calls (simulated invocations), each doing exactly one work item', async () => {
+    // Proves the whole pipeline finishes even when *zero* invocation is ever allowed to do more
+    // than a single work item — the exact shape a real Supabase execution-ceiling kill would force
+    // every invocation into.
+    const deps = createDeps(workingProvider)
+    const queued = await handleV3GenerationPost(validRequest, deps)
+    if (!queued.ok) throw new Error('expected queued')
+    deps.scheduledWork.length = 0 // discard the auto-scheduled advance; drive it manually below, one item at a time
+
+    let invocations = 0
+    let record = await deps.jobs.findById(queued.body.jobId)
+    while (record && (record.status === 'queued' || record.status === 'processing')) {
+      invocations += 1
+      await advanceV3GenerationJob(queued.body.jobId, deps, 0) // budgetMs: 0 — never more than one item
+      record = await deps.jobs.findById(queued.body.jobId)
+      if (invocations > 20) throw new Error('resumable execution did not converge — likely stuck')
+    }
+
+    expect(record?.status).toBe('awaiting_render')
+    expect(invocations).toBe(5) // product_model, screen_jobs, ux_structure, layout_plan, content_plan
+    expect(record?.planningState).toBeFalsy() // cleared once compiled into planningOutput
+    expect(record?.planningOutput?.designSpecScreens).toHaveLength(1)
+  })
+
+  it('GET nudges a processing job forward when its checkpoint is old enough, without waiting for a poll timeout', async () => {
+    const deps = createDeps(workingProvider)
+    const queued = await handleV3GenerationPost(validRequest, deps)
+    if (!queued.ok) throw new Error('expected queued')
+    deps.scheduledWork.length = 0 // discard the auto-scheduled advance
+
+    // Run exactly one item manually so the job is genuinely "processing" with a real checkpoint.
+    await advanceV3GenerationJob(queued.body.jobId, deps, 0)
+    const midway = await deps.jobs.findById(queued.body.jobId)
+    expect(midway?.status).toBe('processing')
+
+    deps.advanceClock(10_000) // 10s since the last checkpoint — past CONTINUATION_MIN_GAP_MS, nowhere near STALE_JOB_THRESHOLD_MS
+    const polled = await handleV3GenerationGet({ jobId: queued.body.jobId, jobToken: validRequest.jobToken }, deps)
+    expect(polled.ok).toBe(true)
+    expect(deps.scheduledWork.length).toBe(1) // GET scheduled a continuation
+
+    await runScheduled(deps)
+    const advanced = await deps.jobs.findById(queued.body.jobId)
+    // Real default budget — the scheduled continuation runs the rest of the pipeline to completion.
+    expect(advanced?.status).toBe('awaiting_render')
+  })
+
+  it('GET does not pile up a second continuation when one just ran (checkpoint too fresh)', async () => {
+    const deps = createDeps(workingProvider)
+    const queued = await handleV3GenerationPost(validRequest, deps)
+    if (!queued.ok) throw new Error('expected queued')
+    deps.scheduledWork.length = 0
+
+    await advanceV3GenerationJob(queued.body.jobId, deps, 0)
+    // No clock advance — checkpoint is "fresh" from the client's point of view.
+    const polled = await handleV3GenerationGet({ jobId: queued.body.jobId, jobToken: validRequest.jobToken }, deps)
+    expect(polled.ok).toBe(true)
+    expect(deps.scheduledWork.length).toBe(0)
+  })
+
+  it('GET resolves a job to V3_PROCESSING_TIMEOUT once its checkpoint has genuinely gone stale', async () => {
+    const deps = createDeps(workingProvider)
+    const queued = await handleV3GenerationPost(validRequest, deps)
+    if (!queued.ok) throw new Error('expected queued')
+    deps.scheduledWork.length = 0
+
+    await advanceV3GenerationJob(queued.body.jobId, deps, 0)
+    deps.advanceClock(4 * 60 * 1000) // 4 minutes — past STALE_JOB_THRESHOLD_MS (3 minutes)
+
+    const polled = await handleV3GenerationGet({ jobId: queued.body.jobId, jobToken: validRequest.jobToken }, deps)
+    expect(polled.ok).toBe(true)
+    if (polled.ok) {
+      expect(polled.body.status).toBe('failed')
+      expect(polled.body.errorCode).toBe('V3_PROCESSING_TIMEOUT')
+    }
+    expect(deps.scheduledWork.length).toBe(0) // a job just marked failed is not also re-scheduled
+  })
+
+  it('advanceV3GenerationJob is a safe no-op on an already-terminal job (no duplicate work, no crash)', async () => {
+    const deps = createDeps(workingProvider)
+    const queued = await handleV3GenerationPost(validRequest, deps)
+    if (!queued.ok) throw new Error('expected queued')
+    await runScheduled(deps)
+    const completedOnce = await deps.jobs.findById(queued.body.jobId)
+    expect(completedOnce?.status).toBe('awaiting_render')
+
+    await advanceV3GenerationJob(queued.body.jobId, deps) // should just return immediately
+    const stillSame = await deps.jobs.findById(queued.body.jobId)
+    expect(stillSame).toEqual(completedOnce)
   })
 })

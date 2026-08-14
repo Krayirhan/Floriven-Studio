@@ -181,10 +181,11 @@ export interface GenerationServiceV3 {
 const GENERATION_TIMEOUT_MS = 15_000;
 const STATUS_TIMEOUT_MS = 15_000;
 const STATUS_POLL_INTERVAL_MS = 1_500;
-/** Must stay comfortably above the backend's own processing-timeout safety net (http-adapter.ts's
- * PROCESSING_TIMEOUT_MS, 4 minutes) — otherwise the client gives up and shows a stuck spinner
- * before the server ever gets a chance to resolve a stalled job to a real failure. */
-const MAX_STATUS_POLLS = 220;
+/** Every poll is now also what drives the backend forward (http-adapter.ts's handleV3GenerationGet
+ * nudges a stalled "processing" job to resume — see the resumable-execution work), so a longer
+ * window isn't just "waiting", it's genuinely productive: a big multi-screen run legitimately needs
+ * many chunked invocations. 400 x 1.5s = 10 minutes before the client gives up. */
+const MAX_STATUS_POLLS = 400;
 
 export function createGenerationServiceV3(
   fetcher: typeof fetch = fetch,

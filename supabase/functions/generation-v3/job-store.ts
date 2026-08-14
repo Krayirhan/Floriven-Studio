@@ -1,7 +1,7 @@
 import { type V3JobStore } from './http-adapter.ts'
 import { type V3JobRecord } from './http-contract.ts'
 
-/** Matches supabase/migrations/20260814142642_create_generation_v3_jobs.sql + 20260814180000_add_render_evidence_columns.sql column-for-column. */
+/** Matches supabase/migrations/20260814142642_create_generation_v3_jobs.sql + 20260814190000_generation_v3_render_evidence_flow.sql + 20260815000000_generation_v3_resumable_execution.sql column-for-column. */
 type JobRow = {
   id: string
   project_id: string
@@ -14,9 +14,16 @@ type JobRow = {
   progress: number
   error_code: string | null
   error_message: string | null
+  brief: string
+  platform: V3JobRecord['platform']
+  locale: string | null
+  device_profile: string | null
+  requested_screen_count: number | null
+  planning_state: V3JobRecord['planningState']
   planning_output: V3JobRecord['planningOutput']
   accepted_design_spec: V3JobRecord['acceptedDesignSpec']
   created_at: string
+  updated_at: string
 }
 
 type MaybeSingleResult = { data: JobRow | null; error: unknown }
@@ -43,9 +50,16 @@ function toRecord(row: JobRow): V3JobRecord {
     progress: row.progress,
     errorCode: row.error_code,
     errorMessage: row.error_message,
+    brief: row.brief,
+    platform: row.platform,
+    locale: row.locale,
+    deviceProfile: row.device_profile,
+    requestedScreenCount: row.requested_screen_count,
+    planningState: row.planning_state,
     planningOutput: row.planning_output,
     acceptedDesignSpec: row.accepted_design_spec,
     createdAt: row.created_at,
+    updatedAt: row.updated_at,
   }
 }
 
@@ -85,6 +99,12 @@ export function createSupabaseV3JobStore(supabase: SupabaseClientLike, table = '
         progress: input.progress,
         error_code: input.errorCode,
         error_message: input.errorMessage,
+        brief: input.brief,
+        platform: input.platform,
+        locale: input.locale,
+        device_profile: input.deviceProfile,
+        requested_screen_count: input.requestedScreenCount,
+        planning_state: input.planningState,
         planning_output: input.planningOutput,
         accepted_design_spec: input.acceptedDesignSpec,
       }).select('*').single()
@@ -100,6 +120,7 @@ export function createSupabaseV3JobStore(supabase: SupabaseClientLike, table = '
       if (patch.progress !== undefined) row.progress = patch.progress
       if (patch.errorCode !== undefined) row.error_code = patch.errorCode
       if (patch.errorMessage !== undefined) row.error_message = patch.errorMessage
+      if (patch.planningState !== undefined) row.planning_state = patch.planningState
       if (patch.planningOutput !== undefined) row.planning_output = patch.planningOutput
       if (patch.acceptedDesignSpec !== undefined) row.accepted_design_spec = patch.acceptedDesignSpec
 
