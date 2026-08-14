@@ -142,6 +142,33 @@ SemVer kullanılır. Patch: doğrulama/metadata genişlemesi; minor: geriye uyum
 
 ## 13. Çapraz referanslar
 
+### DesignStrategy üretim bağlamı
+
+Her AI üretimi, DesignSpec somutlaştırılmadan önce doğrulanmış bir `DesignStrategy`
+üretir. `mode=template` olduğunda sürümlü katalog profili değişmeden uygulanır;
+`mode=auto` olduğunda model yalnızca izinli `palette`, `cardStyle`, `density` ve
+`navigationStyle` enumları içinden seçim yapar. Strateji tüm ekranların
+`root.props.strategy` alanında aynıdır. Kullanıcıya yalnızca kısa `rationale`
+gerekçeleri gösterilir; ham model düşüncesi saklanmaz veya loglanmaz.
+
+Sürümlü stil kataloğu v2 profilleri ayrıca `typography`, `colorIntent`,
+`layoutRhythm`, `signatureComponents`, `avoid` ve dört adet nötr
+`compositionPatterns` taşır. Bunlar galeri açıklaması değil, yalnızca görsel üretim
+sözleşmesidir. Ürün alanı, varlıklar, ekran görevleri, metin sözlüğü ve capability
+seçimi yalnızca doğrulanmış `ProductBlueprint` tarafından belirlenir. Stil profili
+bu kararları değiştiremez; sağlık, ticaret, eğitim veya yayın terminolojisi taşıyamaz.
+Aynı brief farklı iki stilde aynı node ağacının yalnızca renk varyasyonu olarak da
+üretilmez: işlev aynı kalırken tipografik hiyerarşi, yoğunluk, gruplama ve bileşen
+kompozisyonu stile göre değişir.
+
+### Dinamik ekran mimarisi
+
+`ProductBlueprint.screens` sabit uzunluk taşımaz. Ekranlar `role`, `priority`,
+`parentId` ve `navigationPlacement` alanlarıyla ürün hiyerarşisini açıklar.
+`screenPolicy` açık kullanıcı sayısını veya AI'nin güvenli min/max kararını;
+`navigation` ise 3–5 birincil hedef ile utility girişlerini taşır. DesignSpec'teki
+ekran sayısı blueprint ile birebir eşleşir. Ayrıntılar [ADR-0007](ADR-0007.md)'dedir.
+
 | Konu | Doküman |
 |---|---|
 | Kanonik model kararı | [ADR-0002](ADR-0002.md) |

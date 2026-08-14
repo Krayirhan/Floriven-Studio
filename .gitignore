@@ -53,6 +53,14 @@ logs/
 # Test coverage
 coverage/
 htmlcov/
+**/test-results/
+**/playwright-report/
 
 # Graphify
 graphify-out/
+
+# Local MCP config (contains tokens)
+.mcp.json
+
+# Compiled from supabase/functions/generate/prompts/*.md — run `pnpm prompts:build`
+supabase/functions/generate/prompts.generated.ts

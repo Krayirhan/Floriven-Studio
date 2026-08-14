@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "requiredScreenTypes": ["dashboard", "list", "detail", "form", "analytics", "settings"],
+  "styleVariants": ["auto", "obsidian-precision", "serene-health", "terracotta-market", "electric-learning", "editorial-culture"],
+  "benchmarks": [
+    {
+      "id": "finance",
+      "brief": "Serbest çalışanlar için gelir, müşteriler, faturalar ve ödeme takibini yöneten bir finans uygulaması tasarla.",
+      "screenTypes": ["dashboard", "list", "detail", "form", "analytics", "settings"]
+    },
+    {
+      "id": "restaurant",
+      "brief": "Restoran yöneticileri için masa, sipariş, stok ve vardiya operasyonlarını yöneten bir uygulama tasarla.",
+      "screenTypes": ["dashboard", "list", "detail", "form", "analytics", "settings"]
+    },
+    {
+      "id": "ecommerce",
+      "brief": "Küçük işletmeler için katalog, sipariş, müşteri ve stok yönetimi yapan bir e-ticaret uygulaması tasarla.",
+      "screenTypes": ["dashboard", "list", "detail", "form", "analytics", "settings"]
+    },
+    {
+      "id": "fitness",
+      "brief": "Kişisel antrenman, hedef, ilerleme ve ölçüm takibi yapan bir fitness uygulaması tasarla.",
+      "screenTypes": ["dashboard", "list", "detail", "form", "analytics", "settings"]
+    },
+    {
+      "id": "project-management",
+      "brief": "Ekipler için proje, görev, teslim tarihi ve iş yükü yönetimi yapan bir uygulama tasarla.",
+      "screenTypes": ["dashboard", "list", "detail", "form", "analytics", "settings"]
+    },
+    {
+      "id": "travel",
+      "brief": "Gezginler için rota, rezervasyon, bütçe ve seyahat planlaması yapan bir uygulama tasarla.",
+      "screenTypes": ["dashboard", "list", "detail", "form", "analytics", "settings"]
+    },
+    {
+      "id": "education",
+      "brief": "Öğrenciler için ders, görev, ilerleme ve değerlendirme takibi yapan bir eğitim uygulaması tasarla.",
+      "screenTypes": ["dashboard", "list", "detail", "form", "analytics", "settings"]
+    },
+    { "id": "crm", "brief": "Sales teams need a CRM for leads, customers, activities, and opportunities.", "screenTypes": ["dashboard", "list", "detail", "form", "analytics", "settings"] },
+    { "id": "inventory", "brief": "Warehouse teams need inventory, suppliers, stock counts, and replenishment operations.", "screenTypes": ["dashboard", "list", "detail", "form", "analytics", "settings"] },
+    { "id": "booking", "brief": "Service businesses need scheduling, reservations, customers, and availability management.", "screenTypes": ["dashboard", "list", "detail", "form", "analytics", "settings"] },
+    { "id": "subscription-management", "brief": "Subscription businesses need plans, payments, renewals, and cancellation workflows.", "screenTypes": ["dashboard", "list", "detail", "form", "analytics", "settings"] },
+    { "id": "logistics", "brief": "Logistics teams need shipment, route, delivery, and exception tracking operations.", "screenTypes": ["dashboard", "list", "detail", "form", "analytics", "settings"] }
+  ]
+}

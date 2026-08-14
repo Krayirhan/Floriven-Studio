@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 export function useDashboardAdvancedOptions() {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [selectedPlatform, setSelectedPlatform] = useState("iOS");
-  const [screenScope, setScreenScope] = useState("Temel akış");
+  const [screenScope, setScreenScope] = useState("AI belirlesin");
   const [advancedDirection, setAdvancedDirection] = useState("Otomatik");
   const [advancedVariations, setAdvancedVariations] = useState(3);
   const [qualityMode, setQualityMode] = useState("Standart");
@@ -14,7 +14,7 @@ export function useDashboardAdvancedOptions() {
   const advancedSummary = useMemo(
     () => [
       selectedPlatform !== "iOS" ? selectedPlatform : null,
-      screenScope !== "Temel akış" ? screenScope : null,
+      screenScope !== "AI belirlesin" ? screenScope : null,
       advancedDirection !== "Otomatik" ? advancedDirection : null,
       advancedVariations !== 3 ? `${advancedVariations} varyasyon` : null,
       qualityMode !== "Standart" ? qualityMode : null,

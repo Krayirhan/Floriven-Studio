@@ -2,12 +2,12 @@ import { useRef } from "react";
 import type { Screen } from "@floriven/design-spec";
 import { INITIAL_STUDIO_DOCUMENT } from "../studio.data";
 import { useStudioDocument } from "../state/useStudioDocument";
-import { useStudioGeneration } from "../state/useStudioGeneration";
+import { useStudioGeneration, type GenerationEngine } from "../state/useStudioGeneration";
 import { useStudioHistory } from "../state/useStudioHistory";
 import { useStudioSelection } from "../state/useStudioSelection";
 import { useStudioUiState } from "../state/useStudioUiState";
 
-export function useStudioState() {
+export function useStudioState(projectId: string, engine: GenerationEngine = "v2") {
   const ui = useStudioUiState();
   const historyState = useStudioHistory();
 
@@ -17,6 +17,7 @@ export function useStudioState() {
 
   const selection = useStudioSelection(screensRef, ui.setRightTab);
   const documentState = useStudioDocument(
+    projectId,
     selection.activeScreenId,
     selection.selectedNodeId,
     historyState.incrementRevision,
@@ -24,7 +25,14 @@ export function useStudioState() {
 
   screensRef.current = documentState.document.screens;
 
-  const generation = useStudioGeneration(ui, historyState.addHistoryEntry);
+  const generation = useStudioGeneration(
+    ui,
+    historyState.addHistoryEntry,
+    documentState.setGeneratedScreens,
+    projectId,
+    () => screensRef.current,
+    engine,
+  );
   const { revision, history } = historyState;
 
   return {

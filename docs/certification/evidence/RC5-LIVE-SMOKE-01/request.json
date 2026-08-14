@@ -1,0 +1,9 @@
+{
+  "projectId": "rc5-live-smoke-01",
+  "platform": "ios",
+  "designMode": "auto",
+  "idempotencyKey": "rc5-live-smoke-01-6ec68959-3888-45d4-b668-fe3255e0a265",
+  "jobTokenLength": 64,
+  "responseStatus": 500,
+  "responseBody": "NOT AVAILABLE — Supabase function returned HTTP 500 before a valid candidate response."
+}

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import dashboardStyles from "../DashboardPage.module.css";
-import { MultiScreenRenderer } from "../dashboard-preview";
+import { StylePresetPreview } from "../dashboard-preview";
 import { templates } from "../dashboard.data";
 import { WorkspacePageHeader } from "../workspace/WorkspacePageHeader";
 
@@ -9,20 +9,20 @@ function TemplateGallery() {
     <div className={dashboardStyles.templateGrid}>
       {templates.map((template) => (
         <article key={template.id} className={dashboardStyles.templateCard}>
-          <div className={dashboardStyles.templatePreviewWindow} style={{ background: template.themeColor }}>
-            <div className={dashboardStyles.templatePreviewGlow} />
-            <MultiScreenRenderer direction={template.direction} />
+          <div className={dashboardStyles.templatePreviewWindow} style={{ background: template.previewColor }}>
+            <StylePresetPreview presetId={template.id} />
           </div>
           <div className={dashboardStyles.templateMeta}>
             <div className={dashboardStyles.templateHeaderRow}>
               <span className={dashboardStyles.templateCategory}>{template.category}</span>
-              <span className={dashboardStyles.templateDirectionTag}>{template.direction}</span>
+              <span className={dashboardStyles.templateDirectionTag}>{template.strategy.visualDirection}</span>
             </div>
-            <h3>{template.title}</h3>
+            <h3>{template.name}</h3>
             <p>{template.description}</p>
+            <p>{template.system.signatureComponents.slice(0, 2).join(" · ")}</p>
             <div className={dashboardStyles.templateFooterRow}>
-              <span className={dashboardStyles.templateScreenTag}>📱 {template.screenCount} ekranlık akış</span>
-              <Link to={`/app?template=${template.id === "finance_pro" ? "finance" : template.id === "calm_wellness" ? "wellness" : "commerce"}`} className={dashboardStyles.useStyleBtn}>Bu stille başla</Link>
+              <span className={dashboardStyles.templateScreenTag}>v{template.version} · {template.strategy.cardStyle}</span>
+              <Link to={`/app?template=${template.id}`} className={dashboardStyles.useStyleBtn}>Bu sistemi kullan</Link>
             </div>
           </div>
         </article>

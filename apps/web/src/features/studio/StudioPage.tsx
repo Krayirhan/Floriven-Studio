@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import styles from "./StudioPage.module.css";
 import { AiCommandDock } from "./ai/AiCommandDock";
 import { StudioCanvas } from "./canvas/StudioCanvas";
@@ -9,16 +9,93 @@ import { AiPanel } from "./sidebar/AiPanel";
 import { StudioSidebar } from "./sidebar/StudioSidebar";
 import { StudioToolbar } from "./toolbar/StudioToolbar";
 import type { LeftTab } from "./studio.types";
-import { LoadingState } from "../../components/ui";
 import { useGenerationJob } from "./state/useGenerationJob";
+import { isFinalEligibleGeneration } from "../../services/generationService";
+import html2canvas from "html2canvas";
+import { capturePhoneBaseline } from "./canvas/runtimeCapture";
 
 export function StudioPage() {
-  const studio = useStudioState();
+  const { projectId } = useParams();
   const [searchParams] = useSearchParams();
-  const generation = useGenerationJob(searchParams.get("jobId"));
+  // Opt-in only (?engine=v3): V2 stays the default generation path until V3 clears its ADR-0009 benchmark gates.
+  const engine = searchParams.get("engine") === "v3" ? "v3" : "v2";
+  const studio = useStudioState(projectId ?? "", engine);
+  const runtimeCertificationToken = searchParams.get("runtimeCertificationToken") ?? undefined;
+  const readOnly = Boolean(runtimeCertificationToken);
+  const generation = useGenerationJob(searchParams.get("jobId"), runtimeCertificationToken);
   const [leftOpen, setLeftOpen] = useState(true);
   const [mode, setMode] = useState<"design" | "flow" | "compare">("design");
+  const [exportMessage, setExportMessage] = useState<string>("");
   const composerRef = useRef<HTMLInputElement>(null);
+  const screensAddedRef = useRef(false);
+
+  const handleDeleteScreen = (screenId: string) => {
+    const wasActive = screenId === studio.activeScreenId;
+    studio.deleteScreen(screenId);
+    if (wasActive) {
+      const remaining = studio.document.screens.filter((screen) => screen.id !== screenId);
+      studio.selectScreen(remaining[0]?.id ?? "");
+    }
+  };
+
+  const handleDuplicateScreen = (screenId: string) => {
+    const newId = studio.duplicateScreen(screenId);
+    if (newId) studio.selectScreen(newId);
+  };
+
+  const handleExportPngs = async () => {
+    setExportMessage("");
+    const phones = Array.from(document.querySelectorAll<HTMLElement>("[data-floriven-screen-id]"));
+    if (phones.length === 0) {
+      setExportMessage("Dışa aktarılacak ekran bulunamadı.");
+      return;
+    }
+    let exported = 0;
+    try {
+      for (const phone of phones) {
+        const screenId = phone.dataset.florivenScreenId ?? `screen-${exported + 1}`;
+        const baseline = await capturePhoneBaseline({
+          mode: "auto",
+          archetype: "dashboard",
+          screenId,
+          screenshotPath: `baselines/${screenId}.png`,
+          boundsPath: `baselines/${screenId}.json`,
+          root: phone,
+          renderScreenshot: async (root) => {
+            const canvas = await html2canvas(root, { backgroundColor: "#ffffff", scale: 2, useCORS: true, logging: false, foreignObjectRendering: true, onclone: (clone) => { clone.querySelectorAll("[data-scroll-viewport]").forEach((node) => { (node as HTMLElement).style.overflow = "visible"; }); } });
+            return canvas.toDataURL("image/png");
+          },
+        });
+        if (!baseline.entry.candidateHash) throw new Error("BASELINE_ENTRY_HASH_MISSING");
+        const blob = await (await fetch(baseline.screenshotDataUrl)).blob();
+        if (!blob.size) throw new Error("PNG blob oluşturulamadı");
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.download = `floriven-${screenId}.png`;
+        link.href = url;
+        link.click();
+        window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+        exported += 1;
+      }
+      setExportMessage(`${exported} PNG dışa aktarıldı.`);
+    } catch (error) {
+      setExportMessage(`PNG dışa aktarılamadı (${exported}/${phones.length}). Ekranı yenileyip tekrar deneyin.`);
+      console.error("PNG export failed", error);
+    }
+  };
+
+  useEffect(() => {
+    if (
+      (generation.job?.status === "completed" || generation.job?.status === "failed") &&
+      generation.job.resultScreens?.length &&
+      !screensAddedRef.current
+    ) {
+      screensAddedRef.current = true;
+      studio.setGeneratedScreens(generation.job.resultScreens);
+      const firstScreen = generation.job.resultScreens[0];
+      if (firstScreen) studio.selectScreen(firstScreen.id);
+    }
+  }, [generation.job, studio]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -53,7 +130,6 @@ export function StudioPage() {
     }
   };
 
-  if (!studio.activeScreen) return <LoadingState label="Studio hazırlanıyor..." />;
 
   const isAiTab = studio.leftTab === "ai";
 
@@ -64,7 +140,21 @@ export function StudioPage() {
           AI üretimi devam ediyor · %{generation.job.progress}
         </div>
       )}
+      {generation.job?.status === "completed" && !isFinalEligibleGeneration(generation.job) && (
+        <div className={styles.jobStatus} role="status" aria-live="polite">
+          Önizleme hazır. Statik kalite: {generation.job.qualityReport?.score ?? "—"}/100 · Görsel/runtime kalite henüz ölçülmedi.
+        </div>
+      )}
+      {generation.job && isFinalEligibleGeneration(generation.job) && (
+        <div className={styles.jobStatus} role="status" aria-live="polite">
+          Final kalite kapısı geçti. Statik kalite: {generation.job.qualityReport?.score ?? "—"}/100 · Runtime kalite kanıtı mevcut.
+        </div>
+      )}
       {generation.error && <div className={styles.jobError} role="alert">{generation.error}</div>}
+      {generation.job?.status === "failed" && generation.job.errorCode === "QUALITY_REJECTED" && (
+        <div className={styles.jobStatus} role="status" aria-live="polite">Ekranlar oluşturuldu; statik kalite kapısı adayı reddetti. Statik kalite: {generation.job.qualityReport?.score ?? "—"}/100. Bu skor görsel/runtime kalite skoru değildir. Önizleme gösteriliyor.</div>
+      )}
+      {exportMessage && <div className={styles.jobStatus} role="status" aria-live="polite">{exportMessage}</div>}
       <StudioToolbar
         revision={studio.revision}
         mode={mode}
@@ -74,6 +164,7 @@ export function StudioPage() {
         canUndo={studio.canUndo}
         canRedo={studio.canRedo}
         onComposerFocus={() => composerRef.current?.focus()}
+        onExport={() => { void handleExportPngs(); }}
       />
 
       <div className={styles.workspace}>
@@ -132,7 +223,7 @@ export function StudioPage() {
                 onBriefChange={studio.setBrief}
               />
             </div>
-          ) : (
+          ) : studio.activeScreen ? (
             <StudioSidebar
               tab={studio.leftTab as Exclude<LeftTab, "ai">}
               screens={studio.document.screens}
@@ -141,7 +232,12 @@ export function StudioPage() {
               selectedNodeId={studio.selectedNodeId}
               onSelectScreen={studio.selectScreen}
               onSelectNode={studio.selectNode}
+              onDeleteScreen={handleDeleteScreen}
+              onDuplicateScreen={handleDuplicateScreen}
+              onCreateBlankScreen={() => studio.selectScreen(studio.createBlankScreen())}
             />
+          ) : (
+            <div className={styles.aiDrawerWrap}>Henüz ekran oluşturulmadı.</div>
           )}
         </div>
 
@@ -154,6 +250,14 @@ export function StudioPage() {
           onSelectScreen={studio.selectScreen}
           onSelectNode={studio.selectNode}
           onClearSelection={() => studio.selectNode("")}
+          onDeleteScreen={handleDeleteScreen}
+          onDuplicateScreen={handleDuplicateScreen}
+          readOnly={readOnly}
+          runtimeCandidate={generation.job?.status === 'completed' && generation.job.qualityReport?.passed === true ? {
+            jobId: generation.job.id,
+            staticQualityPassed: true,
+            runtimePending: generation.job.runtimeQualityReport?.finalEligible !== true,
+          } : undefined}
         />
 
         {/* Flow mode banner */}
@@ -205,12 +309,13 @@ export function StudioPage() {
       </div>
 
       {/* Floating AI Composer */}
-      <AiCommandDock
+      {!readOnly && <AiCommandDock
         prompt={studio.prompt}
         onPromptChange={studio.setPrompt}
         onGenerate={studio.generate}
         composerRef={composerRef}
-      />
+        isGenerating={studio.isGenerating}
+      />}
     </div>
   );
 }

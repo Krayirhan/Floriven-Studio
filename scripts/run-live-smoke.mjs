@@ -1,0 +1,62 @@
+import { readFile } from "node:fs/promises";
+
+const localEnv = Object.fromEntries((await readFile(new URL("../apps/web/.env.local", import.meta.url), "utf8")).split(/\r?\n/).flatMap((line) => {
+  const match = line.match(/^([^#=]+)=(.*)$/);
+  return match ? [[match[1], match[2].replace(/^"|"$/g, "")]] : [];
+}));
+
+const generateUrl = `${(process.env.VITE_SUPABASE_URL ?? localEnv.VITE_SUPABASE_URL).replace(/\/$/, "")}/functions/v1/generate`;
+const anonKey = process.env.VITE_SUPABASE_ANON_KEY ?? localEnv.VITE_SUPABASE_ANON_KEY;
+const smokeBrief = process.env.SMOKE_BRIEF ?? "Freelancerlar ve bağımsız çalışanlar için kişisel finans ve fatura yönetimi mobil uygulaması tasarla.";
+const idempotencyKey = `live-smoke-auto-${crypto.randomUUID()}`;
+const jobToken = `${crypto.randomUUID()}${crypto.randomUUID()}`;
+const headers = {
+  apikey: anonKey,
+  Authorization: `Bearer ${anonKey}`,
+  "Content-Type": "application/json",
+  "Idempotency-Key": idempotencyKey,
+  "X-Job-Token": jobToken,
+};
+
+const created = await fetch(generateUrl, {
+  method: "POST",
+  headers,
+  body: JSON.stringify({
+    projectId: `live-smoke-auto-${crypto.randomUUID()}`,
+    brief: smokeBrief,
+    platform: "ios",
+    designMode: "auto",
+  }),
+});
+const job = await created.json();
+if (created.status !== 202 || !job.id) throw new Error(`Expected HTTP 202 with job id, received ${created.status}`);
+console.log(JSON.stringify({ httpStatus: created.status, jobId: job.id, status: job.status, stage: job.stage }));
+
+for (let attempt = 0; attempt < 120; attempt += 1) {
+  await new Promise((resolve) => setTimeout(resolve, 1500));
+  const response = await fetch(`${generateUrl}?id=${encodeURIComponent(job.id)}`, { headers: { apikey: anonKey, Authorization: `Bearer ${anonKey}`, "X-Job-Token": jobToken } });
+  const current = await response.json();
+  if (!response.ok) throw new Error(current.error ?? `Polling failed with HTTP ${response.status}`);
+  console.log(JSON.stringify({
+    jobId: current.id,
+    status: current.status,
+    stage: current.stage,
+    progress: current.progress,
+    errorCode: current.errorCode ?? null,
+    provider: current.provider ?? null,
+    providerOperation: current.providerOperation ?? null,
+    providerDurationMs: current.providerDurationMs ?? null,
+    providerDiagnostics: current.providerDiagnostics ?? null,
+    errorMessage: current.errorMessage ?? null,
+    qualityReport: current.qualityReport ?? null,
+    screenSummary: Array.isArray(current.resultScreens) ? current.resultScreens.map((screen) => ({
+      id: screen.id,
+      name: screen.name,
+      route: screen.route,
+      preview: JSON.stringify(screen).slice(0, 240),
+    })) : null,
+  }));
+  if (current.status === "completed" || current.status === "failed") process.exit(0);
+}
+
+throw new Error("Smoke polling reached its bounded observation window without a terminal job state");

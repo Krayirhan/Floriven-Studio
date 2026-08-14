@@ -1,0 +1,6 @@
+{"jobId":"90b4f8dc-a422-40c1-97c1-d2c91845d4a7","status":"queued","stage":"queued"}
+{"jobId":"90b4f8dc-a422-40c1-97c1-d2c91845d4a7","status":"processing","stage":"provider_pending","progress":10,"errorCode":null}
+{"jobId":"90b4f8dc-a422-40c1-97c1-d2c91845d4a7","status":"processing","stage":"provider_pending","progress":10,"errorCode":null}
+{"jobId":"90b4f8dc-a422-40c1-97c1-d2c91845d4a7","status":"processing","stage":"provider_pending","progress":10,"errorCode":null}
+{"jobId":"90b4f8dc-a422-40c1-97c1-d2c91845d4a7","status":"processing","stage":"provider_pending","progress":10,"errorCode":null}
+{"jobId":"90b4f8dc-a422-40c1-97c1-d2c91845d4a7","status":"failed","stage":"failed","progress":100,"errorCode":"PROVIDER_TRUNCATED_RESPONSE"}

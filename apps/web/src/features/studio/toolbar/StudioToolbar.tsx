@@ -9,6 +9,7 @@ export function StudioToolbar({
   canUndo,
   canRedo,
   onComposerFocus,
+  onExport,
 }: {
   revision?: number;
   mode?: "design" | "flow" | "compare";
@@ -18,6 +19,7 @@ export function StudioToolbar({
   canUndo?: boolean;
   canRedo?: boolean;
   onComposerFocus?: () => void;
+  onExport?: () => void;
 }) {
   return (
     <header className={styles.toolbar}>
@@ -60,7 +62,7 @@ export function StudioToolbar({
       <div className={styles.tbGroup}>
         <button className={styles.tbLabel}>Önizle</button>
         <button className={styles.tbLabel}>Paylaş</button>
-        <button className={styles.tbLabel}>Dışa aktar</button>
+        <button className={styles.tbLabel} onClick={onExport}>Dışa aktar</button>
         <span className={styles.tbDiv} />
         <button
           className={`${styles.tbLabel} ${styles.tbLabelPrimary}`}

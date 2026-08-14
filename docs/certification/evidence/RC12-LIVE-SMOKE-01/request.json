@@ -1,0 +1,10 @@
+{
+  "certificationSha": "25050ca052f1f1911d262b0608edbea5c09912c2",
+  "tag": "floriven-v2-rc12",
+  "projectId": "rc12-finance-auto-live",
+  "platform": "ios",
+  "designMode": "auto",
+  "brief": "Freelancerlar ve bağımsız çalışanlar için kişisel finans ve fatura yönetimi mobil uygulaması tasarla. Kullanıcı bu ayki gelirini, giderini, toplam bakiyesini, ödenmemiş faturalarını ve vergi için ayırması gereken miktarı görebilmeli. İşlemler ekranında çok sayıda gelir ve gider kaydını tarayabilmeli, arayabilmeli ve filtreleyebilmeli. Faturalar taslak, gönderildi, gecikti ve ödendi durumlarını desteklemeli. Yeni fatura oluşturma ekranında müşteri, hizmet kalemleri, miktar, fiyat, vergi, son ödeme tarihi ve not alanları bulunmalı. Analiz ekranı yalnızca dekoratif grafik değil, gelir-gider trendleri ve karar vermeye yardımcı insight'lar sunmalı. Profil ve ayarlar bölümü para birimi, bildirim ve hesap tercihlerini içermeli.",
+  "providerCallsAuthorized": 1,
+  "additionalPosts": 0
+}

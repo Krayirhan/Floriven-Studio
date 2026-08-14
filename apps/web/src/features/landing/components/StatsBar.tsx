@@ -6,7 +6,7 @@ const STATS = [
     value: 18,
     suffix: " sn",
     label: "Ortalama üretim süresi",
-    note: "brief → 4 ekran",
+    note: "brief → dinamik ekran planı",
   },
   {
     value: 4,

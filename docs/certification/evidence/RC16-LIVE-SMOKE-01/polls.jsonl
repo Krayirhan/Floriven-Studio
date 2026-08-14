@@ -1,0 +1,3 @@
+{"jobId":"969e6afa-c472-4841-a132-e728368ad516","status":"queued","stage":"queued"}
+{"jobId":"969e6afa-c472-4841-a132-e728368ad516","status":"processing","stage":"planning","progress":10,"errorCode":null}
+{"jobId":"969e6afa-c472-4841-a132-e728368ad516","status":"failed","stage":"failed","progress":100,"errorCode":"PROVIDER_TRUNCATED_RESPONSE"}

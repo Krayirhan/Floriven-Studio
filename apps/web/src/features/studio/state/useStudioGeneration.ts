@@ -1,13 +1,13 @@
 import { useCallback, useState } from "react";
+import type { Screen } from "@floriven/design-spec";
+import { generationService, type GenerationJob } from "../../../services/generationService";
+import { generationServiceV3, toGenerationJob } from "../../../services/generationServiceV3";
 import type { JournalEntry } from "../studio.types";
 
-const INITIAL_JOURNAL: JournalEntry[] = [
-  { id: "j0", type: "analyze", message: "Brief analiz edildi", detail: "Kişisel finans uygulaması · iOS öncelikli", timestamp: Date.now() - 600000 },
-  { id: "j1", type: "generate", message: "Ana Sayfa oluşturuldu", detail: "6 bileşen, 3 varyasyon üretildi", timestamp: Date.now() - 480000, screenIds: ["scr_home"] },
-  { id: "j2", type: "variant", message: "3 varyasyon üretildi", detail: "Original · Editorial · Soft Futurism", timestamp: Date.now() - 360000, screenIds: ["scr_home"] },
-  { id: "j3", type: "generate", message: "İşlemler ekranı oluşturuldu", detail: "4 bileşen, arama ve segmentler", timestamp: Date.now() - 240000, screenIds: ["scr_tx"] },
-  { id: "j4", type: "apply", message: "Bütçe Detayı iyileştirildi", detail: "Trend grafik ve AI insight eklendi", timestamp: Date.now() - 120000, screenIds: ["scr_bgt"] },
-];
+const INITIAL_JOURNAL: JournalEntry[] = [];
+
+/** V3 is opt-in and experimental (ADR-0009): the default path stays V2 until V3 clears its benchmark gates. */
+export type GenerationEngine = "v2" | "v3";
 
 type GenerationUiState = {
   prompt: string;
@@ -18,19 +18,83 @@ type GenerationUiState = {
 
 type AddHistoryEntry = (entry: string) => void;
 
-export function useStudioGeneration(ui: GenerationUiState, addHistoryEntry: AddHistoryEntry) {
+export function useStudioGeneration(
+  ui: GenerationUiState,
+  addHistoryEntry: AddHistoryEntry,
+  setGeneratedScreens: (screens: Screen[]) => void,
+  projectId: string,
+  getCurrentScreens: () => Screen[],
+  engine: GenerationEngine = "v2",
+) {
   const [journal, setJournal] = useState<JournalEntry[]>(INITIAL_JOURNAL);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [lastGenerationJob, setLastGenerationJob] = useState<GenerationJob | null>(null);
 
   const addJournalEntry = useCallback((entry: Omit<JournalEntry, "id" | "timestamp">) => {
     setJournal((prev) => [{ ...entry, id: `j${Date.now()}`, timestamp: Date.now() }, ...prev].slice(0, 20));
   }, []);
 
-  const generate = useCallback(() => {
-    if (ui.prompt.trim()) {
-      addHistoryEntry(ui.prompt.trim());
-      addJournalEntry({ type: "generate", message: `"${ui.prompt.trim().slice(0, 40)}" uygulandı`, detail: "AI işleniyor..." });
+  const generate = useCallback(async () => {
+    const trimmed = ui.prompt.trim();
+    if (!trimmed || isGenerating) return;
+
+    // A project that already has screens is being edited, not created — send the
+    // current document as the edit target instead of treating the instruction
+    // ("Dark mode yap", "Hiyerarşiyi iyileştir"...) as a brand-new product brief.
+    const currentScreens = getCurrentScreens();
+    const isEdit = currentScreens.length > 0;
+    // V3 has no edit/patch semantics yet (ADR-0009 plans this for a later slice) — an edit
+    // request always falls back to the proven V2 path rather than silently misreading the
+    // existing document as a fresh brief.
+    const useV3 = engine === "v3" && !isEdit;
+
+    setIsGenerating(true);
+    setLastGenerationJob(null);
+    addHistoryEntry(trimmed);
+    addJournalEntry({
+      type: "analyze",
+      message: isEdit ? "Düzenleme isteği işleniyor..." : useV3 ? "Prompt V3 (deneysel) ile işleniyor..." : "Prompt işleniyor...",
+      detail: trimmed.slice(0, 60),
+    });
+
+    try {
+      const job = useV3
+        ? toGenerationJob(await generationServiceV3.waitForTerminal(await generationServiceV3.create(projectId, { brief: trimmed, platform: "ios" })))
+        : await generationService.waitForTerminal(await generationService.create(projectId, {
+          brief: trimmed,
+          platform: "ios",
+          designMode: "auto",
+          ...(isEdit ? { editScreens: currentScreens } : {}),
+        }));
+      setLastGenerationJob(job);
+
+      if (job.status === "completed" && job.resultScreens?.length) {
+        setGeneratedScreens(job.resultScreens);
+        addJournalEntry({
+          type: "generate",
+          message: useV3
+            ? `${job.resultScreens.length} ekran V3 (deneysel) ile oluşturuldu`
+            : job.degraded
+              ? `${job.resultScreens.length} ekranlık güvenli taslak oluşturuldu`
+              : `${job.resultScreens.length} ekran AI tarafından oluşturuldu`,
+          detail: trimmed.slice(0, 60),
+          screenIds: job.resultScreens.map((s) => s.id),
+        });
+        ui.setPrompt("");
+      } else if (job.status === "failed") {
+        addJournalEntry({
+          type: "generate",
+          message: "Üretim başarısız",
+          detail: job.errorMessage ?? "Bilinmeyen hata",
+        });
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      addJournalEntry({ type: "generate", message: "Hata oluştu", detail: msg });
+    } finally {
+      setIsGenerating(false);
     }
-  }, [addHistoryEntry, addJournalEntry, ui.prompt]);
+  }, [addHistoryEntry, addJournalEntry, engine, getCurrentScreens, isGenerating, projectId, setGeneratedScreens, ui]);
 
   return {
     prompt: ui.prompt,
@@ -40,5 +104,7 @@ export function useStudioGeneration(ui: GenerationUiState, addHistoryEntry: AddH
     journal,
     addJournalEntry,
     generate,
+    isGenerating,
+    lastGenerationJob,
   };
 }

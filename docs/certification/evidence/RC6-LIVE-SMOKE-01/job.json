@@ -1,0 +1,10 @@
+{
+  "id": "fb0042d3-16cd-4ed3-8461-7ffb3d23e928",
+  "status": "failed",
+  "progress": 100,
+  "errorCode": "QUALITY_REJECTED",
+  "errorMessage": "Static quality rejected candidate (70/100): Alt navigasyon tüm ekranlarda aynı değil. 2 ekran yeterli içerik yoğunluğuna sahip değil.",
+  "finalEligible": false,
+  "createdAt": "2026-08-09 16:43:00.08799+00",
+  "updatedAt": "2026-08-09 16:43:06.389272+00"
+}

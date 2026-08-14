@@ -32,7 +32,19 @@ examples: ...
 
 ## MVP component'leri
 
-Screen, SafeArea, ScrollView, Stack, Row, Grid, Text, Image, Icon, Button, IconButton, TextField, SearchField, Checkbox, Switch, Card, ListItem, Divider, Badge, Avatar, TabBar, BottomNavigation, TopAppBar, Modal, Form.
+Kanonik temel allowlist: `Screen`, `SafeArea`, `ScrollView`, `Stack`, `Row`, `Grid`, `Text`, `Image`, `Icon`, `Button`, `IconButton`, `TextField`, `SearchField`, `Checkbox`, `Switch`, `Card`, `ListItem`, `Divider`, `Badge`, `Avatar`, `TabBar`, `BottomNavigation`, `TopAppBar`, `Modal`, `Form`, `Progress`, `Metric`, `Chart`, `SegmentedControl`, `FloatingActionButton`.
+
+Serene Health domain ailesi: `CareSummary`, `MedicationTimeline`, `MedicationDoseRow`, `HealthMetric`, `UnitInput`, `RangeChart`, `TargetRange`, `StatusAlert`, `SafetyNotice`, `SuccessFeedback`.
+
+Editorial Culture domain ailesi: `EditorialHero`, `FeatureStory`, `StoryCard`, `Byline`, `MetadataStrip`, `PullQuote`, `SectionIndex`, `ArchiveEntry`.
+
+Terracotta Market domain ailesi: `CommerceHero`, `ProductCard`, `PriceBlock`, `ProductGallery`, `VariantSelector`, `CartLine`, `OrderSummary`, `DeliveryPromise`.
+
+Electric Learning domain ailesi: `LearningHero`, `XpProgress`, `StreakBadge`, `LessonCard`, `RoadmapStep`, `QuizChoice`, `AnswerFeedback`, `AchievementBadge`.
+
+Obsidian Precision domain ailesi: `CommandSummary`, `SignalChart`, `RiskIndicator`, `OperationRow`, `IncidentTimeline`, `DataMatrix`, `ControlToggle`, `AuditEntry`.
+
+AI üretim endpoint'i registry dışındaki tipleri reddeder. Web editörü aynı allowlist'i `apps/web/src/features/studio/canvas/componentRegistry.ts` üzerinden render eder; böylece sağlayıcı yanıtı, validator ve görsel çıktı aynı sözleşmeye bağlı kalır.
 
 ## Kabul kriteri
 
