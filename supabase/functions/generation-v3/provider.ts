@@ -25,7 +25,14 @@ type ProviderConfig = {
   maxTokensCap?: number
 }
 
-const GOOGLE_MODEL = Deno.env.get('GOOGLE_MODEL') ?? 'gemini-2.5-flash'
+/**
+ * gemini-2.5-flash, gemini-2.5-flash-lite and gemini-3.6-flash all shared the same exhausted
+ * free-tier daily quota by the time this was picked (V2's generate function already hammers
+ * gemini-3.6-flash) — gemini-3-flash was the one model in the AI Studio rate-limit dashboard still
+ * showing headroom (0/20 RPD) and is confirmed live: no rate limit, valid responses. Override with
+ * GOOGLE_MODEL if the project's billing tier changes this.
+ */
+const GOOGLE_MODEL = Deno.env.get('GOOGLE_MODEL') ?? 'gemini-3-flash'
 
 const PROVIDERS: ProviderConfig[] = [
   {
