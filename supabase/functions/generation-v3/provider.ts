@@ -155,11 +155,24 @@ async function callProvider(provider: ProviderConfig, key: string, messages: V3P
     return extractContent(provider, data)
   }
   if (res.status === 401 || res.status === 403) throw new V3ProviderError('PROVIDER_AUTH_FAILED', `${provider.label} authentication failed (${res.status})`, provider.label, false)
-  if (res.status === 402 || res.status === 429 || res.status >= 500) throw new V3ProviderError('PROVIDER_RETRYABLE', `${provider.label} error (${res.status})`, provider.label, true)
+  // 429 gets its own code — a per-minute rate limit (observed live: free-tier Gemini's RPM=5 is
+  // far below the ~10-18 sequential calls one generation run needs) is worth a short wait and a
+  // retry on the *same* provider, not an immediate jump to a slower fallback (see completeJson).
+  if (res.status === 429) throw new V3ProviderError('PROVIDER_RATE_LIMITED', `${provider.label} error (429)`, provider.label, true)
+  if (res.status === 402 || res.status >= 500) throw new V3ProviderError('PROVIDER_RETRYABLE', `${provider.label} error (${res.status})`, provider.label, true)
   throw new V3ProviderError('PROVIDER_BAD_RESPONSE', `${provider.label} error (${res.status})`, provider.label, false)
 }
 
-/** Tries Gemini first, falling through to OpenRouter's free model and then the emergency-fallback models on any failure (quota, outage, timeout, bad model id) — a failure on one provider never masks a working one behind it. */
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+/** A free-tier RPM=5 window resets on a rolling basis — waiting past a single slot's worth of time is enough room for the count to drop. */
+const RATE_LIMIT_BACKOFF_MS = 13_000
+/** One retry beyond the first attempt — enough to ride out a momentary RPM window without adding unbounded latency if the provider is genuinely rate-limited for longer. */
+const MAX_ATTEMPTS_PER_PROVIDER = 2
+
+/** Tries Gemini first, falling through to OpenRouter's free model and then the emergency-fallback models on any non-rate-limit failure (auth, outage, timeout, bad model id) — a failure on one provider never masks a working one behind it. A 429 instead waits briefly and retries the *same* provider first, since free-tier RPM is tight enough that one generation run's ~10-18 calls routinely exceeds it mid-run — jumping straight to a slower fallback for the rest of the run costs far more time than a short wait does. */
 export function createLiveV3Provider(timeoutMs = 45_000): { completeJson(input: { operation: V3PlanningOperation; messages: V3PromptMessage[]; correlationId: string; timeoutMs: number }): Promise<string> } {
   return {
     async completeJson({ operation, messages }) {
@@ -174,14 +187,21 @@ export function createLiveV3Provider(timeoutMs = 45_000): { completeJson(input: 
         if (!key) continue
         configuredCount += 1
         const providerMaxTokens = provider.maxTokensCap ? Math.min(maxTokens, provider.maxTokensCap) : maxTokens
-        try {
-          return await callProvider(provider, key, messages, providerMaxTokens, timeoutMs)
-        } catch (error) {
-          // Any failure on one provider — auth, bad model id, outage, whatever — is specific to
-          // that provider and says nothing about the next one, so always fall through to it. Only
-          // exhausting every configured provider is actually fatal.
-          lastError = error instanceof V3ProviderError ? error : new V3ProviderError('PROVIDER_UNAVAILABLE', 'unexpected provider failure', provider.label, true)
+        for (let attempt = 1; attempt <= MAX_ATTEMPTS_PER_PROVIDER; attempt += 1) {
+          try {
+            return await callProvider(provider, key, messages, providerMaxTokens, timeoutMs)
+          } catch (error) {
+            lastError = error instanceof V3ProviderError ? error : new V3ProviderError('PROVIDER_UNAVAILABLE', 'unexpected provider failure', provider.label, true)
+            if (lastError.code === 'PROVIDER_RATE_LIMITED' && attempt < MAX_ATTEMPTS_PER_PROVIDER) {
+              await sleep(RATE_LIMIT_BACKOFF_MS)
+              continue
+            }
+            break
+          }
         }
+        // Any non-rate-limit failure on one provider — auth, bad model id, outage, whatever — is
+        // specific to that provider and says nothing about the next one, so fall through to it.
+        // Only exhausting every configured provider is actually fatal.
       }
       if (configuredCount === 0) throw new V3ProviderError('PROVIDER_NOT_CONFIGURED', 'No AI provider credentials are configured (OPENROUTER_API_KEY / GOOGLE_API_KEY / CEREBRAS_API_KEY / GROQ_API_KEY)', 'none', false)
       throw lastError ?? new V3ProviderError('PROVIDER_UNAVAILABLE', 'All configured AI providers were unavailable', 'provider-chain', true)
