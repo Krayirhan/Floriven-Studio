@@ -7,10 +7,10 @@ import { type V3PromptMessage } from './prompts.ts'
  * credentials as supabase/functions/generate/index.ts, so a project that already has V2's
  * secrets configured needs nothing new to run V3.
  *
- * Gemini is primary; the rest are emergency fallbacks only tried when Gemini itself fails
- * (quota, outage, timeout) — not a load-balanced pool. Never logs prompt content, brief text or
- * raw model output — only operation name, provider, status and latency, per AGENTS.md's "ham
- * prompt... loglanmaz" rule.
+ * Gemini is primary (fastest, most reliable so far); the rest are emergency fallbacks only tried
+ * when the one ahead of them fails (quota, outage, timeout) — not a load-balanced pool. Never
+ * logs prompt content, brief text or raw model output — only operation name, provider, status
+ * and latency, per AGENTS.md's "ham prompt... loglanmaz" rule.
  */
 
 type ProviderConfig = {
@@ -32,6 +32,19 @@ const PROVIDERS: ProviderConfig[] = [
     label: 'google', kind: 'google',
     url: `https://generativelanguage.googleapis.com/v1beta/models/${GOOGLE_MODEL}:generateContent`,
     model: GOOGLE_MODEL, keyEnv: 'GOOGLE_API_KEY',
+  },
+  {
+    // Free-tier OpenRouter model, own quota pool separate from Gemini's — a live fallback rather
+    // than primary: confirmed correct (clean JSON, ~3-14s per call) but consistently slower than
+    // Gemini, and a multi-screen generation run with it as primary was observed live to blow past
+    // Supabase's background-task execution ceiling and get killed mid-flight with the job stuck in
+    // "processing" forever (no error ever recorded, since the process is killed externally, not a
+    // catchable exception). reasoning.enabled: false is required — without it this model writes
+    // its internal monologue into a separate "reasoning" field and often never reaches the visible
+    // JSON answer at all before hitting the token budget (content: null, finish_reason: "length").
+    label: 'openrouter/nemotron-3-super-120b', kind: 'openai-compatible',
+    url: 'https://openrouter.ai/api/v1/chat/completions', model: 'nvidia/nemotron-3-super-120b-a12b:free', keyEnv: 'OPENROUTER_API_KEY',
+    tokenParam: 'max_tokens', extra: { reasoning: { enabled: false } },
   },
   {
     label: 'cerebras/gpt-oss-120b', kind: 'openai-compatible',
@@ -139,7 +152,7 @@ async function callProvider(provider: ProviderConfig, key: string, messages: V3P
   throw new V3ProviderError('PROVIDER_BAD_RESPONSE', `${provider.label} error (${res.status})`, provider.label, false)
 }
 
-/** Tries Gemini first, falling through to the emergency-fallback models only on retryable failures (quota, outage, timeout) — an auth or decode failure on one provider does not mask a working one behind it. */
+/** Tries Gemini first, falling through to OpenRouter's free model and then the emergency-fallback models on any failure (quota, outage, timeout, bad model id) — a failure on one provider never masks a working one behind it. */
 export function createLiveV3Provider(timeoutMs = 45_000): { completeJson(input: { operation: V3PlanningOperation; messages: V3PromptMessage[]; correlationId: string; timeoutMs: number }): Promise<string> } {
   return {
     async completeJson({ operation, messages }) {
@@ -163,7 +176,7 @@ export function createLiveV3Provider(timeoutMs = 45_000): { completeJson(input: 
           lastError = error instanceof V3ProviderError ? error : new V3ProviderError('PROVIDER_UNAVAILABLE', 'unexpected provider failure', provider.label, true)
         }
       }
-      if (configuredCount === 0) throw new V3ProviderError('PROVIDER_NOT_CONFIGURED', 'No AI provider credentials are configured (GOOGLE_API_KEY / CEREBRAS_API_KEY / GROQ_API_KEY)', 'none', false)
+      if (configuredCount === 0) throw new V3ProviderError('PROVIDER_NOT_CONFIGURED', 'No AI provider credentials are configured (OPENROUTER_API_KEY / GOOGLE_API_KEY / CEREBRAS_API_KEY / GROQ_API_KEY)', 'none', false)
       throw lastError ?? new V3ProviderError('PROVIDER_UNAVAILABLE', 'All configured AI providers were unavailable', 'provider-chain', true)
     },
   }

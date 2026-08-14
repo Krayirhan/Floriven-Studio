@@ -30,6 +30,8 @@ export type V3HttpDeps = {
 
 const IDEMPOTENCY_KEY_PATTERN = /^[a-zA-Z0-9_-]{16,128}$/
 const CANONICAL_RENDERER_VERSION = 'phone-screen-v4'
+/** Generous upper bound for the whole planning pipeline even with a slow fallback provider — well past this, the background run is presumed killed rather than merely slow. */
+const PROCESSING_TIMEOUT_MS = 4 * 60 * 1000
 
 function problem(status: number, code: string, title: string, correlationId: string, detail: string[] = []): HttpResult<never> {
   const body: ProblemDetails = { type: `https://errors.floriven.dev/${code.toLowerCase()}`, title, status, code, correlationId, detail }
@@ -102,6 +104,19 @@ export async function handleV3GenerationGet(request: V3GenerationGetRequest, dep
 
   const jobTokenHash = await sha256Hex(request.jobToken)
   if (record.jobTokenHash !== jobTokenHash) return problem(403, 'V3_JOB_ACCESS_DENIED', 'job access denied', correlationId)
+
+  // A background run killed mid-flight by the platform's own execution ceiling (observed live: a
+  // slow provider chain blew past it) never gets to update its own record — it would otherwise
+  // stay "processing" forever with no error and no way for the client to know to stop polling.
+  if (record.status === 'processing' && Date.now() - Date.parse(record.createdAt) > PROCESSING_TIMEOUT_MS) {
+    await deps.jobs.update(record.id, {
+      status: 'failed', stage: 'failed', progress: 100,
+      errorCode: 'V3_PROCESSING_TIMEOUT',
+      errorMessage: 'The job exceeded the maximum processing time and was presumed lost.',
+    })
+    const timedOut = await deps.jobs.findById(record.id)
+    return { ok: true, status: 200, body: toSnapshot(timedOut ?? record) }
+  }
 
   return { ok: true, status: 200, body: toSnapshot(record) }
 }
