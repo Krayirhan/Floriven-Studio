@@ -61,8 +61,8 @@ export interface GenerationRequest {
   editScreens?: Screen[];
 }
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+export const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
+export const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
 
 export interface GenerationService {
   create(projectId: string, request: GenerationRequest): Promise<GenerationJob>;
@@ -70,15 +70,15 @@ export interface GenerationService {
   waitForTerminal(job: GenerationJob): Promise<GenerationJob>;
 }
 
-type FunctionConfig = { url: string; anonKey: string };
-type CallOptions = { timeoutMs?: number; retries?: number };
+export type FunctionConfig = { url: string; anonKey: string };
+export type CallOptions = { timeoutMs?: number; retries?: number };
 
 const GENERATION_TIMEOUT_MS = 15_000;
 const STATUS_TIMEOUT_MS = 15_000;
 const MAX_STATUS_POLLS = 120;
 const STATUS_POLL_INTERVAL_MS = 1_500;
 
-function functionBaseUrl(url: string): string {
+export function functionBaseUrl(url: string): string {
   try {
     const parsed = new URL(url);
     if (parsed.protocol !== "https:" && !(parsed.protocol === "http:" && parsed.hostname === "localhost")) {
@@ -90,7 +90,7 @@ function functionBaseUrl(url: string): string {
   }
 }
 
-function createFunctionClient(fetcher: typeof fetch, config: FunctionConfig) {
+export function createFunctionClient(fetcher: typeof fetch, config: FunctionConfig) {
   return async function callFunction<T>(path: string, init: RequestInit = {}, options: CallOptions = {}): Promise<T> {
     if (!config.url || !config.anonKey) {
       throw new Error("Üretim servisi yapılandırılmamış. VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY değerlerini kontrol edin.");
@@ -152,7 +152,7 @@ export function createGenerationService(
     return token;
   };
 
-  const getJob = (jobId: string, runtimeCertificationToken?: string) => callFunction<GenerationJob>(
+  const getJob = async (jobId: string, runtimeCertificationToken?: string) => callFunction<GenerationJob>(
     `generate?id=${encodeURIComponent(jobId)}`,
     { headers: runtimeCertificationToken ? { "X-Runtime-Certification-Token": runtimeCertificationToken } : { "X-Job-Token": readJobToken(jobId) } },
     { timeoutMs: STATUS_TIMEOUT_MS, retries: 1 },

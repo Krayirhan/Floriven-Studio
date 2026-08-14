@@ -16,8 +16,10 @@ import { capturePhoneBaseline } from "./canvas/runtimeCapture";
 
 export function StudioPage() {
   const { projectId } = useParams();
-  const studio = useStudioState(projectId ?? "");
   const [searchParams] = useSearchParams();
+  // Opt-in only (?engine=v3): V2 stays the default generation path until V3 clears its ADR-0009 benchmark gates.
+  const engine = searchParams.get("engine") === "v3" ? "v3" : "v2";
+  const studio = useStudioState(projectId ?? "", engine);
   const runtimeCertificationToken = searchParams.get("runtimeCertificationToken") ?? undefined;
   const readOnly = Boolean(runtimeCertificationToken);
   const generation = useGenerationJob(searchParams.get("jobId"), runtimeCertificationToken);

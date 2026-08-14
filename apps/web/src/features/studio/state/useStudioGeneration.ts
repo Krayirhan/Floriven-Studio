@@ -1,9 +1,13 @@
 import { useCallback, useState } from "react";
 import type { Screen } from "@floriven/design-spec";
-import { generationService } from "../../../services/generationService";
+import { generationService, type GenerationJob } from "../../../services/generationService";
+import { generationServiceV3, toGenerationJob } from "../../../services/generationServiceV3";
 import type { JournalEntry } from "../studio.types";
 
 const INITIAL_JOURNAL: JournalEntry[] = [];
+
+/** V3 is opt-in and experimental (ADR-0009): the default path stays V2 until V3 clears its benchmark gates. */
+export type GenerationEngine = "v2" | "v3";
 
 type GenerationUiState = {
   prompt: string;
@@ -20,9 +24,11 @@ export function useStudioGeneration(
   setGeneratedScreens: (screens: Screen[]) => void,
   projectId: string,
   getCurrentScreens: () => Screen[],
+  engine: GenerationEngine = "v2",
 ) {
   const [journal, setJournal] = useState<JournalEntry[]>(INITIAL_JOURNAL);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [lastGenerationJob, setLastGenerationJob] = useState<GenerationJob | null>(null);
 
   const addJournalEntry = useCallback((entry: Omit<JournalEntry, "id" | "timestamp">) => {
     setJournal((prev) => [{ ...entry, id: `j${Date.now()}`, timestamp: Date.now() }, ...prev].slice(0, 20));
@@ -37,29 +43,40 @@ export function useStudioGeneration(
     // ("Dark mode yap", "Hiyerarşiyi iyileştir"...) as a brand-new product brief.
     const currentScreens = getCurrentScreens();
     const isEdit = currentScreens.length > 0;
+    // V3 has no edit/patch semantics yet (ADR-0009 plans this for a later slice) — an edit
+    // request always falls back to the proven V2 path rather than silently misreading the
+    // existing document as a fresh brief.
+    const useV3 = engine === "v3" && !isEdit;
 
     setIsGenerating(true);
+    setLastGenerationJob(null);
     addHistoryEntry(trimmed);
     addJournalEntry({
       type: "analyze",
-      message: isEdit ? "Düzenleme isteği işleniyor..." : "Prompt işleniyor...",
+      message: isEdit ? "Düzenleme isteği işleniyor..." : useV3 ? "Prompt V3 (deneysel) ile işleniyor..." : "Prompt işleniyor...",
       detail: trimmed.slice(0, 60),
     });
 
     try {
-      const createdJob = await generationService.create(projectId, {
-        brief: trimmed,
-        platform: "ios",
-        designMode: "auto",
-        ...(isEdit ? { editScreens: currentScreens } : {}),
-      });
-      const job = await generationService.waitForTerminal(createdJob);
+      const job = useV3
+        ? toGenerationJob(await generationServiceV3.waitForTerminal(await generationServiceV3.create(projectId, { brief: trimmed, platform: "ios" })))
+        : await generationService.waitForTerminal(await generationService.create(projectId, {
+          brief: trimmed,
+          platform: "ios",
+          designMode: "auto",
+          ...(isEdit ? { editScreens: currentScreens } : {}),
+        }));
+      setLastGenerationJob(job);
 
       if (job.status === "completed" && job.resultScreens?.length) {
         setGeneratedScreens(job.resultScreens);
         addJournalEntry({
           type: "generate",
-          message: `${job.resultScreens.length} ekran oluşturuldu`,
+          message: useV3
+            ? `${job.resultScreens.length} ekran V3 (deneysel) ile oluşturuldu`
+            : job.degraded
+              ? `${job.resultScreens.length} ekranlık güvenli taslak oluşturuldu`
+              : `${job.resultScreens.length} ekran AI tarafından oluşturuldu`,
           detail: trimmed.slice(0, 60),
           screenIds: job.resultScreens.map((s) => s.id),
         });
@@ -77,7 +94,7 @@ export function useStudioGeneration(
     } finally {
       setIsGenerating(false);
     }
-  }, [addHistoryEntry, addJournalEntry, getCurrentScreens, isGenerating, projectId, setGeneratedScreens, ui]);
+  }, [addHistoryEntry, addJournalEntry, engine, getCurrentScreens, isGenerating, projectId, setGeneratedScreens, ui]);
 
   return {
     prompt: ui.prompt,
@@ -88,5 +105,6 @@ export function useStudioGeneration(
     addJournalEntry,
     generate,
     isGenerating,
+    lastGenerationJob,
   };
 }
