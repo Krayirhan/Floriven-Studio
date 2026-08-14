@@ -207,7 +207,13 @@ export async function runV3GenerationJob(jobId: string, request: V3GenerationPos
   await deps.jobs.update(jobId, { status: 'processing', stage: 'planning' })
 
   try {
-    const planning = await runV3Planning({ brief: request.brief, correlationId: record.correlationId, ...(request.requestedScreenCount !== undefined ? { requestedScreenCount: request.requestedScreenCount } : {}) }, deps.provider)
+    const planning = await runV3Planning({
+      brief: request.brief, correlationId: record.correlationId,
+      ...(request.requestedScreenCount !== undefined ? { requestedScreenCount: request.requestedScreenCount } : {}),
+      // Real stage/progress instead of the record sitting at "planning" for the whole run with no
+      // visibility into where a slow or stuck run actually is.
+      onProgress: async (stage, progress) => { await deps.jobs.update(jobId, { stage, progress }) },
+    }, deps.provider)
     await deps.jobs.update(jobId, { stage: 'accepting' })
 
     const acceptanceInput: AcceptedDesignSpecInput = {

@@ -14,7 +14,11 @@ export type V3PlanningOperation = 'product_model' | 'screen_jobs' | 'ux_structur
 export type V3PlanningProvider = {
   completeJson(input: { operation: V3PlanningOperation; messages: V3PromptMessage[]; correlationId: string; timeoutMs: number }): Promise<string>
 }
-export type V3PlanningInput = { brief: string; correlationId: string; requestedScreenCount?: number; timeoutMs?: number }
+export type V3PlanningInput = {
+  brief: string; correlationId: string; requestedScreenCount?: number; timeoutMs?: number
+  /** Fired after each major milestone so a caller (http-adapter.ts) can persist real stage/progress instead of the job record sitting at "planning" for the whole run with no visibility into where it actually is. */
+  onProgress?: (stage: string, progress: number) => Promise<void>
+}
 export type V3PlanningOutput = {
   productModel: ProductModel; screenJobs: ScreenJobs; uxStructures: UXStructure[]
   componentCapabilities: ComponentCapabilities[]; layoutPlans: LayoutPlan[]; contentPlans: ContentPlan[]
@@ -81,6 +85,8 @@ export async function runV3Planning(input: V3PlanningInput, provider: V3Planning
     validate: (raw) => validateProductModel(raw),
   })
 
+  await input.onProgress?.('product_model', 10)
+
   const jobs = await completeWithRetry({
     operation: 'screen_jobs', provider, correlationId: input.correlationId, timeoutMs,
     buildMessages: (feedback) => withRetryFeedback(screenJobsMessages(product, input.requestedScreenCount), feedback),
@@ -93,15 +99,17 @@ export async function runV3Planning(input: V3PlanningInput, provider: V3Planning
       return result
     },
   })
+  await input.onProgress?.('screen_jobs', 20)
 
   const uxStructures: UXStructure[] = []
-  for (const job of jobs.jobs) {
+  for (const [index, job] of jobs.jobs.entries()) {
     const structure = await completeWithRetry({
       operation: 'ux_structure', provider, correlationId: input.correlationId, timeoutMs,
       buildMessages: (feedback) => withRetryFeedback(uxStructureMessages(job), feedback),
       validate: (raw) => validateUXStructure(raw, job),
     })
     uxStructures.push(structure)
+    await input.onProgress?.(`ux_structure ${index + 1}/${jobs.jobs.length}`, 20 + Math.round(((index + 1) / jobs.jobs.length) * 15))
   }
 
   // Deterministic, not an LLM call — which component satisfies which capability is a closed
@@ -115,9 +123,10 @@ export async function runV3Planning(input: V3PlanningInput, provider: V3Planning
     if (!validated.ok) throw new V3PlanningError('component_capabilities', validated.issues)
     componentCapabilities.push(validated.value)
   }
+  await input.onProgress?.('component_capabilities', 40)
 
   const layoutPlans: LayoutPlan[] = []
-  for (const [structure, capabilities] of uxStructures.map((structure, index) => [structure, componentCapabilities[index]] as const)) {
+  for (const [index, [structure, capabilities]] of uxStructures.map((structure, index) => [structure, componentCapabilities[index]] as const).entries()) {
     if (!capabilities) throw new V3PlanningError('layout_plan', [`layout_plan: missing componentCapabilities for ${structure.screenJobId}`])
     const layout = await completeWithRetry({
       operation: 'layout_plan', provider, correlationId: input.correlationId, timeoutMs,
@@ -125,10 +134,11 @@ export async function runV3Planning(input: V3PlanningInput, provider: V3Planning
       validate: (raw) => validateLayoutPlan(raw, structure, capabilities),
     })
     layoutPlans.push(layout)
+    await input.onProgress?.(`layout_plan ${index + 1}/${uxStructures.length}`, 40 + Math.round(((index + 1) / uxStructures.length) * 15))
   }
 
   const contentPlans: ContentPlan[] = []
-  for (const [structure, layout] of uxStructures.map((structure, index) => [structure, layoutPlans[index]] as const)) {
+  for (const [index, [structure, layout]] of uxStructures.map((structure, index) => [structure, layoutPlans[index]] as const).entries()) {
     if (!layout) throw new V3PlanningError('content_plan', [`content_plan: missing layoutPlan for ${structure.screenJobId}`])
     const content = await completeWithRetry({
       operation: 'content_plan', provider, correlationId: input.correlationId, timeoutMs,
@@ -136,6 +146,7 @@ export async function runV3Planning(input: V3PlanningInput, provider: V3Planning
       validate: (raw) => validateContentPlan(raw, structure, layout),
     })
     contentPlans.push(content)
+    await input.onProgress?.(`content_plan ${index + 1}/${uxStructures.length}`, 55 + Math.round(((index + 1) / uxStructures.length) * 15))
   }
 
   const designSpecScreens: DesignSpecScreen[] = []
@@ -168,6 +179,7 @@ export async function runV3Planning(input: V3PlanningInput, provider: V3Planning
   if (!productCritic.passed) {
     throw new V3PlanningError('static_critics', [`duplicationRatePct ${productCritic.duplicationRatePct.toFixed(1)} exceeds the 10% gate`, ...productCritic.duplicates.map((duplicate) => `${duplicate.screenJobIdA} ~ ${duplicate.screenJobIdB}: ${(duplicate.similarity * 100).toFixed(0)}% structural similarity`)])
   }
+  await input.onProgress?.('design_spec_compile', 78)
 
   return { productModel: product, screenJobs: jobs, uxStructures, componentCapabilities, layoutPlans, contentPlans, designSpecScreens, staticCritics, productStaticCritics: productCritic, repairs }
 }

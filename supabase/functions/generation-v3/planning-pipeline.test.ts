@@ -124,6 +124,20 @@ describe('Generation V3 planning pipeline', () => {
     expect(result.repairs).toEqual([])
   })
 
+  it('reports real progress through onProgress instead of leaving the caller blind for the whole run', async () => {
+    const provider: V3PlanningProvider = { completeJson: async ({ operation }) => respond(operation) }
+    const progressCalls: Array<[string, number]> = []
+    await runV3Planning({
+      brief: 'Mimarlar için proje ve saha takvimi', requestedScreenCount: 1, correlationId: 'corr-progress',
+      onProgress: async (stage, progress) => { progressCalls.push([stage, progress]) },
+    }, provider)
+    expect(progressCalls.map(([stage]) => stage)).toEqual([
+      'product_model', 'screen_jobs', 'ux_structure 1/1', 'component_capabilities', 'layout_plan 1/1', 'content_plan 1/1', 'design_spec_compile',
+    ])
+    // Strictly increasing — never regresses or repeats a value while the run is still progressing.
+    for (let i = 1; i < progressCalls.length; i += 1) expect(progressCalls[i][1]).toBeGreaterThan(progressCalls[i - 1][1])
+  })
+
   it('rejects malformed provider JSON instead of repairing it', async () => {
     const provider: V3PlanningProvider = { completeJson: async () => '```json\n{"version":"1.0.0"}\n```' }
     await expect(runV3Planning({ brief: 'Takvim', correlationId: 'corr-2' }, provider)).rejects.toMatchObject({ stage: 'product_model', issues: ['response: strict JSON parsing failed'] })
