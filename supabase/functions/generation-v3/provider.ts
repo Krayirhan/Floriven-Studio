@@ -12,7 +12,12 @@ import { type V3PromptMessage } from './prompts.ts'
  * status and latency, per AGENTS.md's "ham prompt... loglanmaz" rule.
  */
 
-const GOOGLE_MODEL = Deno.env.get('GOOGLE_MODEL') ?? 'gemini-3.6-flash'
+/**
+ * gemini-3.6-flash shares its free-tier daily request quota with V2's generate function, which
+ * exhausts it fast — V3 defaults to a separate model (its own quota bucket) so the two don't starve
+ * each other. Override with GOOGLE_MODEL if the project's billing tier changes this.
+ */
+const GOOGLE_MODEL = Deno.env.get('GOOGLE_MODEL') ?? 'gemini-2.5-flash'
 const GOOGLE_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GOOGLE_MODEL}:generateContent`
 
 /**
