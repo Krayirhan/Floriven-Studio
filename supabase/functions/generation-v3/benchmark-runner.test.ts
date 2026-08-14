@@ -63,8 +63,8 @@ const scheduleCapabilities = {
       { capability: 'inspect', component: 'Calendar', reason: 'Bloğa dokunarak detay gösterir' },
       { capability: 'schedule', component: 'Calendar', reason: 'Ziyareti başka bloğa taşımayı destekler' },
     ] },
-    { regionId: 'region-visit-details', selectedComponents: ['Card'], justification: [
-      { capability: 'display', component: 'Card', reason: 'Proje bilgisini özetler' },
+    { regionId: 'region-visit-details', selectedComponents: ['Text'], justification: [
+      { capability: 'display', component: 'Text', reason: 'Proje bilgisini özetler' },
     ] },
   ],
 }
@@ -72,7 +72,7 @@ const scheduleLayout = {
   version: '1.0.0', screenJobId: 'weekly-schedule',
   regions: [
     { regionId: 'region-calendar', mode: 'column', density: 'comfortable', emphasis: 'primary', nodes: [{ id: 'node-calendar', component: 'Calendar', order: 1, size: 'fill' }] },
-    { regionId: 'region-visit-details', mode: 'column', density: 'compact', emphasis: 'support', nodes: [{ id: 'node-visit-card', component: 'Card', order: 1, size: 'hug' }] },
+    { regionId: 'region-visit-details', mode: 'column', density: 'compact', emphasis: 'support', nodes: [{ id: 'node-visit-card', component: 'Text', order: 1, size: 'hug' }] },
   ],
   responsive: [
     { regionId: 'region-calendar', breakpoint: 'narrow', mode: 'column', visible: true },
@@ -102,21 +102,20 @@ const scheduleContent = {
     {
       regionId: 'region-visit-details',
       nodes: [{
-        nodeId: 'node-visit-card', component: 'Card',
+        nodeId: 'node-visit-card', component: 'Text',
         props: {
-          title: 'Proje adı: Ahşap Villa Yenileme',
-          subtitle: 'Ahşap kompozit ve iç mekan tasarımı',
+          text: 'Proje adı: Ahşap Villa Yenileme — Ahşap kompozit ve iç mekan tasarımı',
         },
       }],
       emptyStateMessage: null, loadingStateMessage: null, errorStateMessage: null,
     },
   ],
 }
+// component_capabilities is no longer requested from the provider — see deriveComponentCapabilities.
 function respondSchedule(operation: string): string {
   if (operation === 'product_model') return JSON.stringify(product)
   if (operation === 'screen_jobs') return JSON.stringify(scheduleJobs)
   if (operation === 'ux_structure') return JSON.stringify(scheduleStructure)
-  if (operation === 'component_capabilities') return JSON.stringify(scheduleCapabilities)
   if (operation === 'layout_plan') return JSON.stringify(scheduleLayout)
   return JSON.stringify(scheduleContent)
 }
@@ -238,10 +237,15 @@ describe('Benchmark corpus accept/reject harness — calendar archetype', () => 
   })
 
   it('reject example: a calendar candidate missing its defining schedule interaction is rejected, not silently downgraded', async () => {
-    const brokenCapabilities = { ...scheduleCapabilities, regions: [{ ...scheduleCapabilities.regions[0], justification: scheduleCapabilities.regions[0].justification.filter((entry) => entry.capability !== 'schedule') }, scheduleCapabilities.regions[1]] }
-    const provider: V3PlanningProvider = { completeJson: async ({ operation }) => operation === 'component_capabilities' ? JSON.stringify(brokenCapabilities) : respondSchedule(operation) }
+    // component_capabilities is deterministic now (deriveComponentCapabilities) and can only ever
+    // select a component that covers exactly what ux_structure actually declared — so a missing
+    // "schedule" affordance has to be injected one stage earlier, at ux_structure, to prove the
+    // pipeline still catches and rejects it rather than silently compiling a calendar that can't
+    // actually reschedule anything.
+    const brokenStructure = { ...scheduleStructure, actions: scheduleStructure.actions.filter((action) => action.interaction !== 'schedule') }
+    const provider: V3PlanningProvider = { completeJson: async ({ operation }) => operation === 'ux_structure' ? JSON.stringify(brokenStructure) : respondSchedule(operation) }
     await expect(runV3Planning({ brief: 'Bağımsız mimarlar için proje ve saha takvimi', requestedScreenCount: 1, correlationId: 'bench-calendar-reject' }, provider))
-      .rejects.toMatchObject({ stage: 'component_capabilities' })
+      .rejects.toMatchObject({ stage: 'ux_structure' })
   })
 })
 

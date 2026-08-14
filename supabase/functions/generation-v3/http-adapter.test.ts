@@ -72,24 +72,11 @@ const uxStructure = {
     { regionId: 'region-visit-details', role: 'destekleyici bilgi alanı', focusOrder: 2, announcement: 'Ziyaret detay özeti odaklandı' },
   ],
 }
-const componentCapabilities = {
-  version: '1.0.0', screenJobId: 'weekly-schedule',
-  regions: [
-    { regionId: 'region-calendar', selectedComponents: ['Calendar'], justification: [
-      { capability: 'display', component: 'Calendar', reason: 'Haftalık blokları görselleştirir' },
-      { capability: 'inspect', component: 'Calendar', reason: 'Bloğa dokunarak detay gösterir' },
-      { capability: 'schedule', component: 'Calendar', reason: 'Ziyareti başka bloğa taşımayı destekler' },
-    ] },
-    { regionId: 'region-visit-details', selectedComponents: ['Card'], justification: [
-      { capability: 'display', component: 'Card', reason: 'Proje bilgisini özetler' },
-    ] },
-  ],
-}
 const layoutPlan = {
   version: '1.0.0', screenJobId: 'weekly-schedule',
   regions: [
     { regionId: 'region-calendar', mode: 'column', density: 'comfortable', emphasis: 'primary', nodes: [{ id: 'node-calendar', component: 'Calendar', order: 1, size: 'fill' }] },
-    { regionId: 'region-visit-details', mode: 'column', density: 'compact', emphasis: 'support', nodes: [{ id: 'node-visit-card', component: 'Card', order: 1, size: 'hug' }] },
+    { regionId: 'region-visit-details', mode: 'column', density: 'compact', emphasis: 'support', nodes: [{ id: 'node-visit-card', component: 'Text', order: 1, size: 'hug' }] },
   ],
   responsive: [
     { regionId: 'region-calendar', breakpoint: 'narrow', mode: 'column', visible: true },
@@ -119,10 +106,9 @@ const contentPlan = {
     {
       regionId: 'region-visit-details',
       nodes: [{
-        nodeId: 'node-visit-card', component: 'Card',
+        nodeId: 'node-visit-card', component: 'Text',
         props: {
-          title: 'Proje adı: Ahşap Villa Yenileme',
-          subtitle: 'Ahşap kompozit ve iç mekan tasarımı',
+          text: 'Proje adı: Ahşap Villa Yenileme — Ahşap kompozit ve iç mekan tasarımı',
         },
       }],
       emptyStateMessage: null, loadingStateMessage: null, errorStateMessage: null,
@@ -141,11 +127,11 @@ const patchPlan = {
   ],
 }
 
+// component_capabilities is no longer requested from the provider — see deriveComponentCapabilities.
 function respond(operation: string): string {
   if (operation === 'product_model') return JSON.stringify(product)
   if (operation === 'screen_jobs') return JSON.stringify(jobs)
   if (operation === 'ux_structure') return JSON.stringify(uxStructure)
-  if (operation === 'component_capabilities') return JSON.stringify(componentCapabilities)
   if (operation === 'layout_plan') return JSON.stringify(layoutPlan)
   if (operation === 'patch_plan') return JSON.stringify(patchPlan)
   return JSON.stringify(contentPlan)

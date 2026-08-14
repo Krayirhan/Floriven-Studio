@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
-  COMPONENT_CAPABILITIES_JSON_SCHEMA, deriveRegionCapabilities, validateComponentCapabilities,
+  COMPONENT_CAPABILITIES_JSON_SCHEMA, COMPONENT_CAPABILITY_MATRIX, deriveComponentCapabilities, deriveRegionCapabilities,
+  validateComponentCapabilities, V3_COMPONENT_TYPES, type Capability,
   type ComponentCapabilities,
 } from './component-capabilities.ts'
 import type { UXStructure } from './ux-structure.ts'
@@ -97,6 +98,43 @@ describe('ComponentCapabilities@1 capability derivation', () => {
       { regionId: 'region-calendar', requiredCapabilities: ['display', 'inspect', 'schedule'] },
       { regionId: 'region-visit-details', requiredCapabilities: ['display'] },
     ])
+  })
+})
+
+describe('deriveComponentCapabilities (deterministic, no LLM call)', () => {
+  it('always produces output that the fail-closed validator accepts, for both a forced single-option capability and a plain display-only region', () => {
+    const result = deriveComponentCapabilities(scheduleStructure)
+    expect(validateComponentCapabilities(result, scheduleStructure)).toMatchObject({ ok: true })
+    // 'schedule' is provided by exactly one component in the whole matrix (Calendar) — proves the
+    // greedy selector reaches a forced pick correctly, not just the easy generic cases.
+    expect(result.regions.find((r) => r.regionId === 'region-calendar')?.selectedComponents).toContain('Calendar')
+  })
+
+  it('picks a generic, broadly-legible component for a plain display-only region rather than a domain-flavored one', () => {
+    const result = deriveComponentCapabilities(scheduleStructure)
+    const region = result.regions.find((r) => r.regionId === 'region-visit-details')
+    expect(region?.selectedComponents).toEqual(['Text'])
+  })
+
+  it('is deterministic — same input always produces the exact same output', () => {
+    const first = deriveComponentCapabilities(scheduleStructure)
+    const second = deriveComponentCapabilities(scheduleStructure)
+    expect(second).toEqual(first)
+  })
+
+  it('produces validator-accepted output for a second, differently-shaped screen (board/reorder archetype)', () => {
+    const result = deriveComponentCapabilities(boardStructure)
+    expect(validateComponentCapabilities(result, boardStructure)).toMatchObject({ ok: true })
+    // 'reorder' is provided by exactly one component in the whole matrix (KanbanBoard).
+    expect(result.regions.find((r) => r.regionId === 'region-columns')?.selectedComponents).toContain('KanbanBoard')
+  })
+
+  it('every single capability in the domain has at least one supporting component (selection can never dead-end)', () => {
+    const allCapabilities: Capability[] = ['display', 'inspect', 'search', 'filter', 'create', 'edit', 'delete', 'select', 'navigate', 'schedule', 'reorder', 'compare', 'visualize']
+    for (const capability of allCapabilities) {
+      const supporters = V3_COMPONENT_TYPES.filter((type) => COMPONENT_CAPABILITY_MATRIX[type].includes(capability))
+      expect(supporters.length).toBeGreaterThan(0)
+    }
   })
 })
 

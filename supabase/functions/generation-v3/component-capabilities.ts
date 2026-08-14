@@ -78,6 +78,72 @@ export type CapabilityJustification = { capability: Capability; component: V3Com
 export type RegionComponentSelection = { regionId: string; selectedComponents: V3ComponentType[]; justification: CapabilityJustification[] }
 export type ComponentCapabilities = { version: typeof COMPONENT_CAPABILITIES_VERSION; screenJobId: string; regions: RegionComponentSelection[] }
 
+/**
+ * Generic, broadly-applicable components first — these are what the greedy selector below reaches
+ * for by default, since they read as ordinary UI regardless of the product's domain. Domain-flavor
+ * components (CareSummary, ProductCard, LessonCard, ...) are appended after and are only ever
+ * chosen if nothing earlier in the list can provide a still-uncovered capability.
+ */
+const SELECTION_PRIORITY: V3ComponentType[] = [
+  'Text', 'Card', 'ListItem', 'Button', 'IconButton', 'TextField', 'SearchField', 'Checkbox', 'Switch',
+  'Metric', 'Chart', 'Calendar', 'SegmentedControl', 'TabBar', 'BottomNavigation', 'TopAppBar',
+  'Badge', 'Avatar', 'Progress', 'FloatingActionButton', 'Form', 'Modal', 'Image', 'Icon',
+  'Timeline', 'Gallery', 'KanbanBoard', 'MapView', 'CartLine', 'RangeChart', 'TargetRange',
+  'StatusAlert', 'SafetyNotice', 'SuccessFeedback',
+  ...V3_COMPONENT_TYPES.filter((type) => ![
+    'Text', 'Card', 'ListItem', 'Button', 'IconButton', 'TextField', 'SearchField', 'Checkbox', 'Switch',
+    'Metric', 'Chart', 'Calendar', 'SegmentedControl', 'TabBar', 'BottomNavigation', 'TopAppBar',
+    'Badge', 'Avatar', 'Progress', 'FloatingActionButton', 'Form', 'Modal', 'Image', 'Icon',
+    'Timeline', 'Gallery', 'KanbanBoard', 'MapView', 'CartLine', 'RangeChart', 'TargetRange',
+    'StatusAlert', 'SafetyNotice', 'SuccessFeedback',
+  ].includes(type)),
+]
+
+function selectComponentsForRegion(requiredCapabilities: Capability[]): { selected: V3ComponentType[]; justification: CapabilityJustification[] } {
+  const remaining = new Set(requiredCapabilities)
+  const selected: V3ComponentType[] = []
+  const justification: CapabilityJustification[] = []
+
+  while (remaining.size > 0 && selected.length < 6) {
+    let best: V3ComponentType | undefined
+    let bestCoverage = 0
+    for (const candidate of SELECTION_PRIORITY) {
+      if (selected.includes(candidate)) continue
+      const coverage = COMPONENT_CAPABILITY_MATRIX[candidate].filter((capability) => remaining.has(capability)).length
+      if (coverage > bestCoverage) { best = candidate; bestCoverage = coverage }
+    }
+    if (!best) break
+    selected.push(best)
+    for (const capability of COMPONENT_CAPABILITY_MATRIX[best]) {
+      if (remaining.has(capability)) {
+        justification.push({ capability, component: best, reason: `${best}, bu bölgenin "${capability}" yeteneğini karşılar.` })
+        remaining.delete(capability)
+      }
+    }
+  }
+  return { selected, justification }
+}
+
+/**
+ * Deterministic replacement for an LLM call: which component satisfies which capability is a
+ * closed lookup (COMPONENT_CAPABILITY_MATRIX), not a creative decision, so a greedy set-cover over
+ * that matrix is both more reliable than asking a model to reason about it fresh each time and a
+ * full request/token cheaper. Content richness and layout still come from the LLM stages that
+ * follow (layout_plan, content_plan) — this only decides which building blocks are structurally
+ * eligible.
+ */
+export function deriveComponentCapabilities(structure: UXStructure): ComponentCapabilities {
+  const requirements = deriveRegionCapabilities(structure)
+  return {
+    version: COMPONENT_CAPABILITIES_VERSION,
+    screenJobId: structure.screenJobId,
+    regions: requirements.map((requirement) => {
+      const { selected, justification } = selectComponentsForRegion(requirement.requiredCapabilities)
+      return { regionId: requirement.regionId, selectedComponents: selected, justification }
+    }),
+  }
+}
+
 export const COMPONENT_CAPABILITIES_JSON_SCHEMA = {
   $id: 'floriven.generation-v3.ComponentCapabilities@1', type: 'object', additionalProperties: false,
   required: ['version', 'screenJobId', 'regions'],

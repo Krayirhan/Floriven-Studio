@@ -1,8 +1,8 @@
-import { validateComponentCapabilities, type ComponentCapabilities } from './component-capabilities.ts'
+import { deriveComponentCapabilities, validateComponentCapabilities, type ComponentCapabilities } from './component-capabilities.ts'
 import { validateContentPlan, type ContentPlan } from './content-plan.ts'
 import { compileDesignSpecScreen, DesignSpecCompileError, type DesignSpecScreen } from './design-spec-compiler.ts'
 import { validateLayoutPlan, type LayoutPlan } from './layout-plan.ts'
-import { componentCapabilitiesMessages, contentPlanMessages, layoutPlanMessages, productModelMessages, screenJobsMessages, uxStructureMessages, withRetryFeedback, type V3PromptMessage } from './prompts.ts'
+import { contentPlanMessages, layoutPlanMessages, productModelMessages, screenJobsMessages, uxStructureMessages, withRetryFeedback, type V3PromptMessage } from './prompts.ts'
 import { validateProductModel, type ProductModel } from './product-model.ts'
 import { runTargetedRepair, type RepairResult } from './repair.ts'
 import { validateScreenJobs, type ScreenJobs } from './screen-jobs.ts'
@@ -42,10 +42,10 @@ export class V3ProviderError extends Error {
 /**
  * Retries a planning call up to `maxAttempts` times, feeding the exact validation issues from a
  * rejected attempt back to the model (withRetryFeedback) instead of hoping a fresh, blind attempt
- * happens to avoid the same mistake. Used for the two stages that have shown the most run-to-run
- * inconsistency (ux_structure's presentation-leak scanner, component_capabilities' bidirectional
- * coverage check) — both are checks a model can usually satisfy once it sees precisely which one
- * it missed, which one-shot prompting can't guarantee.
+ * happens to avoid the same mistake — a model can usually satisfy a check once it sees precisely
+ * which one it missed, which one-shot prompting can't guarantee. Used for every LLM-driven
+ * planning stage; component_capabilities no longer goes through this at all (see
+ * deriveComponentCapabilities) since it isn't an LLM call anymore.
  */
 async function completeWithRetry<T>(params: {
   operation: V3PlanningOperation
@@ -56,7 +56,7 @@ async function completeWithRetry<T>(params: {
   validate: (raw: unknown) => ValidationResult<T>
   maxAttempts?: number
 }): Promise<T> {
-  const { operation, provider, correlationId, timeoutMs, buildMessages, validate, maxAttempts = 3 } = params
+  const { operation, provider, correlationId, timeoutMs, buildMessages, validate, maxAttempts = 2 } = params
   let issues: string[] = []
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     const raw = await provider.completeJson({ operation, messages: buildMessages(attempt > 1 ? issues : undefined), correlationId, timeoutMs })
@@ -104,14 +104,16 @@ export async function runV3Planning(input: V3PlanningInput, provider: V3Planning
     uxStructures.push(structure)
   }
 
+  // Deterministic, not an LLM call — which component satisfies which capability is a closed
+  // lookup (COMPONENT_CAPABILITY_MATRIX), so a greedy set-cover is both more reliable and a full
+  // request/token cheaper per screen than asking a model to reason it out each time. Still
+  // validated through the exact same fail-closed validateComponentCapabilities as before.
   const componentCapabilities: ComponentCapabilities[] = []
   for (const structure of uxStructures) {
-    const capabilities = await completeWithRetry({
-      operation: 'component_capabilities', provider, correlationId: input.correlationId, timeoutMs,
-      buildMessages: (feedback) => withRetryFeedback(componentCapabilitiesMessages(structure), feedback),
-      validate: (raw) => validateComponentCapabilities(raw, structure),
-    })
-    componentCapabilities.push(capabilities)
+    const capabilities = deriveComponentCapabilities(structure)
+    const validated = validateComponentCapabilities(capabilities, structure)
+    if (!validated.ok) throw new V3PlanningError('component_capabilities', validated.issues)
+    componentCapabilities.push(validated.value)
   }
 
   const layoutPlans: LayoutPlan[] = []

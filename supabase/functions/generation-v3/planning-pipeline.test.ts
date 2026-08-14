@@ -43,24 +43,11 @@ const uxStructure = {
     { regionId: 'region-visit-details', role: 'destekleyici bilgi alanı', focusOrder: 2, announcement: 'Ziyaret detay özeti odaklandı' },
   ],
 }
-const componentCapabilities = {
-  version: '1.0.0', screenJobId: 'weekly-schedule',
-  regions: [
-    { regionId: 'region-calendar', selectedComponents: ['Calendar'], justification: [
-      { capability: 'display', component: 'Calendar', reason: 'Haftalık blokları görselleştirir' },
-      { capability: 'inspect', component: 'Calendar', reason: 'Bloğa dokunarak detay gösterir' },
-      { capability: 'schedule', component: 'Calendar', reason: 'Ziyareti başka bloğa taşımayı destekler' },
-    ] },
-    { regionId: 'region-visit-details', selectedComponents: ['Card'], justification: [
-      { capability: 'display', component: 'Card', reason: 'Proje bilgisini özetler' },
-    ] },
-  ],
-}
 const layoutPlan = {
   version: '1.0.0', screenJobId: 'weekly-schedule',
   regions: [
     { regionId: 'region-calendar', mode: 'column', density: 'comfortable', emphasis: 'primary', nodes: [{ id: 'node-calendar', component: 'Calendar', order: 1, size: 'fill' }] },
-    { regionId: 'region-visit-details', mode: 'column', density: 'compact', emphasis: 'support', nodes: [{ id: 'node-visit-card', component: 'Card', order: 1, size: 'hug' }] },
+    { regionId: 'region-visit-details', mode: 'column', density: 'compact', emphasis: 'support', nodes: [{ id: 'node-visit-card', component: 'Text', order: 1, size: 'hug' }] },
   ],
   responsive: [
     { regionId: 'region-calendar', breakpoint: 'narrow', mode: 'column', visible: true },
@@ -90,27 +77,27 @@ const contentPlan = {
     {
       regionId: 'region-visit-details',
       nodes: [{
-        nodeId: 'node-visit-card', component: 'Card',
+        nodeId: 'node-visit-card', component: 'Text',
         props: {
-          title: 'Proje adı: Ahşap Villa Yenileme',
-          subtitle: 'Ahşap kompozit ve iç mekan tasarımı',
+          text: 'Proje adı: Ahşap Villa Yenileme — Ahşap kompozit ve iç mekan tasarımı',
         },
       }],
       emptyStateMessage: null, loadingStateMessage: null, errorStateMessage: null,
     },
   ],
 }
+// component_capabilities is no longer requested from the provider at all — see
+// deriveComponentCapabilities in component-capabilities.ts — so respond() never needs to answer it.
 function respond(operation: string): string {
   if (operation === 'product_model') return JSON.stringify(product)
   if (operation === 'screen_jobs') return JSON.stringify(jobs)
   if (operation === 'ux_structure') return JSON.stringify(uxStructure)
-  if (operation === 'component_capabilities') return JSON.stringify(componentCapabilities)
   if (operation === 'layout_plan') return JSON.stringify(layoutPlan)
   return JSON.stringify(contentPlan)
 }
 
 describe('Generation V3 planning pipeline', () => {
-  it('runs six narrow provider stages, then deterministically compiles a DesignSpec screen', async () => {
+  it('runs five narrow provider stages (component_capabilities is derived deterministically, not requested), then compiles a DesignSpec screen', async () => {
     const calls: string[] = []
     const provider: V3PlanningProvider = { completeJson: async ({ operation, messages }) => {
       calls.push(operation)
@@ -118,7 +105,7 @@ describe('Generation V3 planning pipeline', () => {
       return respond(operation)
     } }
     const result = await runV3Planning({ brief: 'Mimarlar için proje ve saha takvimi', requestedScreenCount: 1, correlationId: 'corr-1' }, provider)
-    expect(calls).toEqual(['product_model', 'screen_jobs', 'ux_structure', 'component_capabilities', 'layout_plan', 'content_plan'])
+    expect(calls).toEqual(['product_model', 'screen_jobs', 'ux_structure', 'layout_plan', 'content_plan'])
     expect(result.screenJobs.jobs[0].requiredInteractions).toContain('schedule')
     expect(result.uxStructures).toHaveLength(1)
     expect(result.uxStructures[0].screenJobId).toBe('weekly-schedule')
@@ -171,14 +158,6 @@ describe('Generation V3 planning pipeline', () => {
     await expect(runV3Planning({ brief: 'Mimarlar için takvim', requestedScreenCount: 1, correlationId: 'corr-5' }, provider)).rejects.toMatchObject({ stage: 'ux_structure' })
   })
 
-  it('fails closed when a component selection is not justified by a required capability', async () => {
-    const provider: V3PlanningProvider = { completeJson: async ({ operation }) => {
-      if (operation === 'component_capabilities') return JSON.stringify({ ...componentCapabilities, regions: [{ ...componentCapabilities.regions[0], selectedComponents: ['Calendar', 'Chart'] }, componentCapabilities.regions[1]] })
-      return respond(operation)
-    } }
-    await expect(runV3Planning({ brief: 'Mimarlar için takvim', requestedScreenCount: 1, correlationId: 'corr-6' }, provider)).rejects.toMatchObject({ stage: 'component_capabilities' })
-  })
-
   it('fails closed when a layout plan overrides the fixed information-hierarchy emphasis', async () => {
     const provider: V3PlanningProvider = { completeJson: async ({ operation }) => {
       if (operation === 'layout_plan') return JSON.stringify({ ...layoutPlan, regions: [{ ...layoutPlan.regions[0], emphasis: 'support' }, layoutPlan.regions[1]] })
@@ -206,7 +185,6 @@ describe('Generation V3 planning pipeline', () => {
       if (operation === 'screen_jobs') return JSON.stringify(twoJobs)
       const jobId = extractScreenJobId(operation, messages[1].content)
       if (operation === 'ux_structure') return JSON.stringify({ ...uxStructure, screenJobId: jobId })
-      if (operation === 'component_capabilities') return JSON.stringify({ ...componentCapabilities, screenJobId: jobId })
       if (operation === 'layout_plan') return JSON.stringify({ ...layoutPlan, screenJobId: jobId })
       return JSON.stringify({ ...contentPlan, screenJobId: jobId })
     } }
@@ -229,24 +207,6 @@ describe('Generation V3 planning pipeline', () => {
     expect(uxAttempts).toBe(2)
   })
 
-  it('recovers a component_capabilities coverage failure on retry once the model sees the exact validation issue', async () => {
-    let capabilityAttempts = 0
-    const provider: V3PlanningProvider = { completeJson: async ({ operation, messages }) => {
-      if (operation === 'component_capabilities') {
-        capabilityAttempts += 1
-        if (capabilityAttempts === 1) {
-          return JSON.stringify({ ...componentCapabilities, regions: [{ ...componentCapabilities.regions[0], selectedComponents: ['Calendar', 'Chart'] }, componentCapabilities.regions[1]] })
-        }
-        expect(messages[messages.length - 1].content).toContain('Your previous attempt was rejected')
-        return JSON.stringify(componentCapabilities) // corrected on retry
-      }
-      return respond(operation)
-    } }
-    const result = await runV3Planning({ brief: 'Mimarlar için takvim', requestedScreenCount: 1, correlationId: 'corr-11' }, provider)
-    expect(result.componentCapabilities).toHaveLength(1)
-    expect(capabilityAttempts).toBe(2)
-  })
-
   it('still fails closed after exhausting all retry attempts on a persistently invalid ux_structure', async () => {
     let uxAttempts = 0
     const provider: V3PlanningProvider = { completeJson: async ({ operation }) => {
@@ -257,6 +217,6 @@ describe('Generation V3 planning pipeline', () => {
       return respond(operation)
     } }
     await expect(runV3Planning({ brief: 'Mimarlar için takvim', requestedScreenCount: 1, correlationId: 'corr-12' }, provider)).rejects.toMatchObject({ stage: 'ux_structure' })
-    expect(uxAttempts).toBe(3)
+    expect(uxAttempts).toBe(2)
   })
 })
