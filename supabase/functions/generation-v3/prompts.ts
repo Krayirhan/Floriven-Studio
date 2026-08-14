@@ -31,7 +31,7 @@ Define distinct, testable user jobs. A screen name is not a job. Every job needs
 Do not select visual styles, layouts or UI component names.
 requiredInteractions must ONLY use these exact values, nothing else: ${[...INTERACTIONS].join(', ')}.
 There is no "save", "submit", "notify" or "update" value — a save/update-like action is "edit"; a form submission is "create"; do not invent any other word.
-destinationJobIds must never include the job's own id — a job cannot navigate to itself.
+destinationJobIds must never include the job's own id — a job cannot navigate to itself. Every value in destinationJobIds must be copied verbatim from another job's own "id" field somewhere else in this exact same jobs array — never invent an id like "job_2" or guess one that sounds plausible. If there is no other job to navigate to (including when you only define a single job), destinationJobIds must be an empty array.
 ${SECURITY_BOUNDARY}
 OUTPUT_SCHEMA=${JSON.stringify(SCREEN_JOBS_JSON_SCHEMA)}` },
     { role: 'user', content: userData({ productModel: product, requestedScreenCount: requestedScreenCount ?? null }) },

@@ -14,8 +14,6 @@ import { verifyV3Runtime } from "../../../services/runtimeVerificationV3";
 import type { JournalEntry } from "../studio.types";
 
 const INITIAL_JOURNAL: JournalEntry[] = [];
-/** See the requestedScreenCount comment in generate() below — kept as one constant so it's obvious where to raise it once there's real request headroom. */
-const V3_DEFAULT_SCREEN_COUNT = 1;
 
 export type GenerationEngine = "v2" | "v3";
 
@@ -109,12 +107,11 @@ export function useStudioGeneration(
           setLastV3Job(patchResult);
           job = toGenerationJob(patchResult);
         } else {
-          // V3 Creation with full render-evidence loop. requestedScreenCount is capped small on
-          // purpose: every extra screen costs 3 more sequential LLM calls, and free-tier rate
-          // limits (~5 requests/minute on every provider tried live) are already tight enough that
-          // an unconstrained multi-screen run reliably exceeds them and times out. Reliability over
-          // screen count until there's real request headroom to spend.
-          let v3Job = await generationServiceV3.create(projectId, { brief: trimmed, platform: "ios", requestedScreenCount: V3_DEFAULT_SCREEN_COUNT });
+          // V3 Creation with full render-evidence loop. requestedScreenCount is intentionally
+          // omitted — screen_jobs decides how many screens the brief actually needs. Reliability
+          // under free-tier rate limits is handled at the provider/retry layer (provider.ts), not
+          // by artificially capping what the AI is allowed to plan.
+          let v3Job = await generationServiceV3.create(projectId, { brief: trimmed, platform: "ios" });
           v3Job = await generationServiceV3.waitForTerminal(v3Job);
 
           // If awaiting_render, mount the real screens in the canvas and submit actual DOM evidence
