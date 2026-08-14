@@ -50,10 +50,45 @@ export const UX_STRUCTURE_JSON_SCHEMA = {
   required: ['version', 'screenJobId', 'regions', 'informationHierarchy', 'actions', 'flow', 'completionEvidence', 'navigation', 'responsive', 'accessibility'],
   properties: {
     version: { const: UX_STRUCTURE_VERSION }, screenJobId: { type: 'string' },
-    regions: { type: 'array', minItems: 2, maxItems: 10 }, informationHierarchy: { type: 'array' },
-    actions: { type: 'array', minItems: 1, maxItems: 20 },
-    flow: { type: 'array', minItems: 1, maxItems: 20 }, completionEvidence: { type: 'array', minItems: 1, maxItems: 10 },
-    navigation: { type: 'object' }, responsive: { type: 'array' }, accessibility: { type: 'array' },
+    regions: {
+      type: 'array', minItems: 2, maxItems: 10,
+      items: {
+        type: 'object', additionalProperties: false, required: ['id', 'task', 'dataBindings', 'states'],
+        properties: {
+          id: { type: 'string' }, task: { type: 'string', description: 'purpose only — no component name, CSS, color or pixel value' },
+          dataBindings: { type: 'array', minItems: 1, items: { type: 'string', description: 'must be one of the screen job\'s requiredData terms, verbatim' } },
+          states: { type: 'array', minItems: 1, maxItems: 4, items: { type: 'string', enum: ['empty', 'loading', 'error', 'ready'] }, description: 'must include ready' },
+        },
+      },
+    },
+    informationHierarchy: { type: 'array', description: 'a permutation of every regions[].id, most important region first', items: { type: 'string' } },
+    actions: {
+      type: 'array', minItems: 1, maxItems: 20,
+      items: {
+        type: 'object', additionalProperties: false, required: ['id', 'regionId', 'interaction', 'intent'],
+        properties: { id: { type: 'string' }, regionId: { type: 'string', description: 'must reference regions[].id' }, interaction: { type: 'string', description: 'must be one of the screen job\'s requiredInteractions' }, intent: { type: 'string' } },
+      },
+    },
+    flow: {
+      type: 'array', minItems: 1, maxItems: 20,
+      items: { type: 'object', additionalProperties: false, required: ['order', 'actionId', 'description'], properties: { order: { type: 'integer', minimum: 1 }, actionId: { type: 'string', description: 'must reference actions[].id' }, description: { type: 'string' } } },
+    },
+    completionEvidence: {
+      type: 'array', minItems: 1, maxItems: 10,
+      items: { type: 'object', additionalProperties: false, required: ['criterion', 'regionId', 'evidence'], properties: { criterion: { type: 'string', description: 'must be one of the screen job\'s completionCriteria, verbatim' }, regionId: { type: 'string' }, evidence: { type: 'string' } } },
+    },
+    navigation: {
+      type: 'object', additionalProperties: false, required: ['entryPoints', 'destinationJobIds', 'exitIntent'],
+      properties: { entryPoints: { type: 'array', minItems: 1, items: { type: 'string' } }, destinationJobIds: { type: 'array', items: { type: 'string' } }, exitIntent: { type: 'string' } },
+    },
+    responsive: {
+      type: 'array', description: 'exactly one entry per region',
+      items: { type: 'object', additionalProperties: false, required: ['regionId', 'narrowBehavior', 'wideBehavior'], properties: { regionId: { type: 'string' }, narrowBehavior: { type: 'string' }, wideBehavior: { type: 'string' } } },
+    },
+    accessibility: {
+      type: 'array', description: 'exactly one entry per region',
+      items: { type: 'object', additionalProperties: false, required: ['regionId', 'role', 'focusOrder', 'announcement'], properties: { regionId: { type: 'string' }, role: { type: 'string' }, focusOrder: { type: 'integer', minimum: 1 }, announcement: { type: 'string' } } },
+    },
   },
 } as const
 

@@ -1,5 +1,9 @@
 import { type ComponentCapabilities, type V3ComponentType } from './component-capabilities.ts'
-import { type ContentPlan } from './content-plan.ts'
+import {
+  validateComponentProps,
+  type ComponentPropsMap,
+} from './component-contracts.ts'
+import { extractStringsFromProps, type ContentPlan } from './content-plan.ts'
 import { type Density, type LayoutMode, type LayoutPlan, type SizeMode } from './layout-plan.ts'
 import { type ScreenJob } from './screen-jobs.ts'
 import { canonical } from './validation.ts'
@@ -14,10 +18,10 @@ export type InteractionEvent = { event: 'press'; action: { type: 'setLocalState'
 /** Namespaced per DESIGN_SPEC.md#2 ("bilinmeyen property... extensions alanında ad alanlı tutulur") — traceability only, never rendered. */
 export type V3Extensions = { 'floriven.v3': { regionId: string; sourceNodeId: string | null } }
 
-export type LeafNode = {
+export type LeafNode<T extends V3ComponentType = V3ComponentType> = {
   id: string
-  type: V3ComponentType
-  props: Record<string, string>
+  type: T
+  props: ComponentPropsMap[T]
   layout: { size: SizeMode }
   bindings: DataBinding[]
   interactions: InteractionEvent[]
@@ -25,6 +29,7 @@ export type LeafNode = {
   visibility: true
   extensions: V3Extensions
 }
+
 export type RegionContainerNode = {
   id: string
   type: 'Stack'
@@ -36,6 +41,7 @@ export type RegionContainerNode = {
   visibility: true
   extensions: V3Extensions
 }
+
 export type ScreenRootNode = {
   id: string
   type: 'Screen'
@@ -46,7 +52,12 @@ export type ScreenRootNode = {
   a11y: A11y
   visibility: true
 }
+
 export type DesignSpecScreen = { id: string; name: string; route: string; root: ScreenRootNode }
+
+/** Patch-engine tree shape: a screen root holds region containers, a region container holds leaves. */
+export type ContainerNode = RegionContainerNode
+export type DesignSpecNode = LeafNode | RegionContainerNode | ScreenRootNode
 
 export class DesignSpecCompileError extends Error {
   constructor(public readonly issues: string[]) {
@@ -62,10 +73,20 @@ function slug(value: string): string {
   return cleaned || 'x'
 }
 
+function deriveNodeA11yLabel(type: V3ComponentType, props: Record<string, unknown>, fallback: string): string {
+  if (typeof props.label === 'string' && props.label.trim()) return props.label
+  if (typeof props.title === 'string' && props.title.trim()) return props.title
+  if (typeof props.text === 'string' && props.text.trim()) return props.text
+  if (typeof props.headline === 'string' && props.headline.trim()) return props.headline
+  if (typeof props.name === 'string' && props.name.trim()) return props.name
+  if (typeof props.alt === 'string' && props.alt.trim()) return props.alt
+  return fallback
+}
+
 /**
  * Deterministic, LLM-free translation of the validated planning contracts into a canonical
  * DesignSpec screen node tree (docs/02-architecture/DESIGN_SPEC.md#4). Never invents content,
- * components or bindings — every node traces back to a UXStructure/LayoutPlan/ContentPlan fact.
+ * components or bindings — strictly uses the validated ContentPlan typed props.
  */
 export function compileDesignSpecScreen(job: ScreenJob, structure: UXStructure, capabilities: ComponentCapabilities, layout: LayoutPlan, content: ContentPlan): DesignSpecScreen {
   const ids = [structure.screenJobId, capabilities.screenJobId, layout.screenJobId, content.screenJobId]
@@ -89,14 +110,23 @@ export function compileDesignSpecScreen(job: ScreenJob, structure: UXStructure, 
     const leaves = [...layoutRegion.nodes].sort((a, b) => a.order - b.order).map((layoutNode) => {
       const nodeContent = contentRegion.nodes.find((node) => node.nodeId === layoutNode.id)
       if (!nodeContent) throw new DesignSpecCompileError([`compile: missing content for node ${layoutNode.id}`])
-      const props = Object.fromEntries(nodeContent.fields.map((field) => [field.field, field.value]))
-      const joinedText = canonical(nodeContent.fields.map((field) => field.value).join(' | '))
+
+      const validation = validateComponentProps(layoutNode.component, nodeContent.props)
+      if (!validation.ok) {
+        throw new DesignSpecCompileError(validation.issues)
+      }
+      const props = validation.value as ComponentPropsMap[typeof layoutNode.component]
+
+      const joinedText = canonical(extractStringsFromProps(props).join(' | '))
       const bindings: DataBinding[] = structureDataBindingsFor(regionId, structure)
         .filter((term) => joinedText.includes(canonical(term)))
         .map((dataPath) => ({ dataPath }))
       const interactions: InteractionEvent[] = (actionsByRegion.get(regionId) ?? [])
         .filter((action) => capabilitiesRegion.justification.some((entry) => entry.capability === action.interaction && entry.component === layoutNode.component))
         .map((action) => ({ event: 'press', action: { type: 'setLocalState', params: { interaction: action.interaction, actionId: action.id } } }))
+
+      const a11yLabel = deriveNodeA11yLabel(layoutNode.component, props as Record<string, unknown>, layoutNode.component)
+
       const leaf: LeafNode = {
         id: `node_${slug(job.id)}_${slug(layoutNode.id)}`,
         type: layoutNode.component,
@@ -104,7 +134,7 @@ export function compileDesignSpecScreen(job: ScreenJob, structure: UXStructure, 
         layout: { size: layoutNode.size },
         bindings,
         interactions,
-        a11y: { role: 'content', label: nodeContent.fields[0]?.value ?? layoutNode.component, hint: null, state: null, order: layoutNode.order },
+        a11y: { role: 'content', label: a11yLabel, hint: null, state: null, order: layoutNode.order },
         visibility: true,
         extensions: { 'floriven.v3': { regionId, sourceNodeId: layoutNode.id } },
       }

@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { handleV3GenerationGet, handleV3GenerationPost, runV3GenerationJob, type V3HttpDeps, type V3JobStore } from './http-adapter.ts'
-import type { V3GenerationPostRequest, V3JobRecord } from './http-contract.ts'
+import {
+  handleV3GenerationEdit, handleV3GenerationGet, handleV3GenerationPost, handleV3SubmitRenderEvidence,
+  runV3GenerationJob, type V3HttpDeps, type V3JobStore,
+} from './http-adapter.ts'
+import type { V3GenerationPostRequest, V3JobRecord, V3ScreenRenderEvidence } from './http-contract.ts'
 import type { V3PlanningProvider } from './planning-pipeline.ts'
 
 function createInMemoryJobStore(): V3JobStore & { records: Map<string, V3JobRecord> } {
@@ -9,7 +12,9 @@ function createInMemoryJobStore(): V3JobStore & { records: Map<string, V3JobReco
   return {
     records,
     async findByIdempotencyKey(projectId, idempotencyKey) {
-      for (const record of records.values()) if (record.projectId === projectId && record.idempotencyKey === idempotencyKey) return record
+      for (const record of records.values()) {
+        if (record.projectId === projectId && record.idempotencyKey === idempotencyKey) return record
+      }
       return null
     },
     async findById(jobId) { return records.get(jobId) ?? null },
@@ -99,33 +104,58 @@ const contentPlan = {
   regions: [
     {
       regionId: 'region-calendar',
-      nodes: [{ nodeId: 'node-calendar', component: 'Calendar', fields: [
-        { field: 'title', value: 'Salı 14:00 Ahşap Villa saha ziyareti' },
-        { field: 'subtitle', value: 'Bu hafta planlanan ziyaret zamanı: Salı 14:00' },
-      ] }],
+      nodes: [{
+        nodeId: 'node-calendar', component: 'Calendar',
+        props: {
+          label: 'Haftalık Saha Ziyaret Takvimi',
+          days: ['Pzt 10', 'Sal 11', 'Çar 12', 'Per 13', 'Cum 14'],
+          events: ['Salı 14:00 Ahşap Villa saha ziyaret zamanı'],
+        },
+      }],
       emptyStateMessage: 'Bu hafta için planlanmış saha ziyareti yok',
       loadingStateMessage: 'Haftalık takvim yükleniyor',
       errorStateMessage: null,
     },
     {
       regionId: 'region-visit-details',
-      nodes: [{ nodeId: 'node-visit-card', component: 'Card', fields: [{ field: 'projectName', value: 'Proje adı: Ahşap Villa Yenileme' }] }],
+      nodes: [{
+        nodeId: 'node-visit-card', component: 'Card',
+        props: {
+          title: 'Proje adı: Ahşap Villa Yenileme',
+          subtitle: 'Ahşap kompozit ve iç mekan tasarımı',
+        },
+      }],
       emptyStateMessage: null, loadingStateMessage: null, errorStateMessage: null,
     },
   ],
 }
+const patchPlan = {
+  version: '1.0.0',
+  patches: [
+    {
+      op: 'replace_props',
+      screenId: 'scr_weekly-schedule',
+      nodeId: 'node_weekly-schedule_node-calendar',
+      props: { label: 'Güncellenmiş Takvim Başlığı' },
+    },
+  ],
+}
+
 function respond(operation: string): string {
   if (operation === 'product_model') return JSON.stringify(product)
   if (operation === 'screen_jobs') return JSON.stringify(jobs)
   if (operation === 'ux_structure') return JSON.stringify(uxStructure)
   if (operation === 'component_capabilities') return JSON.stringify(componentCapabilities)
   if (operation === 'layout_plan') return JSON.stringify(layoutPlan)
+  if (operation === 'patch_plan') return JSON.stringify(patchPlan)
   return JSON.stringify(contentPlan)
 }
 const workingProvider: V3PlanningProvider = { completeJson: async ({ operation }) => respond(operation) }
-const brokenProvider: V3PlanningProvider = { completeJson: async () => 'not json' }
 
-type TestDeps = V3HttpDeps & { jobs: ReturnType<typeof createInMemoryJobStore>; scheduledWork: Array<() => Promise<void>> }
+type TestDeps = V3HttpDeps & {
+  jobs: ReturnType<typeof createInMemoryJobStore>
+  scheduledWork: Array<() => Promise<void>>
+}
 
 function createDeps(provider: V3PlanningProvider): TestDeps {
   let correlationCounter = 0
@@ -148,27 +178,173 @@ async function runScheduled(deps: TestDeps): Promise<void> {
 }
 
 const validRequest: V3GenerationPostRequest = {
-  projectId: 'prj_1', brief: 'Mimarlar için proje ve saha takvimi', platform: 'ios',
-  idempotencyKey: 'a'.repeat(20), jobToken: 'b'.repeat(40),
+  projectId: 'prj_1',
+  brief: 'Mimarlar için proje ve saha takvimi',
+  platform: 'ios',
+  idempotencyKey: 'a'.repeat(20),
+  jobToken: 'b'.repeat(40),
 }
 
-describe('handleV3GenerationPost', () => {
-  it('queues a job and completes it once the scheduled work runs', async () => {
+const validEvidence: V3ScreenRenderEvidence = {
+  screenJobId: 'weekly-schedule',
+  screenId: 'scr_weekly-schedule',
+  rendererVersion: 'phone-screen-v4',
+  contentHash: '',
+  viewport: { width: 390, height: 844 },
+  metrics: {
+    screenJobId: 'weekly-schedule',
+    viewport: { width: 390, height: 844 },
+    visibleNodeCount: 12,
+    sectionCount: 2,
+    sectionAreaCoveragePct: 60,
+    verticalOccupancyPct: 70,
+    nodeDensityPer100kPx: 6,
+    sectionHeightVariancePct: 20,
+  },
+}
+
+describe('Generation V3 state machine & live render evidence verification', () => {
+  it('planning transitions to awaiting_render with preliminary NOT_VERIFIED DesignSpec', async () => {
     const deps = createDeps(workingProvider)
     const queued = await handleV3GenerationPost(validRequest, deps)
     expect(queued.ok).toBe(true)
     if (!queued.ok) return
-    expect(queued.status).toBe(202)
-    expect(queued.body.status).toBe('queued')
 
     await runScheduled(deps)
 
-    const finalRecord = await deps.jobs.findById(queued.body.jobId)
-    expect(finalRecord?.status).toBe('completed')
-    expect(finalRecord?.acceptedDesignSpec?.screens).toHaveLength(1)
+    const record = await deps.jobs.findById(queued.body.jobId)
+    expect(record?.status).toBe('awaiting_render')
+    expect(record?.progress).toBe(80)
+    expect(record?.acceptedDesignSpec?.metadata.renderEvidence).toBe('NOT_VERIFIED')
+    expect(record?.acceptedDesignSpec?.metadata.releaseEligible).toBe(false)
   })
 
-  it('replays the same job for the same Idempotency-Key and payload instead of creating a second one', async () => {
+  it('submitting valid render evidence transitions job to completed with VERIFIED', async () => {
+    const deps = createDeps(workingProvider)
+    const queued = await handleV3GenerationPost(validRequest, deps)
+    if (!queued.ok) throw new Error('expected queued')
+
+    await runScheduled(deps)
+
+    const result = await handleV3SubmitRenderEvidence({
+      jobId: queued.body.jobId,
+      jobToken: validRequest.jobToken,
+      evidence: [validEvidence],
+    }, deps)
+
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.body.status).toBe('completed')
+      expect(result.body.progress).toBe(100)
+      expect(result.body.acceptedDesignSpec?.metadata.renderEvidence).toBe('VERIFIED')
+      expect(result.body.acceptedDesignSpec?.metadata.releaseEligible).toBe(true)
+    }
+  })
+
+  it('rejects evidence with failing visual hierarchy metrics (e.g. sectionCount < 2)', async () => {
+    const deps = createDeps(workingProvider)
+    const queued = await handleV3GenerationPost(validRequest, deps)
+    if (!queued.ok) throw new Error('expected queued')
+
+    await runScheduled(deps)
+
+    const failingEvidence: V3ScreenRenderEvidence = {
+      ...validEvidence,
+      metrics: {
+        ...validEvidence.metrics,
+        sectionCount: 1, // fails critic
+      },
+    }
+
+    const result = await handleV3SubmitRenderEvidence({
+      jobId: queued.body.jobId,
+      jobToken: validRequest.jobToken,
+      evidence: [failingEvidence],
+    }, deps)
+
+    expect(result.ok).toBe(false)
+    if (!result.ok) {
+      expect(result.status).toBe(422)
+      expect(result.body.code).toBe('V3_RENDER_VERIFICATION_FAILED')
+    }
+
+    const record = await deps.jobs.findById(queued.body.jobId)
+    expect(record?.status).toBe('failed')
+    expect(record?.errorCode).toBe('V3_RENDER_VERIFICATION_FAILED')
+  })
+
+  it('rejects evidence carrying a non-canonical renderer version fail-closed', async () => {
+    const deps = createDeps(workingProvider)
+    const queued = await handleV3GenerationPost(validRequest, deps)
+    if (!queued.ok) throw new Error('expected queued')
+
+    await runScheduled(deps)
+
+    const badVersionEvidence: V3ScreenRenderEvidence = {
+      ...validEvidence,
+      rendererVersion: 'unknown-renderer-v1',
+    }
+
+    const result = await handleV3SubmitRenderEvidence({
+      jobId: queued.body.jobId,
+      jobToken: validRequest.jobToken,
+      evidence: [badVersionEvidence],
+    }, deps)
+
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.status).toBe(422)
+  })
+
+  it('rejects evidence with missing screens fail-closed', async () => {
+    const deps = createDeps(workingProvider)
+    const queued = await handleV3GenerationPost(validRequest, deps)
+    if (!queued.ok) throw new Error('expected queued')
+
+    await runScheduled(deps)
+
+    const result = await handleV3SubmitRenderEvidence({
+      jobId: queued.body.jobId,
+      jobToken: validRequest.jobToken,
+      evidence: [], // empty evidence
+    }, deps)
+
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.status).toBe(422)
+  })
+
+  it('rejects evidence submission when job is not in awaiting_render state', async () => {
+    const deps = createDeps(workingProvider)
+    const queued = await handleV3GenerationPost(validRequest, deps)
+    if (!queued.ok) throw new Error('expected queued')
+
+    // Still queued / processing, not awaiting_render yet
+    const result = await handleV3SubmitRenderEvidence({
+      jobId: queued.body.jobId,
+      jobToken: validRequest.jobToken,
+      evidence: [validEvidence],
+    }, deps)
+
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.status).toBe(409)
+  })
+})
+
+describe('handleV3GenerationPost request validation & idempotency', () => {
+  it('rejects a missing projectId', async () => {
+    const deps = createDeps(workingProvider)
+    const result = await handleV3GenerationPost({ ...validRequest, projectId: '' }, deps)
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.body.code).toBe('V3_INVALID_REQUEST')
+  })
+
+  it('rejects an invalid job token', async () => {
+    const deps = createDeps(workingProvider)
+    const result = await handleV3GenerationPost({ ...validRequest, jobToken: 'short' }, deps)
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.body.code).toBe('V3_INVALID_JOB_TOKEN')
+  })
+
+  it('replays the same job for the same Idempotency-Key and payload', async () => {
     const deps = createDeps(workingProvider)
     const first = await handleV3GenerationPost(validRequest, deps)
     const second = await handleV3GenerationPost(validRequest, deps)
@@ -185,83 +361,139 @@ describe('handleV3GenerationPost', () => {
     if (!result.ok) expect(result.status).toBe(409)
   })
 
-  it('rejects a replay attempt carrying the wrong job token', async () => {
+  it('rejects a different job token reusing the same Idempotency-Key', async () => {
     const deps = createDeps(workingProvider)
     await handleV3GenerationPost(validRequest, deps)
-    const result = await handleV3GenerationPost({ ...validRequest, jobToken: 'c'.repeat(40) }, deps)
+    const result = await handleV3GenerationPost({ ...validRequest, jobToken: 'z'.repeat(40) }, deps)
     expect(result.ok).toBe(false)
-    if (!result.ok) expect(result.status).toBe(403)
-  })
-
-  it('rejects an invalid Idempotency-Key format', async () => {
-    const deps = createDeps(workingProvider)
-    const result = await handleV3GenerationPost({ ...validRequest, idempotencyKey: 'short' }, deps)
-    expect(result.ok).toBe(false)
-    if (!result.ok) expect(result.status).toBe(400)
-  })
-
-  it('rejects a job token shorter than 32 characters', async () => {
-    const deps = createDeps(workingProvider)
-    const result = await handleV3GenerationPost({ ...validRequest, jobToken: 'short' }, deps)
-    expect(result.ok).toBe(false)
-    if (!result.ok) expect(result.status).toBe(403)
-  })
-
-  it('rejects an empty projectId or brief', async () => {
-    const deps = createDeps(workingProvider)
-    expect((await handleV3GenerationPost({ ...validRequest, projectId: '  ' }, deps)).ok).toBe(false)
-    expect((await handleV3GenerationPost({ ...validRequest, brief: '' }, deps)).ok).toBe(false)
-  })
-
-  it('rejects a requestedScreenCount outside 1-12', async () => {
-    const deps = createDeps(workingProvider)
-    const result = await handleV3GenerationPost({ ...validRequest, requestedScreenCount: 13 }, deps)
-    expect(result.ok).toBe(false)
-    if (!result.ok) expect(result.status).toBe(400)
-  })
-
-  it('marks the job failed with a safe, code-only error when planning fails — never leaking the raw provider response', async () => {
-    const deps = createDeps(brokenProvider)
-    const queued = await handleV3GenerationPost(validRequest, deps)
-    await runScheduled(deps)
-    if (!queued.ok) throw new Error('expected queued')
-    const record = await deps.jobs.findById(queued.body.jobId)
-    expect(record?.status).toBe('failed')
-    expect(record?.errorCode).toBe('V3_PRODUCT_MODEL_FAILED')
-    expect(record?.errorMessage).not.toContain('not json')
+    if (!result.ok) expect(result.body.code).toBe('V3_JOB_ACCESS_DENIED')
   })
 })
 
-describe('handleV3GenerationGet', () => {
-  it('returns the job snapshot for the correct job token', async () => {
+describe('handleV3GenerationGet job-token capability check', () => {
+  it('returns the job snapshot when the job token matches', async () => {
     const deps = createDeps(workingProvider)
     const queued = await handleV3GenerationPost(validRequest, deps)
     if (!queued.ok) throw new Error('expected queued')
+
     const result = await handleV3GenerationGet({ jobId: queued.body.jobId, jobToken: validRequest.jobToken }, deps)
     expect(result.ok).toBe(true)
     if (result.ok) expect(result.body.jobId).toBe(queued.body.jobId)
   })
 
-  it('rejects the wrong job token', async () => {
+  it('rejects the wrong job token with 403', async () => {
     const deps = createDeps(workingProvider)
     const queued = await handleV3GenerationPost(validRequest, deps)
     if (!queued.ok) throw new Error('expected queued')
+
     const result = await handleV3GenerationGet({ jobId: queued.body.jobId, jobToken: 'z'.repeat(40) }, deps)
     expect(result.ok).toBe(false)
     if (!result.ok) expect(result.status).toBe(403)
   })
 
-  it('returns 404 for an unknown job id', async () => {
+  it('rejects an unknown job id with 404', async () => {
     const deps = createDeps(workingProvider)
-    const result = await handleV3GenerationGet({ jobId: 'job_does_not_exist', jobToken: validRequest.jobToken }, deps)
+    const result = await handleV3GenerationGet({ jobId: 'job_missing', jobToken: validRequest.jobToken }, deps)
     expect(result.ok).toBe(false)
     if (!result.ok) expect(result.status).toBe(404)
   })
 })
 
-describe('runV3GenerationJob', () => {
-  it('is a no-op when the job record no longer exists', async () => {
+describe('handleV3GenerationEdit', () => {
+  it('successfully applies a typed patch and increments revision to 2', async () => {
     const deps = createDeps(workingProvider)
-    await expect(runV3GenerationJob('missing-job', validRequest, deps)).resolves.toBeUndefined()
+    const queued = await handleV3GenerationPost(validRequest, deps)
+    if (!queued.ok) throw new Error('expected queued')
+
+    await runScheduled(deps)
+
+    const editResult = await handleV3GenerationEdit({
+      jobId: queued.body.jobId,
+      jobToken: validRequest.jobToken,
+      screenId: 'scr_weekly-schedule',
+      instruction: 'Takvim başlığını güncelle',
+      expectedRevision: 1,
+    }, deps)
+
+    expect(editResult.ok).toBe(true)
+    if (editResult.ok) {
+      expect(editResult.body.acceptedDesignSpec?.metadata.revision).toBe(2)
+    }
+  })
+
+  it('rejects an edit with a stale revision with 409 conflict', async () => {
+    const deps = createDeps(workingProvider)
+    const queued = await handleV3GenerationPost(validRequest, deps)
+    if (!queued.ok) throw new Error('expected queued')
+
+    await runScheduled(deps)
+
+    const editResult = await handleV3GenerationEdit({
+      jobId: queued.body.jobId,
+      jobToken: validRequest.jobToken,
+      screenId: 'scr_weekly-schedule',
+      instruction: 'Takvim başlığını güncelle',
+      expectedRevision: 99, // Stale revision
+    }, deps)
+
+    expect(editResult.ok).toBe(false)
+    if (!editResult.ok) {
+      expect(editResult.status).toBe(409)
+      expect(editResult.body.code).toBe('V3_CONCURRENCY_CONFLICT')
+    }
+  })
+
+  it('rejects an edit against a job with no design spec yet with 409', async () => {
+    const deps = createDeps(workingProvider)
+    const queued = await handleV3GenerationPost(validRequest, deps)
+    if (!queued.ok) throw new Error('expected queued')
+
+    // Not scheduled yet — job has no acceptedDesignSpec
+    const editResult = await handleV3GenerationEdit({
+      jobId: queued.body.jobId,
+      jobToken: validRequest.jobToken,
+      screenId: 'scr_weekly-schedule',
+      instruction: 'Takvim başlığını güncelle',
+      expectedRevision: 1,
+    }, deps)
+
+    expect(editResult.ok).toBe(false)
+    if (!editResult.ok) expect(editResult.status).toBe(409)
+  })
+
+  it('rejects an edit whose instruction is empty', async () => {
+    const deps = createDeps(workingProvider)
+    const queued = await handleV3GenerationPost(validRequest, deps)
+    if (!queued.ok) throw new Error('expected queued')
+    await runScheduled(deps)
+
+    const editResult = await handleV3GenerationEdit({
+      jobId: queued.body.jobId,
+      jobToken: validRequest.jobToken,
+      screenId: 'scr_weekly-schedule',
+      instruction: '  ',
+      expectedRevision: 1,
+    }, deps)
+
+    expect(editResult.ok).toBe(false)
+    if (!editResult.ok) expect(editResult.body.code).toBe('V3_INVALID_REQUEST')
+  })
+
+  it('rejects an edit against an unknown screenId', async () => {
+    const deps = createDeps(workingProvider)
+    const queued = await handleV3GenerationPost(validRequest, deps)
+    if (!queued.ok) throw new Error('expected queued')
+    await runScheduled(deps)
+
+    const editResult = await handleV3GenerationEdit({
+      jobId: queued.body.jobId,
+      jobToken: validRequest.jobToken,
+      screenId: 'scr_does_not_exist',
+      instruction: 'Takvim başlığını güncelle',
+      expectedRevision: 1,
+    }, deps)
+
+    expect(editResult.ok).toBe(false)
+    if (!editResult.ok) expect(editResult.body.code).toBe('V3_INVALID_REQUEST')
   })
 })

@@ -10,7 +10,7 @@ import { runProductStaticCritics, runStaticCritics, type ProductStaticCriticsRep
 import { validateUXStructure, type UXStructure } from './ux-structure.ts'
 import { parseStrictJsonObject } from './validation.ts'
 
-export type V3PlanningOperation = 'product_model' | 'screen_jobs' | 'ux_structure' | 'component_capabilities' | 'layout_plan' | 'content_plan' | 'design_spec_compile' | 'static_critics'
+export type V3PlanningOperation = 'product_model' | 'screen_jobs' | 'ux_structure' | 'component_capabilities' | 'layout_plan' | 'content_plan' | 'design_spec_compile' | 'static_critics' | 'patch_plan'
 export type V3PlanningProvider = {
   completeJson(input: { operation: V3PlanningOperation; messages: V3PromptMessage[]; correlationId: string; timeoutMs: number }): Promise<string>
 }
@@ -25,6 +25,17 @@ export class V3PlanningError extends Error {
   constructor(public readonly stage: V3PlanningOperation, public readonly issues: string[]) {
     super(`Generation V3 ${stage} validation failed`)
     this.name = 'V3PlanningError'
+  }
+}
+
+/**
+ * Defined here (not in provider.ts) so http-adapter.ts can catch it without importing provider.ts —
+ * provider.ts reads Deno.env at module load time, which crashes non-Deno test runners on import.
+ */
+export class V3ProviderError extends Error {
+  constructor(public readonly code: string, message: string, public readonly provider: string, public readonly retryable: boolean) {
+    super(message)
+    this.name = 'V3ProviderError'
   }
 }
 

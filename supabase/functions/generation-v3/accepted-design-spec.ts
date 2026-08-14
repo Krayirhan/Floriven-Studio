@@ -38,6 +38,7 @@ export type AcceptedDesignSpec = {
   metadata: {
     acceptedAt: string
     contentHash: string
+    revision: number
     screenJobIds: string[]
     repairedScreenJobIds: string[]
     renderEvidence: RenderEvidenceStatus
@@ -98,6 +99,7 @@ export async function acceptDesignSpec(planning: V3PlanningOutput, input: Accept
     metadata: {
       acceptedAt: input.acceptedAt,
       contentHash,
+      revision: 1,
       screenJobIds: jobs.map((job) => job.id),
       repairedScreenJobIds: planning.repairs.filter((repair) => repair.operations.length > 0).map((repair) => repair.screenJobId),
       renderEvidence,

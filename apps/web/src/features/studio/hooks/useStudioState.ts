@@ -7,7 +7,7 @@ import { useStudioHistory } from "../state/useStudioHistory";
 import { useStudioSelection } from "../state/useStudioSelection";
 import { useStudioUiState } from "../state/useStudioUiState";
 
-export function useStudioState(projectId: string, engine: GenerationEngine = "v2") {
+export function useStudioState(projectId: string, engine: GenerationEngine = "v3") {
   const ui = useStudioUiState();
   const historyState = useStudioHistory();
 

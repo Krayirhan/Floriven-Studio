@@ -233,7 +233,13 @@ export function DesignNodeRenderer({ node, selectedNodeId, onSelect, activeNavIt
       const variant = stringProp(node, "variant", "elevated");
       const variantClass = styles[`generatedCard${variant[0]?.toUpperCase() ?? ""}${variant.slice(1)}`] ?? "";
       const family = stringProp(node, "family", presentation.cards.types[0] ?? "");
-      return <section {...selectable} data-component-family={family || undefined} data-surface-style={presentation.surfaces.style} className={`${styles.generatedCard} ${variantClass} ${toneClass(node)} ${selectedClass}`}>{childNodes}</section>;
+      const title = stringProp(node, "title");
+      const subtitle = stringProp(node, "subtitle");
+      return <section {...selectable} data-component-family={family || undefined} data-surface-style={presentation.surfaces.style} className={`${styles.generatedCard} ${variantClass} ${toneClass(node)} ${selectedClass}`}>
+        {title && <h3 className={styles.generatedCardTitle ?? ""}>{title}</h3>}
+        {subtitle && <p className={styles.generatedCardSubtitle ?? ""}>{subtitle}</p>}
+        {childNodes}
+      </section>;
     }
     case "Button":
       return <button {...selectable} type="button" data-button-style={presentation.controls.buttons[0]} className={`${styles.generatedButton} ${selectedClass}`}>{stringProp(node, "label", stringProp(node, "icon", "Devam"))}</button>;

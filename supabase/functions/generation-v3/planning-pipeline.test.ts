@@ -75,17 +75,27 @@ const contentPlan = {
   regions: [
     {
       regionId: 'region-calendar',
-      nodes: [{ nodeId: 'node-calendar', component: 'Calendar', fields: [
-        { field: 'title', value: 'Salı 14:00 Ahşap Villa saha ziyareti' },
-        { field: 'subtitle', value: 'Bu hafta planlanan ziyaret zamanı: Salı 14:00' },
-      ] }],
+      nodes: [{
+        nodeId: 'node-calendar', component: 'Calendar',
+        props: {
+          label: 'Haftalık Saha Ziyaret Takvimi',
+          days: ['Pzt 10', 'Sal 11', 'Çar 12', 'Per 13', 'Cum 14'],
+          events: ['Salı 14:00 Ahşap Villa saha ziyaret zamanı'],
+        },
+      }],
       emptyStateMessage: 'Bu hafta için planlanmış saha ziyareti yok',
       loadingStateMessage: 'Haftalık takvim yükleniyor',
       errorStateMessage: null,
     },
     {
       regionId: 'region-visit-details',
-      nodes: [{ nodeId: 'node-visit-card', component: 'Card', fields: [{ field: 'projectName', value: 'Proje adı: Ahşap Villa Yenileme' }] }],
+      nodes: [{
+        nodeId: 'node-visit-card', component: 'Card',
+        props: {
+          title: 'Proje adı: Ahşap Villa Yenileme',
+          subtitle: 'Ahşap kompozit ve iç mekan tasarımı',
+        },
+      }],
       emptyStateMessage: null, loadingStateMessage: null, errorStateMessage: null,
     },
   ],
@@ -117,7 +127,7 @@ describe('Generation V3 planning pipeline', () => {
     expect(result.layoutPlans).toHaveLength(1)
     expect(result.layoutPlans[0].regions.find((region) => region.regionId === 'region-calendar')?.emphasis).toBe('primary')
     expect(result.contentPlans).toHaveLength(1)
-    expect(result.contentPlans[0].regions[0].nodes[0].fields.length).toBeGreaterThan(0)
+    expect(result.contentPlans[0].regions[0].nodes[0].props).toBeDefined()
     expect(result.designSpecScreens).toHaveLength(1)
     expect(result.designSpecScreens[0].root.children.map((container) => container.type)).toEqual(['Stack', 'Stack'])
     expect(result.designSpecScreens[0].root.children[0].children[0].type).toBe('Calendar')

@@ -17,8 +17,8 @@ import { capturePhoneBaseline } from "./canvas/runtimeCapture";
 export function StudioPage() {
   const { projectId } = useParams();
   const [searchParams] = useSearchParams();
-  // Opt-in only (?engine=v3): V2 stays the default generation path until V3 clears its ADR-0009 benchmark gates.
-  const engine = searchParams.get("engine") === "v3" ? "v3" : "v2";
+  // V3 is promoted to default engine per ADR-0009; V2 remains accessible via ?engine=v2 during the transition window.
+  const engine = searchParams.get("engine") === "v2" ? "v2" : "v3";
   const studio = useStudioState(projectId ?? "", engine);
   const runtimeCertificationToken = searchParams.get("runtimeCertificationToken") ?? undefined;
   const readOnly = Boolean(runtimeCertificationToken);
@@ -28,6 +28,32 @@ export function StudioPage() {
   const [exportMessage, setExportMessage] = useState<string>("");
   const composerRef = useRef<HTMLInputElement>(null);
   const screensAddedRef = useRef(false);
+  // "idle" -> "prompt-set" -> "triggered". Two effects because setPrompt's state update isn't
+  // visible to generate() (a useCallback closing over the previous render's ui.prompt) until
+  // after a re-render — calling both in the same tick would fire generate() on the stale, empty
+  // prompt.
+  const autoGenerateRef = useRef<"idle" | "prompt-set" | "triggered">("idle");
+
+  // Lets the dashboard's own "Ne tasarlamak istiyorsun?" composer hand off straight into a
+  // running generation instead of requiring a second click inside Studio (useDashboardComposer
+  // navigates here with these params when engine=v3, since V3 has no dashboard-side
+  // job-creation endpoint of its own yet — Studio's already-built generate() does that part).
+  useEffect(() => {
+    if (autoGenerateRef.current !== "idle") return;
+    const autoBrief = searchParams.get("autoGenerate") === "1" ? searchParams.get("brief") : null;
+    if (!autoBrief) return;
+    autoGenerateRef.current = "prompt-set";
+    studio.setPrompt(autoBrief);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (autoGenerateRef.current === "prompt-set" && studio.prompt) {
+      autoGenerateRef.current = "triggered";
+      void studio.generate();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [studio.prompt]);
 
   const handleDeleteScreen = (screenId: string) => {
     const wasActive = screenId === studio.activeScreenId;
@@ -154,6 +180,9 @@ export function StudioPage() {
       {generation.error && <div className={styles.jobError} role="alert">{generation.error}</div>}
       {visibleGenerationJob?.status === "failed" && visibleGenerationJob.errorCode === "QUALITY_REJECTED" && (
         <div className={styles.jobStatus} role="status" aria-live="polite">Ekranlar oluşturuldu; statik kalite kapısı adayı reddetti. Statik kalite: {visibleGenerationJob.qualityReport?.score ?? "—"}/100. Bu skor görsel/runtime kalite skoru değildir. Önizleme gösteriliyor.</div>
+      )}
+      {visibleGenerationJob?.status === "failed" && visibleGenerationJob.errorCode !== "QUALITY_REJECTED" && (
+        <div className={styles.jobError} role="alert">Üretim başarısız oldu{visibleGenerationJob.errorCode ? ` (${visibleGenerationJob.errorCode})` : ""}: {visibleGenerationJob.errorMessage ?? "Bilinmeyen hata."}</div>
       )}
       {exportMessage && <div className={styles.jobStatus} role="status" aria-live="polite">{exportMessage}</div>}
       <StudioToolbar

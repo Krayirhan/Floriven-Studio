@@ -325,6 +325,10 @@ Geriye uyumlu alan ekleme aynı v1 içinde olabilir. Alan anlamını değiştirm
 
 ## Üretim deneyim imzası
 
+Generation V3 job güvenliği, runtime evidence, edit/patch ve deployment geçiş kapıları
+[Generation V3 Production Readiness Planı](../02-architecture/GENERATION_V3_PRODUCTION_READINESS_PLAN.md)
+Sprint 4–10 kapsamında izlenir.
+
 Planlama çıktısındaki ekranlar opsiyonel `experiencePattern` alanı taşır. İzinli değerler
 `standard`, `calendar`, `timeline`, `gallery`, `board` ve `map` değerleridir. Alan yoksa
 sunucu kullanıcı brief'i ve ekran sözleşmesinden türetir. `standard` dışındaki her değer

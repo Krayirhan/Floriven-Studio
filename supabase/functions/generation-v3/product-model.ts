@@ -22,9 +22,16 @@ export const PRODUCT_MODEL_JSON_SCHEMA = {
   properties: {
     version: { const: PRODUCT_MODEL_VERSION }, productName: { type: 'string', minLength: 1, maxLength: 120 },
     domain: { type: 'string', minLength: 1, maxLength: 120 }, audience: { type: 'string', minLength: 1, maxLength: 240 },
-    actors: { type: 'array', minItems: 1, maxItems: 8 }, entities: { type: 'array', minItems: 1, maxItems: 20 },
-    capabilities: { type: 'array', minItems: 2, maxItems: 30 }, vocabulary: { type: 'array', minItems: 3, maxItems: 40 },
-    constraints: { type: 'array', maxItems: 20 },
+    actors: {
+      type: 'array', minItems: 1, maxItems: 8,
+      items: { type: 'object', additionalProperties: false, required: ['id', 'name', 'goals'], properties: { id: { type: 'string' }, name: { type: 'string' }, goals: { type: 'array', items: { type: 'string' } } } },
+    },
+    entities: {
+      type: 'array', minItems: 1, maxItems: 20,
+      items: { type: 'object', additionalProperties: false, required: ['id', 'name', 'states', 'actions'], properties: { id: { type: 'string' }, name: { type: 'string' }, states: { type: 'array', items: { type: 'string' } }, actions: { type: 'array', items: { type: 'string' } } } },
+    },
+    capabilities: { type: 'array', minItems: 2, maxItems: 30, items: { type: 'string' } }, vocabulary: { type: 'array', minItems: 3, maxItems: 40, items: { type: 'string' } },
+    constraints: { type: 'array', maxItems: 20, items: { type: 'string' } },
   },
 } as const
 

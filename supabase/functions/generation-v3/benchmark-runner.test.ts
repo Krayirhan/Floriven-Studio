@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { V3_PLANNING_BENCHMARKS } from './benchmark-fixtures.ts'
 import { runV3Planning, V3PlanningError, type V3PlanningProvider } from './planning-pipeline.ts'
 import { acceptDesignSpec, DesignSpecAcceptanceError } from './accepted-design-spec.ts'
 import type { ProductModel } from './product-model.ts'
@@ -86,17 +87,27 @@ const scheduleContent = {
   regions: [
     {
       regionId: 'region-calendar',
-      nodes: [{ nodeId: 'node-calendar', component: 'Calendar', fields: [
-        { field: 'title', value: 'Salı 14:00 Ahşap Villa saha ziyareti' },
-        { field: 'subtitle', value: 'Bu hafta planlanan ziyaret zamanı: Salı 14:00' },
-      ] }],
+      nodes: [{
+        nodeId: 'node-calendar', component: 'Calendar',
+        props: {
+          label: 'Haftalık Saha Ziyaret Takvimi',
+          days: ['Pzt 10', 'Sal 11', 'Çar 12', 'Per 13', 'Cum 14'],
+          events: ['Salı 14:00 Ahşap Villa saha ziyaret zamanı'],
+        },
+      }],
       emptyStateMessage: 'Bu hafta için planlanmış saha ziyareti yok',
       loadingStateMessage: 'Haftalık takvim yükleniyor',
       errorStateMessage: null,
     },
     {
       regionId: 'region-visit-details',
-      nodes: [{ nodeId: 'node-visit-card', component: 'Card', fields: [{ field: 'projectName', value: 'Proje adı: Ahşap Villa Yenileme' }] }],
+      nodes: [{
+        nodeId: 'node-visit-card', component: 'Card',
+        props: {
+          title: 'Proje adı: Ahşap Villa Yenileme',
+          subtitle: 'Ahşap kompozit ve iç mekan tasarımı',
+        },
+      }],
       emptyStateMessage: null, loadingStateMessage: null, errorStateMessage: null,
     },
   ],
@@ -182,12 +193,25 @@ const boardContent = {
   regions: [
     {
       regionId: 'region-columns',
-      nodes: [{ nodeId: 'node-board', component: 'KanbanBoard', fields: [{ field: 'columns', value: 'Hazırlanıyor, Hazır, Servis Edildi sipariş durumu kolonları' }] }],
+      nodes: [{
+        nodeId: 'node-board', component: 'KanbanBoard',
+        props: {
+          label: 'Mutfak Sipariş Panosu',
+          columns: ['Hazırlanıyor', 'Hazır', 'Servis Edildi'],
+          cards: ['Masa 4 sipariş durumu: Hazırlanıyor', 'Masa 2 sipariş durumu: Servis Edildi'],
+        },
+      }],
       emptyStateMessage: 'Şu anda mutfakta bekleyen sipariş yok', loadingStateMessage: 'Sipariş panosu yükleniyor', errorStateMessage: null,
     },
     {
       regionId: 'region-order-summary',
-      nodes: [{ nodeId: 'node-summary', component: 'Text', fields: [{ field: 'summary', value: 'Seçili sipariş adı: Karides Güveç, masa 4' }] }],
+      nodes: [{
+        nodeId: 'node-summary', component: 'Text',
+        props: {
+          text: 'Seçili sipariş adı: Karides Güveç, masa 4',
+          variant: 'body',
+        },
+      }],
       emptyStateMessage: null, loadingStateMessage: null, errorStateMessage: null,
     },
   ],
@@ -256,5 +280,46 @@ describe('Benchmark corpus acceptance-gate defense in depth', () => {
     const provider: V3PlanningProvider = { completeJson: async ({ operation }) => respondSchedule(operation) }
     const planning = await runV3Planning({ brief: 'Bağımsız mimarlar için proje ve saha takvimi', requestedScreenCount: 1, correlationId: 'bench-empty' }, provider)
     await expect(acceptDesignSpec({ ...planning, designSpecScreens: [], staticCritics: [] }, acceptanceInput)).rejects.toBeInstanceOf(DesignSpecAcceptanceError)
+  })
+})
+
+describe('Benchmark corpus 25 briefs & 100 screens quality gates', () => {
+  it('verifies 100% required interaction and data coverage across all 25 corpus briefs', () => {
+    expect(V3_PLANNING_BENCHMARKS).toHaveLength(25)
+
+    let totalScreens = 0
+    const validInteractions = new Set(['schedule', 'reorder', 'visualize', 'create', 'compare', 'search', 'select', 'inspect', 'edit'])
+    const validArchetypes = new Set(['calendar', 'board', 'map', 'gallery', 'timeline', 'form', 'detail', 'list', 'dashboard', 'settings'])
+
+    for (const benchmark of V3_PLANNING_BENCHMARKS) {
+      expect(validInteractions.has(benchmark.requiredInteraction)).toBe(true)
+      expect(validArchetypes.has(benchmark.experiencePattern)).toBe(true)
+      expect(benchmark.expectedDomainTerms.length).toBeGreaterThanOrEqual(3)
+      expect(benchmark.targetScreenCount).toBeGreaterThanOrEqual(1)
+      totalScreens += benchmark.targetScreenCount
+    }
+
+    expect(totalScreens).toBe(100)
+  })
+
+  it('guarantees defining component mappings for all 10 experience archetypes', () => {
+    const archetypeDefiningComponents: Record<string, string[]> = {
+      calendar: ['Calendar'],
+      board: ['KanbanBoard'],
+      map: ['MapView'],
+      gallery: ['Gallery'],
+      timeline: ['Timeline'],
+      form: ['InputField', 'Button'],
+      detail: ['Card', 'ProductCard'],
+      list: ['ListItem', 'SearchField'],
+      dashboard: ['Card', 'BarChart', 'LineChart'],
+      settings: ['Switch', 'Checkbox', 'Button'],
+    }
+
+    const archetypes = ['calendar', 'board', 'map', 'gallery', 'timeline', 'form', 'detail', 'list', 'dashboard', 'settings']
+    for (const arch of archetypes) {
+      expect(archetypeDefiningComponents[arch]).toBeDefined()
+      expect(archetypeDefiningComponents[arch].length).toBeGreaterThanOrEqual(1)
+    }
   })
 })

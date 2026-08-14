@@ -61,4 +61,5 @@ export * from "./runtime-hierarchy-versioning";
 export * from "./runtime-certification";
 export * from "./identity-validator";
 export * from "./semantic-hash";
+export * from "./component-contracts";
 export { SCHEMA_VERSION } from "./version";

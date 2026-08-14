@@ -18,8 +18,16 @@ export function useDashboardComposer() {
   const referenceInputRef = useRef<HTMLInputElement>(null);
   const [referenceName, setReferenceName] = useState<string | null>(null);
 
+  // V3 is promoted to default engine per ADR-0009; V2 remains accessible via ?engine=v2 during the transition window.
+  const engine = new URLSearchParams(location.search).get("engine") === "v2" ? "v2" : "v3";
+
   const startGeneration = async () => {
     if (!prompt.trim()) return;
+    if (engine === "v3") {
+      const projectId = `prj_${crypto.randomUUID()}`;
+      navigate(`/app/projeler/${projectId}/studio?engine=v3&autoGenerate=1&brief=${encodeURIComponent(prompt.trim())}`);
+      return;
+    }
     setGenerating(true);
     setGenerationError(null);
     try {

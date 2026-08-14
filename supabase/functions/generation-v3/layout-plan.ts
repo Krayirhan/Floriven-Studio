@@ -36,8 +36,30 @@ export const LAYOUT_PLAN_JSON_SCHEMA = {
   required: ['version', 'screenJobId', 'regions', 'responsive', 'navigation'],
   properties: {
     version: { const: LAYOUT_PLAN_VERSION }, screenJobId: { type: 'string' },
-    regions: { type: 'array', minItems: 2, maxItems: 10 }, responsive: { type: 'array' },
-    navigation: { type: ['object', 'null'] },
+    regions: {
+      type: 'array', minItems: 2, maxItems: 10, description: 'exactly one entry per region, in any order',
+      items: {
+        type: 'object', additionalProperties: false, required: ['regionId', 'mode', 'density', 'emphasis', 'nodes'],
+        properties: {
+          regionId: { type: 'string' },
+          mode: { type: 'string', enum: ['column', 'row', 'stack', 'grid', 'absolute', 'scroll'] },
+          density: { type: 'string', enum: ['compact', 'comfortable', 'spacious'] },
+          emphasis: { type: 'string', enum: ['primary', 'secondary', 'support'], description: 'fixed by REGION_EMPHASIS — do not change' },
+          nodes: {
+            type: 'array', description: 'exactly one entry per component in REGION_COMPONENTS for this region',
+            items: { type: 'object', additionalProperties: false, required: ['id', 'component', 'order', 'size'], properties: { id: { type: 'string' }, component: { type: 'string', description: 'must be one of this region\'s given components' }, order: { type: 'integer', minimum: 1 }, size: { type: 'string', enum: ['hug', 'fill', 'fixed'] } } },
+          },
+        },
+      },
+    },
+    responsive: {
+      type: 'array', description: 'exactly one entry per region per breakpoint (narrow and wide)',
+      items: { type: 'object', additionalProperties: false, required: ['regionId', 'breakpoint', 'mode', 'visible'], properties: { regionId: { type: 'string' }, breakpoint: { type: 'string', enum: ['narrow', 'wide'] }, mode: { type: 'string', enum: ['column', 'row', 'stack', 'grid', 'absolute', 'scroll'] }, visible: { type: 'boolean' } } },
+    },
+    navigation: {
+      type: ['object', 'null'], description: 'null unless NAVIGATION_CANDIDATES is non-empty',
+      properties: { regionId: { type: 'string' }, component: { type: 'string', description: 'must be one of NAVIGATION_CANDIDATES' }, placement: { type: 'string', enum: ['top', 'bottom', 'inline'] } },
+    },
   },
 } as const
 

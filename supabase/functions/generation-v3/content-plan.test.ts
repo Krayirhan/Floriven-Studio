@@ -51,17 +51,27 @@ const scheduleContent: ContentPlan = {
   regions: [
     {
       regionId: 'region-calendar',
-      nodes: [{ nodeId: 'node-calendar', component: 'Calendar', fields: [
-        { field: 'title', value: 'Salı 14:00 Ahşap Villa saha ziyareti' },
-        { field: 'subtitle', value: 'Bu hafta planlanan ziyaret zamanı: Salı 14:00' },
-      ] }],
+      nodes: [{
+        nodeId: 'node-calendar', component: 'Calendar',
+        props: {
+          label: 'Haftalık Ziyaret Takvimi',
+          days: ['Pzt 10', 'Sal 11', 'Çar 12', 'Per 13', 'Cum 14'],
+          events: ['Salı 14:00 Ahşap Villa saha ziyaret zamanı'],
+        },
+      }],
       emptyStateMessage: 'Bu hafta için planlanmış saha ziyareti yok',
       loadingStateMessage: 'Haftalık takvim yükleniyor',
       errorStateMessage: null,
     },
     {
       regionId: 'region-visit-details',
-      nodes: [{ nodeId: 'node-visit-card', component: 'Card', fields: [{ field: 'projectName', value: 'Proje adı: Ahşap Villa Yenileme' }] }],
+      nodes: [{
+        nodeId: 'node-visit-card', component: 'Card',
+        props: {
+          title: 'Proje adı: Ahşap Villa Yenileme',
+          subtitle: 'Ahşap kompozit ve iç mekan tasarımı',
+        },
+      }],
       emptyStateMessage: null, loadingStateMessage: null, errorStateMessage: null,
     },
   ],
@@ -115,14 +125,25 @@ const boardContent: ContentPlan = {
   regions: [
     {
       regionId: 'region-columns',
-      nodes: [{ nodeId: 'node-board', component: 'KanbanBoard', fields: [
-        { field: 'columns', value: 'Hazırlanıyor, Hazır, Servis Edildi sipariş durumu kolonları' },
-      ] }],
+      nodes: [{
+        nodeId: 'node-board', component: 'KanbanBoard',
+        props: {
+          label: 'Mutfak Sipariş Panosu',
+          columns: ['Hazırlanıyor', 'Hazır', 'Servis Edildi'],
+          cards: ['Masa 4 sipariş durumu: Hazırlanıyor', 'Masa 2 sipariş durumu: Servis Edildi'],
+        },
+      }],
       emptyStateMessage: 'Şu anda mutfakta bekleyen sipariş yok', loadingStateMessage: 'Sipariş panosu yükleniyor', errorStateMessage: null,
     },
     {
       regionId: 'region-order-summary',
-      nodes: [{ nodeId: 'node-summary', component: 'Text', fields: [{ field: 'summary', value: 'Seçili sipariş adı: Karides Güveç, masa 4' }] }],
+      nodes: [{
+        nodeId: 'node-summary', component: 'Text',
+        props: {
+          text: 'Seçili sipariş adı: Karides Güveç, masa 4',
+          variant: 'body',
+        },
+      }],
       emptyStateMessage: null, loadingStateMessage: null, errorStateMessage: null,
     },
   ],
@@ -138,14 +159,57 @@ describe('ContentPlan@1 validator', () => {
   })
 
   it('rejects a node content entry whose component does not match the layout node', () => {
-    const broken: ContentPlan = { ...scheduleContent, regions: [{ ...scheduleContent.regions[0], nodes: [{ ...scheduleContent.regions[0].nodes[0], component: 'Chart' }] }, scheduleContent.regions[1]] }
+    const broken: ContentPlan = {
+      ...scheduleContent,
+      regions: [
+        { ...scheduleContent.regions[0], nodes: [{ ...scheduleContent.regions[0].nodes[0], component: 'Chart' as any }] },
+        scheduleContent.regions[1],
+      ],
+    }
     const result = validateContentPlan(broken, scheduleStructure, scheduleLayout)
     expect(result).toMatchObject({ ok: false })
     if (!result.ok) expect(result.issues.some((issue) => issue.includes('must be'))).toBe(true)
   })
 
+  it('rejects content that violates component prop contracts (e.g. missing Calendar days)', () => {
+    const broken: ContentPlan = {
+      ...scheduleContent,
+      regions: [
+        {
+          ...scheduleContent.regions[0],
+          nodes: [{
+            nodeId: 'node-calendar',
+            component: 'Calendar',
+            props: { label: 'Takvim' } as any,
+          }],
+        },
+        scheduleContent.regions[1],
+      ],
+    }
+    const result = validateContentPlan(broken, scheduleStructure, scheduleLayout)
+    expect(result).toMatchObject({ ok: false })
+    if (!result.ok) expect(result.issues.some((issue) => issue.includes('array of strings required'))).toBe(true)
+  })
+
   it('rejects content that never reflects a region\'s declared data binding', () => {
-    const broken: ContentPlan = { ...scheduleContent, regions: [{ ...scheduleContent.regions[0], nodes: [{ ...scheduleContent.regions[0].nodes[0], fields: [{ field: 'title', value: 'Salı 14:00 Ahşap Villa saha ziyareti' }] }] }, scheduleContent.regions[1]] }
+    const broken: ContentPlan = {
+      ...scheduleContent,
+      regions: [
+        {
+          ...scheduleContent.regions[0],
+          nodes: [{
+            nodeId: 'node-calendar',
+            component: 'Calendar',
+            props: {
+              label: 'Takvim',
+              days: ['Pzt 1', 'Sal 2'],
+              events: ['Ahşap Villa saha denetimi'], // lacks 'ziyaret zamanı'
+            },
+          }],
+        },
+        scheduleContent.regions[1],
+      ],
+    }
     const result = validateContentPlan(broken, scheduleStructure, scheduleLayout)
     expect(result).toMatchObject({ ok: false })
     if (!result.ok) expect(result.issues.some((issue) => issue.includes('no content reflects data binding'))).toBe(true)
@@ -165,29 +229,87 @@ describe('ContentPlan@1 validator', () => {
     if (!result.ok) expect(result.issues.some((issue) => issue.includes('message required'))).toBe(true)
   })
 
-  it('rejects placeholder content', () => {
-    const broken: ContentPlan = { ...scheduleContent, regions: [scheduleContent.regions[0], { ...scheduleContent.regions[1], nodes: [{ ...scheduleContent.regions[1].nodes[0], fields: [{ field: 'projectName', value: 'Lorem ipsum' }] }] }] }
+  it('rejects placeholder content inside component props', () => {
+    const broken: ContentPlan = {
+      ...scheduleContent,
+      regions: [
+        scheduleContent.regions[0],
+        {
+          ...scheduleContent.regions[1],
+          nodes: [{
+            nodeId: 'node-visit-card',
+            component: 'Card',
+            props: {
+              title: 'Lorem ipsum',
+              subtitle: 'proje adı detayları',
+            },
+          }],
+        },
+      ],
+    }
     const result = validateContentPlan(broken, scheduleStructure, scheduleLayout)
     expect(result).toMatchObject({ ok: false })
     if (!result.ok) expect(result.issues.some((issue) => issue.includes('placeholder content'))).toBe(true)
   })
 
-  it('rejects visual leakage (hex color, pixel unit) in content values', () => {
-    const broken: ContentPlan = { ...scheduleContent, regions: [scheduleContent.regions[0], { ...scheduleContent.regions[1], nodes: [{ ...scheduleContent.regions[1].nodes[0], fields: [{ field: 'projectName', value: 'Proje adı #ffffff 16px' }] }] }] }
+  it('rejects visual leakage (hex color, pixel unit) in component prop values', () => {
+    const broken: ContentPlan = {
+      ...scheduleContent,
+      regions: [
+        scheduleContent.regions[0],
+        {
+          ...scheduleContent.regions[1],
+          nodes: [{
+            nodeId: 'node-visit-card',
+            component: 'Card',
+            props: {
+              title: 'Proje adı #ffffff 16px',
+            },
+          }],
+        },
+      ],
+    }
     const result = validateContentPlan(broken, scheduleStructure, scheduleLayout)
     expect(result).toMatchObject({ ok: false })
     if (!result.ok) expect(result.issues.some((issue) => issue.includes('visual leakage'))).toBe(true)
   })
 
   it('rejects reusing the same content value twice across the screen', () => {
-    const broken: ContentPlan = { ...scheduleContent, regions: [scheduleContent.regions[0], { ...scheduleContent.regions[1], nodes: [{ ...scheduleContent.regions[1].nodes[0], fields: [{ field: 'projectName', value: 'Salı 14:00 Ahşap Villa saha ziyareti' }] }] }] }
+    const broken: ContentPlan = {
+      ...scheduleContent,
+      regions: [
+        scheduleContent.regions[0],
+        {
+          ...scheduleContent.regions[1],
+          nodes: [{
+            nodeId: 'node-visit-card',
+            component: 'Card',
+            props: {
+              title: 'Salı 14:00 Ahşap Villa saha ziyaret zamanı', // duplicated from calendar event
+            },
+          }],
+        },
+      ],
+    }
     const result = validateContentPlan(broken, scheduleStructure, scheduleLayout)
     expect(result).toMatchObject({ ok: false })
     if (!result.ok) expect(result.issues.some((issue) => issue.includes('duplicate content value'))).toBe(true)
   })
 
   it('rejects a fabricated node reference', () => {
-    const broken: ContentPlan = { ...scheduleContent, regions: [scheduleContent.regions[0], { ...scheduleContent.regions[1], nodes: [{ ...scheduleContent.regions[1].nodes[0], nodeId: 'node-does-not-exist' }] }] }
+    const broken: ContentPlan = {
+      ...scheduleContent,
+      regions: [
+        scheduleContent.regions[0],
+        {
+          ...scheduleContent.regions[1],
+          nodes: [{
+            ...scheduleContent.regions[1].nodes[0],
+            nodeId: 'node-does-not-exist',
+          }],
+        },
+      ],
+    }
     const result = validateContentPlan(broken, scheduleStructure, scheduleLayout)
     expect(result).toMatchObject({ ok: false })
   })

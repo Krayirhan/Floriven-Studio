@@ -836,6 +836,8 @@
   box-shadow: var(--gen-card-shadow, 0 1px 2px rgba(15,23,42,.05));
   transform: scale(var(--gen-interaction-scale, 1));
 }
+.generatedCardTitle { font-size: 14px; font-weight: 700; margin: 0 0 4px 0; color: var(--fv-phone-text); }
+.generatedCardSubtitle { font-size: 12px; margin: 0 0 8px 0; color: color-mix(in srgb, var(--fv-phone-text) 70%, transparent); line-height: 1.4; }
 .generatedCardTinted { background: var(--gen-accent-soft); border-color: transparent; box-shadow: none; }
 .generatedCardOutline { background: transparent; box-shadow: none; border-color: color-mix(in srgb, var(--fv-phone-text) 14%, transparent); }
 

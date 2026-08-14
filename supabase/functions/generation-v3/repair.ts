@@ -71,14 +71,25 @@ export function runTargetedRepair(job: ScreenJob, structure: UXStructure, capabi
         patchedLeaf = { ...patchedLeaf, interactions: recomputedInteractions }
       }
 
-      const joinedText = canonical(Object.values(patchedLeaf.props).join(' | '))
+      const propValues: string[] = []
+      for (const val of Object.values(patchedLeaf.props as Record<string, unknown>)) {
+        if (typeof val === 'string') propValues.push(val)
+        else if (typeof val === 'number' || typeof val === 'boolean') propValues.push(String(val))
+        else if (Array.isArray(val)) {
+          for (const item of val) {
+            if (typeof item === 'string') propValues.push(item)
+            else if (typeof item === 'number') propValues.push(String(item))
+          }
+        }
+      }
+      const joinedText = canonical(propValues.join(' | '))
       const recomputedBindings: DataBinding[] = regionDataBindings.filter((term) => joinedText.includes(canonical(term))).map((dataPath) => ({ dataPath }))
       if (!bindingsEqual(patchedLeaf.bindings, recomputedBindings)) {
         operations.push({ op: 'replaceBindings', nodeId: patchedLeaf.id })
         patchedLeaf = { ...patchedLeaf, bindings: recomputedBindings }
       }
 
-      const fallbackLabel = Object.values(patchedLeaf.props)[0] ?? patchedLeaf.a11y.label
+      const fallbackLabel = propValues[0] ?? patchedLeaf.a11y.label
       const recomputedLeafA11y: A11y = { ...patchedLeaf.a11y, label: patchedLeaf.a11y.label.trim() ? patchedLeaf.a11y.label : fallbackLabel, role: patchedLeaf.a11y.role.trim() ? patchedLeaf.a11y.role : 'content' }
       if (!a11yEquals(patchedLeaf.a11y, recomputedLeafA11y)) {
         operations.push({ op: 'replaceA11y', nodeId: patchedLeaf.id })

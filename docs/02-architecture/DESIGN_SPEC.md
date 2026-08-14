@@ -373,6 +373,10 @@ başlığını açıkça içerir.
 
 ## Ayırt edici deneyim sözleşmesi
 
+Generation V3 typed component property sözleşmeleri, compiler geçişi ve renderer kabul
+kapıları [Generation V3 Production Readiness Planı](GENERATION_V3_PRODUCTION_READINESS_PLAN.md)
+Sprint 1–3 kapsamında izlenir.
+
 `ProductScreenSpec.experiencePattern`, ekranın başlığından bağımsız zorunlu ana etkileşim
 modelidir: `standard | calendar | timeline | gallery | board | map`. Plan normalizasyonu
 alanı model değerinden veya ekran adı, amaç, bölümler ve iş tanımından türetir. `standard`

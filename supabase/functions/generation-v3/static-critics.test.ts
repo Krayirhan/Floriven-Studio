@@ -74,17 +74,27 @@ const scheduleContent: ContentPlan = {
   regions: [
     {
       regionId: 'region-calendar',
-      nodes: [{ nodeId: 'node-calendar', component: 'Calendar', fields: [
-        { field: 'title', value: 'Salı 14:00 Ahşap Villa saha ziyareti' },
-        { field: 'subtitle', value: 'Bu hafta planlanan ziyaret zamanı: Salı 14:00' },
-      ] }],
+      nodes: [{
+        nodeId: 'node-calendar', component: 'Calendar',
+        props: {
+          label: 'Haftalık Saha Ziyaret Takvimi',
+          days: ['Pzt 10', 'Sal 11', 'Çar 12', 'Per 13', 'Cum 14'],
+          events: ['Salı 14:00 Ahşap Villa saha ziyaret zamanı'],
+        },
+      }],
       emptyStateMessage: 'Bu hafta için planlanmış saha ziyareti yok',
       loadingStateMessage: 'Haftalık takvim yükleniyor',
       errorStateMessage: null,
     },
     {
       regionId: 'region-visit-details',
-      nodes: [{ nodeId: 'node-visit-card', component: 'Card', fields: [{ field: 'projectName', value: 'Proje adı: Ahşap Villa Yenileme' }] }],
+      nodes: [{
+        nodeId: 'node-visit-card', component: 'Card',
+        props: {
+          title: 'Proje adı: Ahşap Villa Yenileme',
+          subtitle: 'Ahşap kompozit ve iç mekan tasarımı',
+        },
+      }],
       emptyStateMessage: null, loadingStateMessage: null, errorStateMessage: null,
     },
   ],
@@ -158,12 +168,25 @@ const boardContent: ContentPlan = {
   regions: [
     {
       regionId: 'region-columns',
-      nodes: [{ nodeId: 'node-board', component: 'KanbanBoard', fields: [{ field: 'columns', value: 'Hazırlanıyor, Hazır, Servis Edildi sipariş durumu kolonları' }] }],
+      nodes: [{
+        nodeId: 'node-board', component: 'KanbanBoard',
+        props: {
+          label: 'Mutfak Sipariş Panosu',
+          columns: ['Hazırlanıyor', 'Hazır', 'Servis Edildi'],
+          cards: ['Masa 4 sipariş durumu: Hazırlanıyor', 'Masa 2 sipariş durumu: Servis Edildi'],
+        },
+      }],
       emptyStateMessage: 'Şu anda mutfakta bekleyen sipariş yok', loadingStateMessage: 'Sipariş panosu yükleniyor', errorStateMessage: null,
     },
     {
       regionId: 'region-order-summary',
-      nodes: [{ nodeId: 'node-summary', component: 'Text', fields: [{ field: 'summary', value: 'Seçili sipariş adı: Karides Güveç, masa 4' }] }],
+      nodes: [{
+        nodeId: 'node-summary', component: 'Text',
+        props: {
+          text: 'Seçili sipariş adı: Karides Güveç, masa 4',
+          variant: 'body',
+        },
+      }],
       emptyStateMessage: null, loadingStateMessage: null, errorStateMessage: null,
     },
   ],
@@ -213,6 +236,28 @@ describe('runStaticCritics', () => {
     const broken: DesignSpecScreen = { ...scheduleScreen, root: { ...scheduleScreen.root, children: [{ ...scheduleScreen.root.children[0], children: [] }, scheduleScreen.root.children[1]] } }
     const report = runStaticCritics(scheduleJob, scheduleStructure, broken)
     expect(report.violations.some((v) => v.code === 'INCOMPLETE_COMPLETION_EVIDENCE')).toBe(true)
+  })
+
+  it('flags placeholder content in compiled leaf props', () => {
+    const broken: DesignSpecScreen = {
+      ...scheduleScreen,
+      root: {
+        ...scheduleScreen.root,
+        children: [
+          scheduleScreen.root.children[0],
+          {
+            ...scheduleScreen.root.children[1],
+            children: [{
+              ...scheduleScreen.root.children[1].children[0],
+              props: { title: 'Lorem ipsum' } as any,
+            }],
+          },
+        ],
+      },
+    }
+    const report = runStaticCritics(scheduleJob, scheduleStructure, broken)
+    expect(report.passed).toBe(false)
+    expect(report.violations.some((v) => v.code === 'PLACEHOLDER_DETECTED')).toBe(true)
   })
 })
 

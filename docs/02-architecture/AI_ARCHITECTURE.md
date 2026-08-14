@@ -69,6 +69,10 @@ Prompt'a tüm proje ham olarak verilmez. İlgili ekran alt ağacı, token seti, 
 
 ## Failure mode'lar
 
+Generation V3'ün production'a geçiş sırası ve zorunlu kalite kapıları için
+[Generation V3 Production Readiness Planı](GENERATION_V3_PRODUCTION_READINESS_PLAN.md)
+bağlayıcı uygulama planıdır.
+
 - Geçersiz JSON: structured output + parser repair.
 - Registry dışı bileşen: mapping veya reddetme.
 - Tutarsız ekranlar: shared token/component pass.

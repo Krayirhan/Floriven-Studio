@@ -143,4 +143,67 @@ describe("createGenerationServiceV3", () => {
     const service = createGenerationServiceV3(fetcher, { url: "https://example.supabase.co", anonKey: "test-key" });
     await expect(service.get("unknown-job-id")).rejects.toThrow(/erişim anahtarı bulunamadı/);
   });
+
+  it("submits render evidence with remembered job token to the render-evidence endpoint", async () => {
+    const requests: Request[] = [];
+    const fetcher: typeof fetch = async (input, init) => {
+      requests.push(new Request(input, init));
+      const url = String(input);
+      if (url.includes("render-evidence")) {
+        return new Response(JSON.stringify({ jobId: "job-1", projectId: "project-1", correlationId: "corr-1", status: "completed", stage: "completed", progress: 100 }), { status: 200 });
+      }
+      return new Response(JSON.stringify({ jobId: "job-1", projectId: "project-1", correlationId: "corr-1", status: "awaiting_render", stage: "awaiting_render", progress: 80 }), { status: 202 });
+    };
+    const service = createGenerationServiceV3(fetcher, { url: "https://example.supabase.co", anonKey: "test-key" });
+    const created = await service.create("project-1", { brief: "Mimarlar için proje ve saha takvimi", platform: "ios" });
+
+    const evidence = [{
+      screenJobId: "weekly-schedule",
+      screenId: "scr_weekly-schedule",
+      rendererVersion: "phone-screen-v4",
+      contentHash: "hash-123",
+      viewport: { width: 390, height: 844 },
+      metrics: {
+        screenJobId: "weekly-schedule",
+        viewport: { width: 390, height: 844 },
+        visibleNodeCount: 12,
+        sectionCount: 2,
+        sectionAreaCoveragePct: 60,
+        verticalOccupancyPct: 70,
+        nodeDensityPer100kPx: 6,
+        sectionHeightVariancePct: 20,
+      },
+    }];
+
+    const finished = await service.submitRenderEvidence(created.jobId, evidence);
+    expect(finished.status).toBe("completed");
+    const lastReq = requests[requests.length - 1];
+    expect(lastReq?.url).toContain("render-evidence");
+    expect(lastReq?.method).toBe("POST");
+    expect(lastReq?.headers.get("X-Job-Token")).toEqual(expect.any(String));
+  });
+
+  it("sends a free-text edit instruction with expectedRevision and X-Job-Token", async () => {
+    const requests: Request[] = [];
+    const fetcher: typeof fetch = async (input, init) => {
+      requests.push(new Request(input, init));
+      const url = String(input);
+      if (url.includes("/edit")) {
+        return new Response(JSON.stringify({ jobId: "job-1", projectId: "project-1", correlationId: "corr-1", status: "completed", stage: "completed", progress: 100 }), { status: 200 });
+      }
+      return new Response(JSON.stringify({ jobId: "job-1", projectId: "project-1", correlationId: "corr-1", status: "completed", stage: "completed", progress: 100 }), { status: 202 });
+    };
+    const service = createGenerationServiceV3(fetcher, { url: "https://example.supabase.co", anonKey: "test-key" });
+    const created = await service.create("project-1", { brief: "Mimarlar için proje ve saha takvimi", platform: "ios" });
+
+    const updated = await service.edit(created.jobId, "scr_1", "Başlığı güncelle", 1);
+    expect(updated.status).toBe("completed");
+    const lastReq = requests[requests.length - 1];
+    expect(lastReq?.url).toContain("/edit");
+    expect(lastReq?.method).toBe("PATCH");
+    expect(lastReq?.headers.get("X-Job-Token")).toEqual(expect.any(String));
+    const body = JSON.parse(await lastReq!.clone().text());
+    expect(body.instruction).toBe("Başlığı güncelle");
+    expect(body.screenId).toBe("scr_1");
+  });
 });

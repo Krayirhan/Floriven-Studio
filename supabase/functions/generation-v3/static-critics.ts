@@ -7,6 +7,12 @@ export const STATIC_CRITICS_VERSION = '1.0.0' as const
 export type StaticViolationCode =
   | 'EMPTY_SCREEN' | 'EMPTY_REGION' | 'ACCESSIBILITY_GAP'
   | 'MISSING_REQUIRED_INTERACTION' | 'MISSING_DATA_COVERAGE' | 'INCOMPLETE_COMPLETION_EVIDENCE'
+  | 'PLACEHOLDER_DETECTED'
+
+const PLACEHOLDER_PHRASES = new Set([
+  'lorem ipsum', 'sample text', 'placeholder', 'placeholder text', 'tbd', 'n/a', 'dummy data', 'example text', 'coming soon', 'test', 'test data',
+  'örnek metin', 'metin buraya', 'test verisi', 'yer tutucu', 'yakında', 'içerik buraya',
+].map((s) => s.trim().toLocaleLowerCase('tr-TR').replace(/\s+/g, ' ')))
 
 export type StaticViolation = { code: StaticViolationCode; message: string; nodeId: string | null }
 export type StaticCriticsReport = { version: typeof STATIC_CRITICS_VERSION; screenJobId: string; passed: boolean; violations: StaticViolation[] }
@@ -24,7 +30,10 @@ export function runStaticCritics(job: ScreenJob, structure: UXStructure, screen:
   for (const container of screen.root.children) {
     if (container.children.length === 0) violations.push({ code: 'EMPTY_REGION', message: `Region container ${container.id} has no content`, nodeId: container.id })
     checkA11y(container, violations)
-    for (const leaf of container.children) checkA11y(leaf, violations)
+    for (const leaf of container.children) {
+      checkA11y(leaf, violations)
+      checkPlaceholders(leaf, violations)
+    }
   }
 
   const allLeaves: LeafNode[] = screen.root.children.flatMap((container) => container.children)
@@ -55,6 +64,22 @@ export function runStaticCritics(job: ScreenJob, structure: UXStructure, screen:
 function checkA11y(node: RegionContainerNode | LeafNode, violations: StaticViolation[]): void {
   if (!node.a11y.role.trim()) violations.push({ code: 'ACCESSIBILITY_GAP', message: `Node ${node.id} has an empty a11y role`, nodeId: node.id })
   if (!node.a11y.label.trim()) violations.push({ code: 'ACCESSIBILITY_GAP', message: `Node ${node.id} has an empty a11y label`, nodeId: node.id })
+}
+
+function checkPlaceholders(leaf: LeafNode, violations: StaticViolation[]): void {
+  function scan(val: unknown): void {
+    if (typeof val === 'string') {
+      const canon = val.trim().toLocaleLowerCase('tr-TR').replace(/\s+/g, ' ')
+      if (PLACEHOLDER_PHRASES.has(canon)) {
+        violations.push({ code: 'PLACEHOLDER_DETECTED', message: `Placeholder content detected in node ${leaf.id}: "${val}"`, nodeId: leaf.id })
+      }
+    } else if (Array.isArray(val)) {
+      val.forEach(scan)
+    } else if (typeof val === 'object' && val !== null) {
+      Object.values(val).forEach(scan)
+    }
+  }
+  scan(leaf.props)
 }
 
 export type StructuralDuplicate = { screenJobIdA: string; screenJobIdB: string; similarity: number }

@@ -1,6 +1,8 @@
 import { type AcceptedDesignSpec, type Platform } from './accepted-design-spec.ts'
+import { type V3PlanningOutput } from './planning-pipeline.ts'
+import { type RuntimeCaptureMetrics } from './render-critics.ts'
 
-export const V3_JOB_STATUSES = ['queued', 'processing', 'completed', 'failed'] as const
+export const V3_JOB_STATUSES = ['queued', 'processing', 'awaiting_render', 'render_verifying', 'completed', 'failed'] as const
 export type V3JobStatus = typeof V3_JOB_STATUSES[number]
 
 /** RFC 9457 Problem Details (docs/03-engineering/API_SPEC.md — "Hata formatı"). Never carries PII, stack traces, raw prompts or provider output. */
@@ -22,15 +24,40 @@ export type V3GenerationPostRequest = {
   locale?: string
   deviceProfile?: string
   requestedScreenCount?: number
-  /** `Idempotency-Key` header — same key + same payload returns the prior job; a different payload is a 409. */
+  /** `Idempotency-Key` header — same key + same payload within a project returns the prior job; a different payload is a 409. */
   idempotencyKey: string
-  /** `X-Job-Token` header — client-generated secret; server stores only its hash and requires it again on GET. */
+  /** `X-Job-Token` header — client-generated secret; server stores only its hash and requires it again on GET as an additional capability check. */
   jobToken: string
 }
 
 export type V3GenerationGetRequest = {
   jobId: string
   jobToken: string
+}
+
+export type V3ScreenRenderEvidence = {
+  screenJobId: string
+  screenId: string
+  rendererVersion: string
+  contentHash: string
+  viewport: { width: number; height: number }
+  metrics: RuntimeCaptureMetrics
+  screenshotHash?: string
+}
+
+export type V3SubmitRenderEvidenceRequest = {
+  jobId: string
+  jobToken: string
+  evidence: V3ScreenRenderEvidence[]
+}
+
+export type V3GenerationEditRequest = {
+  jobId: string
+  jobToken: string
+  screenId: string
+  /** Free-text revision instruction from the user — the server plans and validates the actual patches; the client never computes them. */
+  instruction: string
+  expectedRevision: number
 }
 
 export type V3JobSnapshot = {
@@ -58,6 +85,7 @@ export type V3JobRecord = {
   progress: number
   errorCode: string | null
   errorMessage: string | null
+  planningOutput?: V3PlanningOutput | null
   acceptedDesignSpec: AcceptedDesignSpec | null
   createdAt: string
 }

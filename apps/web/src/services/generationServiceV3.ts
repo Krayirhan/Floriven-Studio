@@ -9,7 +9,10 @@ import type { GenerationJob, GenerationStatus } from "./generationService";
  * an edge function and its browser client are a network boundary, not a shared module.
  */
 
-export type GenerationV3Status = GenerationStatus;
+export type GenerationV3Status = "queued" | "processing" | "awaiting_render" | "render_verifying" | "completed" | "failed";
+
+/** Must match supabase/functions/generation-v3/http-adapter.ts's CANONICAL_RENDERER_VERSION exactly — evidence submitted under any other value is rejected. */
+export const V3_CANONICAL_RENDERER_VERSION = "phone-screen-v4";
 
 export interface GenerationV3Request {
   brief: string;
@@ -22,7 +25,7 @@ export interface GenerationV3Request {
 interface V3LeafNode {
   id: string;
   type: string;
-  props: Record<string, string>;
+  props: Record<string, unknown>;
   layout: { size: "hug" | "fill" | "fixed" };
   bindings: Array<{ dataPath: string }>;
   interactions: Array<{ event: "press"; action: { type: "setLocalState"; params: { interaction: string; actionId: string } } }>;
@@ -83,41 +86,6 @@ export interface GenerationV3Job {
 }
 
 /**
- * V2's renderer reads each component's primary caption from a specific prop key
- * (Text wants `text`, TopAppBar wants `title`, most others want `label`) — a convention V3's
- * ContentPlan has no visibility into, since it names fields freely (e.g. "title", "subtitle").
- * Rather than guessing per component type (that would require a full V2 prop-schema registry V3
- * doesn't have yet), whichever primary key IS present backfills the ones that are missing — the
- * same text, several keys, nothing invented — so a V3 node with only `{ title: "..." }` still
- * shows its caption under a component that looks it up as `label`.
- */
-const PRIMARY_CAPTION_KEYS = ["text", "title", "label"] as const;
-
-function withPrimaryCaptionSynonyms(props: Record<string, string>): Record<string, string> {
-  const anchor = PRIMARY_CAPTION_KEYS.map((key) => props[key]).find((value) => value) ?? Object.values(props)[0];
-  if (!anchor) return props;
-  const withSynonyms = { ...props };
-  for (const key of PRIMARY_CAPTION_KEYS) if (!withSynonyms[key]) withSynonyms[key] = anchor;
-  return withSynonyms;
-}
-
-/**
- * V2's renderer treats these types as pure layout containers — it renders only `children` and
- * never looks at `props` (see PhoneScreen.tsx's Card/Modal/Form case). V3 selects the same type
- * names as content-bearing leaves (component-capabilities.ts has no container concept at all).
- * Reconciling that means giving the leaf's own caption a single synthetic Text child, rather than
- * silently rendering an empty box — the content still shows, under the vocabulary V2 expects.
- */
-const V2_CONTAINER_ONLY_LEAF_TYPES = new Set(["Card", "Modal", "Form"]);
-
-function syntheticCaptionChild(node: V3LeafNode): DesignNode[] {
-  const props = withPrimaryCaptionSynonyms(node.props);
-  const caption = props.text ?? "";
-  if (!caption) return [];
-  return [{ id: `${node.id}__caption`, type: "Text", props: { text: caption }, visibility: true, a11y: { role: "text", label: caption } }];
-}
-
-/**
  * Converts a V3 leaf/container node into the canonical V2 DesignNode shape the Studio canvas
  * already renders. Never fabricates a field V3 doesn't have: bindings become presence flags
  * (V2's bindings are an untyped Record, V3's are a typed dataPath list — this is a lossless,
@@ -129,7 +97,6 @@ function syntheticCaptionChild(node: V3LeafNode): DesignNode[] {
 function toV2Node(node: V3RegionContainerNode | V3LeafNode): DesignNode {
   const a11y: A11y = { role: node.a11y.role, label: node.a11y.label, order: node.a11y.order, ...(node.a11y.hint ? { hint: node.a11y.hint } : {}) };
   const isContainer = "children" in node;
-  const isContainerOnlyLeaf = !isContainer && V2_CONTAINER_ONLY_LEAF_TYPES.has(node.type);
   return {
     id: node.id,
     type: node.type,
@@ -139,11 +106,10 @@ function toV2Node(node: V3RegionContainerNode | V3LeafNode): DesignNode {
     // not a fabricated V2 topology role, and it's what capturePhoneRuntime/measureRuntimeVisualIdentity
     // (apps/web/src/features/studio/canvas/runtimeCapture.ts, packages/design-spec) require to
     // recognize a region as a section at all — without this a V3 screen measures zero sections.
-    props: isContainer ? { semanticContainer: true, contractSectionRole: node.a11y.role } : isContainerOnlyLeaf ? {} : withPrimaryCaptionSynonyms(node.props),
+    props: isContainer ? { semanticContainer: true, contractSectionRole: node.a11y.role } : (node.props as Record<string, unknown>),
     visibility: node.visibility,
     a11y,
     ...(isContainer ? { layout: { mode: node.layout.mode, gap: node.layout.gap }, children: node.children.map(toV2Node) } : {}),
-    ...(isContainerOnlyLeaf ? { children: syntheticCaptionChild(node) } : {}),
     ...(!isContainer && node.bindings.length ? { bindings: Object.fromEntries(node.bindings.map((binding) => [binding.dataPath, true])) } : {}),
     ...(!isContainer && node.interactions.length ? { interactions: node.interactions } : {}),
   };
@@ -167,10 +133,12 @@ export function toV2Screens(screens: V3DesignSpecScreen[]): Screen[] {
 
 /** Maps a V3 job snapshot into the same GenerationJob shape the rest of Studio state already understands, so V2/V3 are interchangeable past this point. */
 export function toGenerationJob(job: GenerationV3Job): GenerationJob {
+  const legacyStatus: GenerationStatus =
+    job.status === "awaiting_render" || job.status === "render_verifying" ? "processing" : job.status;
   return {
     id: job.jobId,
     projectId: job.projectId,
-    status: job.status,
+    status: legacyStatus,
     progress: job.progress,
     stage: job.stage,
     ...(job.errorCode ? { errorCode: job.errorCode } : {}),
@@ -182,9 +150,31 @@ export function toGenerationJob(job: GenerationV3Job): GenerationJob {
   };
 }
 
+export interface V3ScreenRenderEvidence {
+  screenJobId: string;
+  screenId: string;
+  rendererVersion: string;
+  contentHash: string;
+  viewport: { width: number; height: number };
+  metrics: {
+    screenJobId: string;
+    viewport: { width: number; height: number };
+    visibleNodeCount: number;
+    sectionCount: number;
+    sectionAreaCoveragePct: number;
+    verticalOccupancyPct: number;
+    nodeDensityPer100kPx: number;
+    sectionHeightVariancePct: number;
+  };
+  screenshotHash?: string;
+}
+
 export interface GenerationServiceV3 {
   create(projectId: string, request: GenerationV3Request): Promise<GenerationV3Job>;
   get(jobId: string): Promise<GenerationV3Job>;
+  submitRenderEvidence(jobId: string, evidence: V3ScreenRenderEvidence[]): Promise<GenerationV3Job>;
+  /** The client sends the user's free-text instruction only — the server plans and validates the actual patch operations. */
+  edit(jobId: string, screenId: string, instruction: string, expectedRevision: number): Promise<GenerationV3Job>;
   waitForTerminal(job: GenerationV3Job): Promise<GenerationV3Job>;
 }
 
@@ -216,9 +206,29 @@ export function createGenerationServiceV3(
     { timeoutMs: STATUS_TIMEOUT_MS, retries: 1 } satisfies CallOptions,
   );
 
+  const submitRenderEvidence = async (jobId: string, evidence: V3ScreenRenderEvidence[]) => callFunction<GenerationV3Job>(
+    `generation-v3/${encodeURIComponent(jobId)}/render-evidence`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Job-Token": readJobToken(jobId) },
+      body: JSON.stringify({ jobId, evidence }),
+    },
+    { timeoutMs: STATUS_TIMEOUT_MS, retries: 1 } satisfies CallOptions,
+  );
+
+  const edit = async (jobId: string, screenId: string, instruction: string, expectedRevision: number) => callFunction<GenerationV3Job>(
+    `generation-v3/${encodeURIComponent(jobId)}/edit`,
+    {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", "X-Job-Token": readJobToken(jobId) },
+      body: JSON.stringify({ jobId, screenId, instruction, expectedRevision }),
+    },
+    { timeoutMs: STATUS_TIMEOUT_MS, retries: 1 } satisfies CallOptions,
+  );
+
   const waitForTerminal = async (job: GenerationV3Job): Promise<GenerationV3Job> => {
     let current = job;
-    for (let attempt = 0; attempt < MAX_STATUS_POLLS && (current.status === "queued" || current.status === "processing"); attempt += 1) {
+    for (let attempt = 0; attempt < MAX_STATUS_POLLS && (current.status === "queued" || current.status === "processing" || current.status === "render_verifying"); attempt += 1) {
       await new Promise((resolve) => setTimeout(resolve, STATUS_POLL_INTERVAL_MS));
       current = await getJob(current.jobId);
     }
@@ -238,6 +248,8 @@ export function createGenerationServiceV3(
       return job;
     },
     get: getJob,
+    submitRenderEvidence,
+    edit,
     waitForTerminal,
   };
 }

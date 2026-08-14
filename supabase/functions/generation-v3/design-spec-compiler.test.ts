@@ -73,17 +73,27 @@ const scheduleContent: ContentPlan = {
   regions: [
     {
       regionId: 'region-calendar',
-      nodes: [{ nodeId: 'node-calendar', component: 'Calendar', fields: [
-        { field: 'title', value: 'Salı 14:00 Ahşap Villa saha ziyareti' },
-        { field: 'subtitle', value: 'Bu hafta planlanan ziyaret zamanı: Salı 14:00' },
-      ] }],
+      nodes: [{
+        nodeId: 'node-calendar', component: 'Calendar',
+        props: {
+          label: 'Haftalık Saha Ziyaret Takvimi',
+          days: ['Pzt 10', 'Sal 11', 'Çar 12', 'Per 13', 'Cum 14'],
+          events: ['Salı 14:00 Ahşap Villa saha ziyaret zamanı'],
+        },
+      }],
       emptyStateMessage: 'Bu hafta için planlanmış saha ziyareti yok',
       loadingStateMessage: 'Haftalık takvim yükleniyor',
       errorStateMessage: null,
     },
     {
       regionId: 'region-visit-details',
-      nodes: [{ nodeId: 'node-visit-card', component: 'Card', fields: [{ field: 'projectName', value: 'Proje adı: Ahşap Villa Yenileme' }] }],
+      nodes: [{
+        nodeId: 'node-visit-card', component: 'Card',
+        props: {
+          title: 'Proje adı: Ahşap Villa Yenileme',
+          subtitle: 'Ahşap kompozit ve iç mekan tasarımı',
+        },
+      }],
       emptyStateMessage: null, loadingStateMessage: null, errorStateMessage: null,
     },
   ],
@@ -108,11 +118,11 @@ describe('DesignSpec compiler (deterministic, no LLM)', () => {
     expect(calendarContainer.children[0].layout.size).toBe('fill')
   })
 
-  it('translates ContentPlan fields into node props verbatim', () => {
+  it('translates ContentPlan typed props into node props verbatim', () => {
     const screen = compileDesignSpecScreen(scheduleJob, scheduleStructure, scheduleCapabilities, scheduleLayout, scheduleContent)
     const calendarLeaf = screen.root.children[0].children[0]
-    expect(calendarLeaf.props.title).toBe('Salı 14:00 Ahşap Villa saha ziyareti')
-    expect(calendarLeaf.props.subtitle).toBe('Bu hafta planlanan ziyaret zamanı: Salı 14:00')
+    expect(calendarLeaf.props.label).toBe('Haftalık Saha Ziyaret Takvimi')
+    expect(calendarLeaf.props.events).toEqual(['Salı 14:00 Ahşap Villa saha ziyaret zamanı'])
   })
 
   it('binds data paths only for terms the node content actually reflects', () => {

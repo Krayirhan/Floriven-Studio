@@ -83,7 +83,20 @@ export const COMPONENT_CAPABILITIES_JSON_SCHEMA = {
   required: ['version', 'screenJobId', 'regions'],
   properties: {
     version: { const: COMPONENT_CAPABILITIES_VERSION }, screenJobId: { type: 'string' },
-    regions: { type: 'array', minItems: 2, maxItems: 10 },
+    regions: {
+      type: 'array', minItems: 2, maxItems: 10,
+      items: {
+        type: 'object', additionalProperties: false, required: ['regionId', 'selectedComponents', 'justification'],
+        properties: {
+          regionId: { type: 'string' },
+          selectedComponents: { type: 'array', minItems: 1, maxItems: 6, items: { type: 'string', description: 'must be one of ALLOWED_COMPONENTS' } },
+          justification: {
+            type: 'array', minItems: 1, maxItems: 10,
+            items: { type: 'object', additionalProperties: false, required: ['capability', 'component', 'reason'], properties: { capability: { type: 'string', description: 'must be one of this region\'s REQUIRED_CAPABILITIES' }, component: { type: 'string', description: 'must be in selectedComponents' }, reason: { type: 'string' } } },
+          },
+        },
+      },
+    },
   },
 } as const
 

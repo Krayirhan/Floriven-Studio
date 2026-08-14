@@ -211,4 +211,83 @@ describe("splitScreenNavigation", () => {
     ["ControlToggle",{label:"Otomatik koruma",description:"Kritik eşikte uygula",state:"AÇIK",guard:"Onay gerekir"}],
     ["AuditEntry",{time:"14:32",actor:"Emre Y.",action:"Politika güncellendi",target:"Üretim"}],
   ];const components=defs.map(([type,props],i)=>{const item=node(`precision-${i}`,type);item.props=props;return item});const screen:Screen={id:"ops",name:"Komuta",route:"/komuta",root:node("root","Screen",components)};const html=renderToStaticMarkup(createElement(PhoneScreen,{screen,selectedNodeId:"",active:true,onSelect:()=>undefined}));expect(html).toContain("99.98%");expect(html).toContain("124 ms");expect(html).toContain("Otomatik koruma");expect(html).toContain("Emre Y.")});
+
+  it("verifies KanbanBoard renders columns and cards with structural DOM evidence", () => {
+    const kanban = node("kanban", "KanbanBoard");
+    kanban.props = {
+      label: "Mutfak Sipariş Panosu",
+      columns: ["Hazırlanıyor", "Hazır", "Servis Edildi"],
+      cards: ["Masa 4 - Pizza", "Masa 2 - Salata", "Masa 6 - Makarna"],
+    };
+    const screen: Screen = { id: "kitchen", name: "Pano", route: "/pano", root: node("root", "Screen", [kanban]) };
+    const html = renderToStaticMarkup(createElement(PhoneScreen, { screen, selectedNodeId: "", active: true, onSelect: () => undefined }));
+
+    expect(html).toContain("Mutfak Sipariş Panosu");
+    expect(html).toContain("<strong>Hazırlanıyor</strong>");
+    expect(html).toContain("<strong>Hazır</strong>");
+    expect(html).toContain("<strong>Servis Edildi</strong>");
+    expect(html).toContain("<span>Masa 4 - Pizza</span>");
+    expect(html).toContain("<span>Masa 2 - Salata</span>");
+    expect(html).toContain("<span>Masa 6 - Makarna</span>");
+  });
+
+  it("verifies MapView renders coordinates and markers with spatial styling", () => {
+    const map = node("map", "MapView");
+    map.props = {
+      label: "Saha Şantiyeleri Haritası",
+      markers: ["Kadıköy Şantiye", "Beşiktaş Restorasyon", "Üsküdar Konut"],
+    };
+    const screen: Screen = { id: "map-screen", name: "Harita", route: "/harita", root: node("root", "Screen", [map]) };
+    const html = renderToStaticMarkup(createElement(PhoneScreen, { screen, selectedNodeId: "", active: true, onSelect: () => undefined }));
+
+    expect(html).toContain("<figure");
+    expect(html).toContain("<figcaption>Saha Şantiyeleri Haritası</figcaption>");
+    expect(html).toContain("Kadıköy Şantiye");
+    expect(html).toContain("Beşiktaş Restorasyon");
+    expect(html).toContain("Üsküdar Konut");
+    expect(html).toContain("style=\"left:");
+  });
+
+  it("verifies Gallery renders lead item and items with captions", () => {
+    const gallery = node("gallery", "Gallery");
+    gallery.props = {
+      label: "Proje Fotoğrafları",
+      items: ["Salon Görünümü", "Mutfak Detayı", "Balkon Cephesi"],
+    };
+    const screen: Screen = { id: "gallery-screen", name: "Galeri", route: "/galeri", root: node("root", "Screen", [gallery]) };
+    const html = renderToStaticMarkup(createElement(PhoneScreen, { screen, selectedNodeId: "", active: true, onSelect: () => undefined }));
+
+    expect(html).toContain("Proje Fotoğrafları");
+    expect(html).toContain("<figcaption>Salon Görünümü</figcaption>");
+    expect(html).toContain("<figcaption>Mutfak Detayı</figcaption>");
+    expect(html).toContain("<figcaption>Balkon Cephesi</figcaption>");
+  });
+
+  it("verifies Timeline renders numbered steps sequentially", () => {
+    const timeline = node("timeline", "Timeline");
+    timeline.props = {
+      label: "Uygulama Aşamaları",
+      events: ["Keşif ve Ölçü", "Statik Hesap", "İnşaat Başlangıcı"],
+    };
+    const screen: Screen = { id: "timeline-screen", name: "Zaman Çizelgesi", route: "/zaman", root: node("root", "Screen", [timeline]) };
+    const html = renderToStaticMarkup(createElement(PhoneScreen, { screen, selectedNodeId: "", active: true, onSelect: () => undefined }));
+
+    expect(html).toContain("Uygulama Aşamaları");
+    expect(html).toContain("<b>01</b>");
+    expect(html).toContain("<span>Keşif ve Ölçü</span>");
+    expect(html).toContain("<b>02</b>");
+    expect(html).toContain("<span>Statik Hesap</span>");
+    expect(html).toContain("<b>03</b>");
+    expect(html).toContain("<span>İnşaat Başlangıcı</span>");
+  });
+
+  it("renders a visible, fail-closed alert when an unsupported component is encountered", () => {
+    const badNode = node("unsupported-1", "NonExistentComponent");
+    const screen: Screen = { id: "bad-screen", name: "Hatalı", route: "/hatali", root: node("root", "Screen", [badNode]) };
+    const html = renderToStaticMarkup(createElement(PhoneScreen, { screen, selectedNodeId: "", active: true, onSelect: () => undefined }));
+
+    expect(html).toContain('role="alert"');
+    expect(html).toContain('data-renderer-error="UNSUPPORTED_RENDERER_COMPONENT"');
+    expect(html).toContain("Unsupported component: NonExistentComponent");
+  });
 });

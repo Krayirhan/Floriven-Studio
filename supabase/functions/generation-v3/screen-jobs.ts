@@ -23,7 +23,27 @@ const PRIORITIES = new Set(['primary', 'secondary', 'support'])
 
 export const SCREEN_JOBS_JSON_SCHEMA = {
   $id: 'floriven.generation-v3.ScreenJobs@1', type: 'object', additionalProperties: false,
-  required: ['version', 'jobs'], properties: { version: { const: SCREEN_JOBS_VERSION }, jobs: { type: 'array', minItems: 1, maxItems: 12 } },
+  required: ['version', 'jobs'],
+  properties: {
+    version: { const: SCREEN_JOBS_VERSION },
+    jobs: {
+      type: 'array', minItems: 1, maxItems: 12,
+      items: {
+        type: 'object', additionalProperties: false,
+        required: ['id', 'name', 'userJob', 'actorId', 'entityIds', 'requiredData', 'requiredInteractions', 'completionCriteria', 'entryPoints', 'destinationJobIds', 'priority'],
+        properties: {
+          id: { type: 'string' }, name: { type: 'string' }, userJob: { type: 'string' }, actorId: { type: 'string', description: 'must reference an existing productModel.actors[].id' },
+          entityIds: { type: 'array', items: { type: 'string', description: 'must reference existing productModel.entities[].id' } },
+          requiredData: { type: 'array', minItems: 2, items: { type: 'string' } },
+          requiredInteractions: { type: 'array', minItems: 1, items: { type: 'string', enum: ['inspect', 'search', 'filter', 'create', 'edit', 'delete', 'select', 'navigate', 'schedule', 'reorder', 'compare', 'visualize'] } },
+          completionCriteria: { type: 'array', minItems: 1, items: { type: 'string' } },
+          entryPoints: { type: 'array', minItems: 1, items: { type: 'string' } },
+          destinationJobIds: { type: 'array', items: { type: 'string', description: 'must reference another job in this same array by id' } },
+          priority: { type: 'string', enum: ['primary', 'secondary', 'support'] },
+        },
+      },
+    },
+  },
 } as const
 
 export function validateScreenJobs(input: unknown, product: ProductModel): ValidationResult<ScreenJobs> {
